@@ -1,0 +1,416 @@
+<!--
+  PROTOTYPE — throwaway. Answers wayfinder ticket "06 - UI for surfacing techniques
+  transparently" (learning_app/.scratch/learning-app/issues/06-technique-transparency-ui.md).
+
+  Three variants of the technique-transparency treatment across the fixed session flow
+  (worked example -> guided practice -> independent recall -> misconception repair),
+  switchable via ?variant=A|B|C. Standalone static page — no app exists yet to host
+  variants inside (sub-shape B), since this map is planning-only (no app code this effort).
+
+  Run: open this file directly in a browser (file://), or `python3 -m http.server` from
+  this directory and visit /session-flow-technique-transparency.PROTOTYPE.html.
+
+  Subject content: -ar family, verb "hablar" (to speak), yo/tu/el/nosotros/ellos forms.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>PROTOTYPE — session flow technique transparency</title>
+<style>
+  :root {
+    --ink: #1c1c1e;
+    --paper: #fafaf8;
+    --card: #ffffff;
+    --line: #e2e0da;
+    --accent: #2f6f4f;
+    --accent-bg: #e8f3ec;
+    --warn: #a3401f;
+    --warn-bg: #fbeae3;
+    --muted: #6b6b6b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding-bottom: 90px;
+  }
+  .proto-banner {
+    background: #1c1c1e;
+    color: #fff;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding: 6px;
+    text-transform: uppercase;
+  }
+  .flow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  .flow-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .flow h1 {
+    font-size: 24px;
+    margin: 0 0 32px;
+  }
+  .screen {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    padding: 24px;
+    position: relative;
+  }
+  .step-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .verb-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 15px;
+  }
+  .verb-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .stem { color: var(--accent); font-weight: 600; }
+  .ending { color: var(--warn); font-weight: 600; }
+  .exercise-prompt { font-size: 17px; margin: 14px 0; }
+  .blank-input {
+    font-size: 16px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    width: 140px;
+  }
+  .choice-row { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+  .choice {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 14px;
+    background: var(--paper);
+    font-size: 15px;
+  }
+  .choice.wrong-pick { border-color: var(--warn); background: var(--warn-bg); }
+  .feedback-box {
+    margin-top: 16px;
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: var(--warn-bg);
+    border: 1px solid #e4b8a3;
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+
+  /* ---------- Variant A: corner badge ---------- */
+  .variant-A .badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+  .variant-A .badge summary {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border-radius: 999px;
+    padding: 5px 12px;
+  }
+  .variant-A .badge summary::-webkit-details-marker { display: none; }
+  .variant-A .badge[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .variant-A .badge p {
+    margin: 0;
+    background: var(--accent-bg);
+    border-radius: 0 0 8px 8px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: #234;
+    max-width: 220px;
+  }
+  .variant-A .feedback-box .badge summary { background: #f4d9c9; color: var(--warn); }
+  .variant-A .feedback-box .badge p { background: #f4d9c9; }
+
+  /* ---------- Variant B: margin rail ---------- */
+  .variant-B .screen { display: grid; grid-template-columns: 160px 1fr; gap: 20px; padding: 0; overflow: hidden; }
+  .variant-B .rail {
+    background: var(--accent-bg);
+    padding: 20px 14px;
+    border-right: 1px solid var(--line);
+  }
+  .variant-B .rail .rail-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .variant-B .rail p {
+    font-size: 12.5px;
+    color: #234;
+    margin: 0;
+    line-height: 1.45;
+  }
+  .variant-B .body { padding: 24px 24px 24px 4px; }
+  .variant-B .feedback-step .rail { background: var(--warn-bg); }
+  .variant-B .feedback-step .rail .rail-label { color: var(--warn); }
+
+  /* ---------- Variant C: moment-only, woven into copy ---------- */
+  .variant-C .intro-line {
+    font-size: 13.5px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .variant-C .feedback-box .misconception-name {
+    color: var(--warn);
+    font-weight: 700;
+  }
+
+  /* switcher */
+  .switcher {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1c1c1e;
+    color: #fff;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    font-size: 14px;
+    z-index: 50;
+  }
+  .switcher button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .switcher button:hover { background: rgba(255,255,255,0.15); }
+  .switcher .label {
+    padding: 0 10px;
+    min-width: 220px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .switcher .label small { display: block; font-weight: 400; opacity: 0.7; font-size: 11px; }
+</style>
+</head>
+<body>
+  <div class="proto-banner">PROTOTYPE — throwaway — ticket 06 technique-transparency UI</div>
+
+  <div class="flow" id="flow">
+    <!-- filled by JS per variant -->
+  </div>
+
+  <div class="switcher">
+    <button id="prev" aria-label="previous variant">&#8592;</button>
+    <div class="label" id="label"></div>
+    <button id="next" aria-label="next variant">&#8594;</button>
+  </div>
+
+<script>
+const VARIANTS = {
+  A: { name: 'Corner badge', desc: 'Small expandable pill, top-right of each screen' },
+  B: { name: 'Margin rail', desc: 'Persistent side column naming + explaining the technique' },
+  C: { name: 'Moment-only', desc: 'No chrome — technique named inline only where it matters' },
+};
+
+function screenMarkup(variant) {
+  const badge = (tech, explain) => `
+    <details class="badge"><summary>${tech}</summary><p>${explain}</p></details>`;
+  const rail = (tech, explain) => `
+    <div class="rail"><div class="rail-label">${tech}</div><p>${explain}</p></div>`;
+
+  const worked = {
+    A: `<div class="screen variant-A">
+          ${badge('Notional machine', 'A simplified mental model of how -ar verbs change: swap the ending, keep the stem.')}
+          <div class="step-label">Step 1 · Worked example</div>
+          <h3>hablar — to speak</h3>
+          <p>Take off <span class="ending">-ar</span>, keep the stem <span class="stem">habl-</span>, add the ending for who's speaking.</p>
+          <table class="verb-table">
+            <tr><td>yo</td><td><span class="stem">habl</span><span class="ending">o</span></td></tr>
+            <tr><td>tú</td><td><span class="stem">habl</span><span class="ending">as</span></td></tr>
+            <tr><td>él / ella</td><td><span class="stem">habl</span><span class="ending">a</span></td></tr>
+            <tr><td>nosotros</td><td><span class="stem">habl</span><span class="ending">amos</span></td></tr>
+            <tr><td>ellos</td><td><span class="stem">habl</span><span class="ending">an</span></td></tr>
+          </table>
+        </div>`,
+    B: `<div class="screen variant-B">
+          ${rail('Notional machine', 'A simplified mental model of how -ar verbs change: swap the ending, keep the stem.')}
+          <div class="body">
+            <div class="step-label">Step 1 · Worked example</div>
+            <h3>hablar — to speak</h3>
+            <p>Take off <span class="ending">-ar</span>, keep the stem <span class="stem">habl-</span>, add the ending for who's speaking.</p>
+            <table class="verb-table">
+              <tr><td>yo</td><td><span class="stem">habl</span><span class="ending">o</span></td></tr>
+              <tr><td>tú</td><td><span class="stem">habl</span><span class="ending">as</span></td></tr>
+              <tr><td>él / ella</td><td><span class="stem">habl</span><span class="ending">a</span></td></tr>
+              <tr><td>nosotros</td><td><span class="stem">habl</span><span class="ending">amos</span></td></tr>
+              <tr><td>ellos</td><td><span class="stem">habl</span><span class="ending">an</span></td></tr>
+            </table>
+          </div>
+        </div>`,
+    C: `<div class="screen variant-C">
+          <div class="step-label">Step 1 · Worked example</div>
+          <div class="intro-line">Here's the notional machine for -ar verbs — the model you'll reuse for every word in this family.</div>
+          <h3>hablar — to speak</h3>
+          <p>Take off <span class="ending">-ar</span>, keep the stem <span class="stem">habl-</span>, add the ending for who's speaking.</p>
+          <table class="verb-table">
+            <tr><td>yo</td><td><span class="stem">habl</span><span class="ending">o</span></td></tr>
+            <tr><td>tú</td><td><span class="stem">habl</span><span class="ending">as</span></td></tr>
+            <tr><td>él / ella</td><td><span class="stem">habl</span><span class="ending">a</span></td></tr>
+            <tr><td>nosotros</td><td><span class="stem">habl</span><span class="ending">amos</span></td></tr>
+            <tr><td>ellos</td><td><span class="stem">habl</span><span class="ending">an</span></td></tr>
+          </table>
+        </div>`,
+  }[variant];
+
+  const guided = {
+    A: `<div class="screen variant-A">
+          ${badge('Scaffolded retrieval', 'You supply the ending, but the stem and choices are still given — the "we-do" step.')}
+          <div class="step-label">Step 2 · Guided practice</div>
+          <p class="exercise-prompt">nosotros <span class="stem">habl</span>___ <em>(hablar)</em></p>
+          <div class="choice-row">
+            <div class="choice">-o</div><div class="choice">-as</div><div class="choice">-amos</div><div class="choice">-an</div>
+          </div>
+        </div>`,
+    B: `<div class="screen variant-B">
+          ${rail('Scaffolded retrieval', 'You supply the ending, but the stem and choices are still given — the "we-do" step.')}
+          <div class="body">
+            <div class="step-label">Step 2 · Guided practice</div>
+            <p class="exercise-prompt">nosotros <span class="stem">habl</span>___ <em>(hablar)</em></p>
+            <div class="choice-row">
+              <div class="choice">-o</div><div class="choice">-as</div><div class="choice">-amos</div><div class="choice">-an</div>
+            </div>
+          </div>
+        </div>`,
+    C: `<div class="screen variant-C">
+          <div class="step-label">Step 2 · Guided practice</div>
+          <p class="exercise-prompt">nosotros <span class="stem">habl</span>___ <em>(hablar)</em></p>
+          <div class="choice-row">
+            <div class="choice">-o</div><div class="choice">-as</div><div class="choice">-amos</div><div class="choice">-an</div>
+          </div>
+        </div>`,
+  }[variant];
+
+  const independent = {
+    A: `<div class="screen variant-A">
+          ${badge('Retrieval practice', 'No scaffold — you produce the form from memory. The "you-do" step.')}
+          <div class="step-label">Step 3 · Independent recall</div>
+          <p class="exercise-prompt">yo _______ español. <em>(hablar)</em></p>
+          <input class="blank-input" placeholder="type the form" />
+        </div>`,
+    B: `<div class="screen variant-B">
+          ${rail('Retrieval practice', 'No scaffold — you produce the form from memory. The "you-do" step.')}
+          <div class="body">
+            <div class="step-label">Step 3 · Independent recall</div>
+            <p class="exercise-prompt">yo _______ español. <em>(hablar)</em></p>
+            <input class="blank-input" placeholder="type the form" />
+          </div>
+        </div>`,
+    C: `<div class="screen variant-C">
+          <div class="step-label">Step 3 · Independent recall</div>
+          <p class="exercise-prompt">yo _______ español. <em>(hablar)</em></p>
+          <input class="blank-input" placeholder="type the form" />
+        </div>`,
+  }[variant];
+
+  const misconception = {
+    A: `<div class="screen variant-A feedback-step">
+          ${badge('Named-error feedback', 'Wrong answers are repaired by naming the specific misconception, not just marking it wrong.')}
+          <div class="step-label">Step 4 · Misconception repair</div>
+          <p class="exercise-prompt">yo <span class="choice wrong-pick">hablas</span> español.</p>
+          <div class="feedback-box">
+            <strong>Ending mismatch.</strong> "-as" belongs to <em>tú</em>, not <em>yo</em>. Subject and ending have to agree — <em>yo</em> pairs with <strong>-o</strong>.
+          </div>
+        </div>`,
+    B: `<div class="screen variant-B feedback-step">
+          ${rail('Named-error feedback', 'Wrong answers are repaired by naming the specific misconception, not just marking it wrong.')}
+          <div class="body">
+            <div class="step-label">Step 4 · Misconception repair</div>
+            <p class="exercise-prompt">yo <span class="choice wrong-pick">hablas</span> español.</p>
+            <div class="feedback-box">
+              <strong>Ending mismatch.</strong> "-as" belongs to <em>tú</em>, not <em>yo</em>. Subject and ending have to agree — <em>yo</em> pairs with <strong>-o</strong>.
+            </div>
+          </div>
+        </div>`,
+    C: `<div class="screen variant-C feedback-step">
+          <div class="step-label">Step 4 · Misconception repair</div>
+          <p class="exercise-prompt">yo <span class="choice wrong-pick">hablas</span> español.</p>
+          <div class="feedback-box">
+            That's an <span class="misconception-name">ending-agreement slip</span>: "-as" belongs to <em>tú</em>, not <em>yo</em>. <em>yo</em> always pairs with <strong>-o</strong>.
+          </div>
+        </div>`,
+  }[variant];
+
+  return worked + guided + independent + misconception;
+}
+
+function render(variant) {
+  document.getElementById('flow').innerHTML = `
+    <div class="flow-title">Session flow — chunk: -ar family (hablar)</div>
+    <h1>Variant ${variant} — ${VARIANTS[variant].name}</h1>
+    ${screenMarkup(variant)}
+  `;
+  document.getElementById('label').innerHTML =
+    `${variant} — ${VARIANTS[variant].name}<small>${VARIANTS[variant].desc}</small>`;
+}
+
+const KEYS = Object.keys(VARIANTS);
+function currentVariant() {
+  const v = new URLSearchParams(location.search).get('variant');
+  return KEYS.includes(v) ? v : 'A';
+}
+function setVariant(v) {
+  const url = new URL(location.href);
+  url.searchParams.set('variant', v);
+  history.replaceState(null, '', url);
+  render(v);
+}
+function cycle(dir) {
+  const i = KEYS.indexOf(currentVariant());
+  setVariant(KEYS[(i + dir + KEYS.length) % KEYS.length]);
+}
+
+document.getElementById('prev').addEventListener('click', () => cycle(-1));
+document.getElementById('next').addEventListener('click', () => cycle(1));
+document.addEventListener('keydown', (e) => {
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable) return;
+  if (e.key === 'ArrowLeft') cycle(-1);
+  if (e.key === 'ArrowRight') cycle(1);
+});
+
+render(currentVariant());
+</script>
+</body>
+</html>
