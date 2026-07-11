@@ -18,12 +18,12 @@ export function getNextStimulus(progressState, vocabPool) {
   return pickStimulus(vocabPool, progressState.words, null)
 }
 
-export function applyAttempt(progressState, attempt, contentPool) {
+export function applyAttempt(progressState, attempt, contentPool, today) {
   if (attempt.type === 'production') {
-    return applyProductionAttempt(progressState, attempt, contentPool)
+    return applyProductionAttempt(progressState, attempt, contentPool, today)
   }
   if (attempt.type === 'role-tagging') {
-    return applyRoleTaggingAttempt(progressState, attempt, contentPool)
+    return applyRoleTaggingAttempt(progressState, attempt, contentPool, today)
   }
 
   const vocabPool = contentPool

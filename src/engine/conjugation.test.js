@@ -180,3 +180,80 @@ describe('production stimulus content', () => {
     expect(next.expectedForm).toBe('caminas')
   })
 })
+
+describe('ticket 14 — advancement gate integration via applyProductionAttempt', () => {
+  it('flips chunk.mastered and surfaces gateCleared:true at exactly the 3rd correct answer spanning 2 types', () => {
+    const progress = progressWith(
+      { production_phase: 'independent', streak_count: 2, types_in_streak: ['role-tagging'] },
+      MASTERED_HABLAR,
+    )
+    const attempt = { type: 'production', chunkId: 'ar', wordId: 'hablar', person: 'yo', correct: true }
+    const { progress: after, gateCleared } = applyProductionAttempt(progress, attempt, CONTENT, '2026-01-01')
+    const arChunk = after.chunks.find((c) => c.id === 'ar')
+    expect(gateCleared).toBe(true)
+    expect(arChunk.mastered).toBe(true)
+    expect(arChunk.mastered_date).toBe('2026-01-01')
+    expect(arChunk.ladder_step).toBe(0)
+    expect(arChunk.next_due_date).toBe('2026-01-02')
+  })
+
+  it('does not flip mastered on a 3-in-a-row streak of production attempts alone (one type only)', () => {
+    let progress = progressWith({ production_phase: 'independent' }, MASTERED_HABLAR)
+    for (let i = 0; i < 3; i++) {
+      const attempt = { type: 'production', chunkId: 'ar', wordId: 'hablar', person: 'yo', correct: true }
+      const result = applyProductionAttempt(progress, attempt, CONTENT, '2026-01-01')
+      progress = result.progress
+      expect(result.gateCleared).toBe(false)
+    }
+    const arChunk = progress.chunks.find((c) => c.id === 'ar')
+    expect(arChunk.streak_count).toBe(3)
+    expect(arChunk.types_in_streak).toEqual(['production'])
+    expect(arChunk.mastered).toBe(false)
+  })
+
+  it('a miss one attempt away from the gate resets fully instead of mastering', () => {
+    const progress = progressWith(
+      { production_phase: 'independent', streak_count: 2, types_in_streak: ['production', 'role-tagging'] },
+      MASTERED_HABLAR,
+    )
+    const missAttempt = { type: 'production', chunkId: 'ar', wordId: 'hablar', person: 'yo', correct: false }
+    const { progress: after, gateCleared } = applyProductionAttempt(progress, missAttempt, CONTENT, '2026-01-01')
+    const arChunk = after.chunks.find((c) => c.id === 'ar')
+    expect(gateCleared).toBe(false)
+    expect(arChunk.mastered).toBe(false)
+    expect(arChunk.streak_count).toBe(0)
+    expect(arChunk.types_in_streak).toEqual([])
+  })
+})
+
+describe('ticket 14 — no chunk locking', () => {
+  const ER_IR_WORKED_EXAMPLES = [
+    ...WORKED_EXAMPLES,
+    { family: 'er', endings: { yo: 'o', tu: 'es', el_ella_usted: 'e', nosotros: 'emos', vosotros: 'éis', ellos_ellas_ustedes: 'en' } },
+    { family: 'ir', endings: { yo: 'o', tu: 'es', el_ella_usted: 'e', nosotros: 'imos', vosotros: 'ís', ellos_ellas_ustedes: 'en' } },
+  ]
+  const ER_IR_VOCAB = [
+    ...VOCAB,
+    { id: 'comer', word: 'comer', meaning: 'to eat', pos: 'verb', family: 'er' },
+    { id: 'vivir', word: 'vivir', meaning: 'to live', pos: 'verb', family: 'ir' },
+  ]
+  const ALL_FAMILIES_CONTENT = { vocab: ER_IR_VOCAB, workedExamples: ER_IR_WORKED_EXAMPLES }
+
+  it('all three chunks are attemptable from a fresh state — none gated behind another chunk mastering first', () => {
+    const freshProgress = {
+      words: [
+        { id: 'hablar', status: 'mastered', streak_count: 2 },
+        { id: 'comer', status: 'mastered', streak_count: 2 },
+        { id: 'vivir', status: 'mastered', streak_count: 2 },
+      ],
+      chunks: [
+        { id: 'ar', mastered: false, mastered_date: null, streak_count: 0, types_in_streak: [], ladder_step: null, last_reviewed_date: null, next_due_date: null, production_phase: 'independent' },
+        { id: 'er', mastered: false, mastered_date: null, streak_count: 0, types_in_streak: [], ladder_step: null, last_reviewed_date: null, next_due_date: null, production_phase: 'independent' },
+        { id: 'ir', mastered: false, mastered_date: null, streak_count: 0, types_in_streak: [], ladder_step: null, last_reviewed_date: null, next_due_date: null, production_phase: 'independent' },
+      ],
+    }
+    expect(getNextProductionStimulus(freshProgress, 'ar', ALL_FAMILIES_CONTENT)?.verb.id).toBe('hablar')
+    expect(getNextProductionStimulus(freshProgress, 'er', ALL_FAMILIES_CONTENT)?.verb.id).toBe('comer')
+    expect(getNextProductionStimulus(freshProgress, 'ir', ALL_FAMILIES_CONTENT)?.verb.id).toBe('vivir')
+  })
+})

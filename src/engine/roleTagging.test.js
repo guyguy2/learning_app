@@ -118,3 +118,31 @@ describe('applyRoleTaggingAttempt — chunk streak/types state', () => {
     expect(next.type).toBe('role-tagging')
   })
 })
+
+describe('ticket 14 — advancement gate integration via applyRoleTaggingAttempt', () => {
+  it('flips chunk.mastered and surfaces gateCleared:true at the 3rd correct answer spanning 2 types', () => {
+    const progress = progressWith(
+      { streak_count: 2, types_in_streak: ['production'] },
+      MASTERED_HABLAR,
+    )
+    const attempt = { type: 'role-tagging', chunkId: 'ar', wordId: 'hablar', person: 'yo', correct: true }
+    const { progress: after, gateCleared } = applyRoleTaggingAttempt(progress, attempt, CONTENT, '2026-01-01')
+    const arChunk = after.chunks.find((c) => c.id === 'ar')
+    expect(gateCleared).toBe(true)
+    expect(arChunk.mastered).toBe(true)
+    expect(arChunk.mastered_date).toBe('2026-01-01')
+    expect(arChunk.next_due_date).toBe('2026-01-02')
+  })
+
+  it('does not flip mastered on 3-in-a-row role-tagging attempts alone (one type only)', () => {
+    let progress = progressWith({}, MASTERED_HABLAR)
+    for (let i = 0; i < 3; i++) {
+      const attempt = { type: 'role-tagging', chunkId: 'ar', wordId: 'hablar', person: 'yo', correct: true }
+      const result = applyRoleTaggingAttempt(progress, attempt, CONTENT, '2026-01-01')
+      progress = result.progress
+      expect(result.gateCleared).toBe(false)
+    }
+    const arChunk = progress.chunks.find((c) => c.id === 'ar')
+    expect(arChunk.mastered).toBe(false)
+  })
+})

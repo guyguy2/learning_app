@@ -1,3 +1,5 @@
+import { checkGate, todayIso } from './advancement.js'
+
 export const GATE_STREAK_CAP = 3
 export const PERSONS = ['yo', 'tu', 'el_ella_usted', 'nosotros', 'vosotros', 'ellos_ellas_ustedes']
 
@@ -49,11 +51,13 @@ export function getNextProductionStimulus(progressState, chunkId, contentPool) {
   }
 }
 
-export function applyProductionAttempt(progressState, attempt, contentPool) {
+export function applyProductionAttempt(progressState, attempt, contentPool, today = todayIso()) {
   const { chunkId } = attempt
   const chunks = progressState.chunks.map((c) => ({ ...c, types_in_streak: [...(c.types_in_streak ?? [])] }))
-  const chunk = findChunk(chunks, chunkId)
+  const chunkIndex = chunks.findIndex((c) => c.id === chunkId)
+  let chunk = chunks[chunkIndex]
   const phaseBefore = chunk.production_phase ?? 'worked_example'
+  let gateCleared = false
 
   if (attempt.action === 'worked_example_ack') {
     chunk.production_phase = 'guided'
@@ -70,9 +74,13 @@ export function applyProductionAttempt(progressState, attempt, contentPool) {
     if (phaseBefore === 'guided') {
       chunk.production_phase = 'independent'
     }
+    const gated = checkGate(chunk, today)
+    chunk = gated.chunk
+    gateCleared = gated.gateCleared
+    chunks[chunkIndex] = chunk
   }
 
   const progress = { ...progressState, chunks }
   const next = getNextProductionStimulus(progress, chunkId, contentPool)
-  return { progress, next }
+  return { progress, next, gateCleared }
 }

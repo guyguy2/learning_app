@@ -1,4 +1,5 @@
 import { GATE_STREAK_CAP, PERSONS, findChunk, masteredVerbsForFamily, stemOf } from './conjugation.js'
+import { checkGate, todayIso } from './advancement.js'
 
 const PERSON_TO_PRONOUN = {
   yo: 'yo',
@@ -39,10 +40,11 @@ export function getNextRoleTaggingStimulus(progressState, chunkId, contentPool) 
   }
 }
 
-export function applyRoleTaggingAttempt(progressState, attempt, contentPool) {
+export function applyRoleTaggingAttempt(progressState, attempt, contentPool, today = todayIso()) {
   const { chunkId } = attempt
   const chunks = progressState.chunks.map((c) => ({ ...c, types_in_streak: [...(c.types_in_streak ?? [])] }))
-  const chunk = findChunk(chunks, chunkId)
+  const chunkIndex = chunks.findIndex((c) => c.id === chunkId)
+  let chunk = chunks[chunkIndex]
 
   if (attempt.correct) {
     chunk.streak_count = Math.min((chunk.streak_count ?? 0) + 1, GATE_STREAK_CAP)
@@ -54,7 +56,11 @@ export function applyRoleTaggingAttempt(progressState, attempt, contentPool) {
     chunk.types_in_streak = []
   }
 
+  const gated = checkGate(chunk, today)
+  chunk = gated.chunk
+  chunks[chunkIndex] = chunk
+
   const progress = { ...progressState, chunks }
   const next = getNextRoleTaggingStimulus(progress, chunkId, contentPool)
-  return { progress, next }
+  return { progress, next, gateCleared: gated.gateCleared }
 }
