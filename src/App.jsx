@@ -169,12 +169,12 @@ function App() {
     setMode('review')
   }
 
-  // Session 1 is blocked to the single chunk selected at session start; session 2+
-  // interleaves by re-polling selectChunkForSession on every drill (ticket 14).
+  // selectChunkForSession already encodes the blocked-vs-interleaved rule: session 1 returns the
+  // single blocked chunk (first unmastered), session 2+ rotates across introduced-unmastered
+  // families. Deriving it here (rather than reading newChunkId state) avoids a stale-state read
+  // on the first drill, where startSession sets newChunkId and calls in the same synchronous tick.
   function activeChunkFor(progressState) {
-    return progressState.session_number <= 1
-      ? newChunkId
-      : selectChunkForSession(progressState, progressState.session_number)
+    return selectChunkForSession(progressState, progressState.session_number)
   }
 
   function enterActiveDrill(progressState, lastType) {
