@@ -28,6 +28,34 @@ Execute the Vitest test suite:
 npm test
 ```
 
+## How a session works
+
+Each session is assembled as **review first, then new content** (`buildSession` in `src/engine/session.js`).
+
+### Review block
+- Opens with chunks (verb families `-ar` / `-er` / `-ir`) whose calendar interval has elapsed: mastered chunks with `next_due_date <= today`.
+- Intervals follow a fixed ladder of **1 / 3 / 7 / 14 / 30** days (`LADDER_DAYS` in `src/engine/review.js`).
+- Due chunks are ordered **most-overdue-first** and capped (default 8).
+- A review is cleared by re-passing the advancement gate: **3 correct in a row spanning at least 2 exercise types** (production and role-tagging alternate during review). Streak fields are reset on review entry so a prior mastery streak does not insta-clear.
+- A clean clear advances the ladder one step; any miss during that review resets the ladder to day 1.
+
+### New content
+- **Session one** is blocked: one family fully before the next (`ar` then `er` then `ir`).
+- **Session two onward** interleaves drills across introduced-but-unmastered families, favoring the lowest streak so attention rotates after progress or a miss.
+- A family's chunk is mastered when it passes the gate: **3 correct in a row spanning >=2 of the three exercise types** (recognition, production, role-tagging). Any wrong answer resets the streak. Clearing the gate for the active chunk ends the new-content phase for that session (session summary).
+- **Vocab recognition** builds the word mastery that unlocks conjugation drills (production/role-tagging need mastered family verbs). While family verbs remain unmastered, recognition draws from those verbs; once they are mastered, recognition pivots to other vocabulary (nouns/adjectives) so false-cognate words keep surfacing.
+
+### Misconceptions
+A wrong answer that matches a seeded distractor (false cognate, or overgeneralizing a conjugation ending) triggers a named repair panel: it explains the specific error, re-shows the correct form, then re-tests on a similar item.
+
+### Technique transparency
+Every screen can show a small badge naming the cognitive-science technique in play - Retrieval practice, Notional machine, Chunking, Spaced repetition, Misconception repair - see `src/screenTechniques.js`.
+
+## Known limitations (v1 PoC)
+
+- False-cognate recognition surfaces only after a family's verbs are mastered (verbs are prioritized first so conjugation can unlock).
+- The review cap is expressed per chunk, and only three chunks (`ar`, `er`, `ir`) exist in v1, so the cap rarely bites.
+
 ## Architecture
 
 The project maintains a strict separation between the user interface, backend state persistence, and pure pedagogical rules:
