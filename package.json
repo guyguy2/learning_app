@@ -1,0 +1,21 @@
+{
+  "name": "learning-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n vite,server -c blue,green \"vite\" \"node server/index.js\"",
+    "server": "node server/index.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  }
+}

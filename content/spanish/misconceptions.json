@@ -1,0 +1,92 @@
+[
+  {
+    "id": "false_cognate_embarazada",
+    "name": "False cognate: embarazada",
+    "explanation": "Embarazada means pregnant, not embarrassed. Embarrassed is avergonzado/avergonzada. Spanish embarazada and English embarrassed look related but mean different things."
+  },
+  {
+    "id": "false_cognate_actual",
+    "name": "False cognate: actual",
+    "explanation": "Actual means current or present-day (el momento actual), not actual/real. For actual/real, use real or verdadero/verdadera."
+  },
+  {
+    "id": "false_cognate_exito",
+    "name": "False cognate: éxito",
+    "explanation": "Éxito means success, not exit. Exit is salida. A common trap: English exit sounds like éxito but the meanings do not match."
+  },
+  {
+    "id": "false_cognate_libreria",
+    "name": "False cognate: librería",
+    "explanation": "Librería means bookstore, not library. Library is biblioteca. Librería sells books; biblioteca lends them."
+  },
+  {
+    "id": "false_cognate_sensible",
+    "name": "False cognate: sensible",
+    "explanation": "Sensible means sensitive (emotionally or to stimuli), not sensible/reasonable. Sensible/reasonable is sensato/sensata."
+  },
+  {
+    "id": "false_cognate_carpeta",
+    "name": "False cognate: carpeta",
+    "explanation": "Carpeta means folder (paper or computer), not carpet. Carpet is alfombra."
+  },
+  {
+    "id": "false_cognate_molestar",
+    "name": "False cognate: molestar",
+    "explanation": "Molestar means to bother or annoy, not to molest. It is everyday Spanish for mild annoyance (¿te molesta si abro la ventana?)."
+  },
+  {
+    "id": "false_cognate_constipado",
+    "name": "False cognate: constipado",
+    "explanation": "Constipado/constipada means having a cold or being congested, not constipated. Constipated is estreñido/estreñida."
+  },
+  {
+    "id": "false_cognate_parientes",
+    "name": "False cognate: parientes",
+    "explanation": "Parientes means relatives, not parents. Parents are padres. All parents are parientes, but not all parientes are parents."
+  },
+  {
+    "id": "false_cognate_largo",
+    "name": "False cognate: largo",
+    "explanation": "Largo means long (length or duration), not large. Large is grande. Un río largo is a long river; una casa grande is a large house."
+  },
+  {
+    "id": "false_cognate_asistir",
+    "name": "False cognate: asistir",
+    "explanation": "Asistir means to attend (an event) or to be present, not to assist. To assist/help is ayudar. Asistir a la clase means attend class."
+  },
+  {
+    "id": "false_cognate_realizar",
+    "name": "False cognate: realizar",
+    "explanation": "Realizar means to carry out, perform, or accomplish, not to realize (become aware). To realize in the mental sense is darse cuenta."
+  },
+  {
+    "id": "overgen_ar_on_er",
+    "name": "Overgeneralizing -ar endings onto -er verbs",
+    "explanation": "Regular -er verbs do not take -ar endings. After dropping -er, attach -er present endings: -o, -es, -e, -emos, -éis, -en. Example: comer → com- + es → comes (not *comas)."
+  },
+  {
+    "id": "overgen_ar_on_ir",
+    "name": "Overgeneralizing -ar endings onto -ir verbs",
+    "explanation": "Regular -ir verbs do not take -ar endings. After dropping -ir, attach -ir present endings: -o, -es, -e, -imos, -ís, -en. Example: vivir → viv- + es → vives (not *vivas)."
+  },
+  {
+    "id": "overgen_er_on_ar",
+    "name": "Overgeneralizing -er endings onto -ar verbs",
+    "explanation": "Regular -ar verbs keep -ar present endings: -o, -as, -a, -amos, -áis, -an. Do not borrow -er endings. Example: hablar → habl- + as → hablas (not *hables)."
+  },
+  {
+    "id": "overgen_er_on_ir",
+    "name": "Overgeneralizing -er endings onto -ir verbs",
+    "explanation": "Regular -ir and -er share many present endings, but not nosotros or vosotros. For -ir use -imos / -ís, not -emos / -éis. Example: vivir → viv- + imos → vivimos (not *vivemos)."
+  },
+  {
+    "id": "overgen_ir_on_er",
+    "name": "Overgeneralizing -ir endings onto -er verbs",
+    "explanation": "Regular -er nosotros/vosotros use -emos / -éis, not -imos / -ís. Example: comer → com- + emos → comemos (not *comimos in the present tense)."
+  },
+  {
+    "id": "overgen_regular_on_irregular",
+    "name": "Overgeneralizing regular stem+ending onto irregulars",
+    "explanation": "The regular present rule (drop infinitive ending, add person ending) does not apply to irregular verbs. Forms like *teno, *sabo, or *haco are overgeneralizations. V1 drills only regular verbs, but this named error is seeded so a matching wrong form can be repaired by name rather than scored as generic wrong."
+  }
+]

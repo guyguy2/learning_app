@@ -1,0 +1,182 @@
+[
+  {
+    "id": "we_ar_hablar",
+    "family": "ar",
+    "verb_id": "hablar",
+    "infinitive": "hablar",
+    "stem": "habl",
+    "infinitive_ending": "ar",
+    "notional_machine": "Drop the infinitive ending (-ar) to get the stem, then attach the present-tense person ending.",
+    "endings": {
+      "yo": "o",
+      "tu": "as",
+      "el_ella_usted": "a",
+      "nosotros": "amos",
+      "vosotros": "áis",
+      "ellos_ellas_ustedes": "an"
+    },
+    "steps_overview": [
+      "Start with the infinitive: hablar",
+      "Remove the family ending -ar → stem habl-",
+      "Attach the person ending for present tense → full form"
+    ],
+    "paradigm": [
+      {
+        "person": "yo",
+        "ending": "o",
+        "form": "hablo",
+        "swap": "habl + o → hablo"
+      },
+      {
+        "person": "tú",
+        "ending": "as",
+        "form": "hablas",
+        "swap": "habl + as → hablas"
+      },
+      {
+        "person": "él/ella/usted",
+        "ending": "a",
+        "form": "habla",
+        "swap": "habl + a → habla"
+      },
+      {
+        "person": "nosotros/nosotras",
+        "ending": "amos",
+        "form": "hablamos",
+        "swap": "habl + amos → hablamos"
+      },
+      {
+        "person": "vosotros/vosotras",
+        "ending": "áis",
+        "form": "habláis",
+        "swap": "habl + áis → habláis"
+      },
+      {
+        "person": "ellos/ellas/ustedes",
+        "ending": "an",
+        "form": "hablan",
+        "swap": "habl + an → hablan"
+      }
+    ]
+  },
+  {
+    "id": "we_er_comer",
+    "family": "er",
+    "verb_id": "comer",
+    "infinitive": "comer",
+    "stem": "com",
+    "infinitive_ending": "er",
+    "notional_machine": "Drop the infinitive ending (-er) to get the stem, then attach the present-tense person ending.",
+    "endings": {
+      "yo": "o",
+      "tu": "es",
+      "el_ella_usted": "e",
+      "nosotros": "emos",
+      "vosotros": "éis",
+      "ellos_ellas_ustedes": "en"
+    },
+    "steps_overview": [
+      "Start with the infinitive: comer",
+      "Remove the family ending -er → stem com-",
+      "Attach the person ending for present tense → full form"
+    ],
+    "paradigm": [
+      {
+        "person": "yo",
+        "ending": "o",
+        "form": "como",
+        "swap": "com + o → como"
+      },
+      {
+        "person": "tú",
+        "ending": "es",
+        "form": "comes",
+        "swap": "com + es → comes"
+      },
+      {
+        "person": "él/ella/usted",
+        "ending": "e",
+        "form": "come",
+        "swap": "com + e → come"
+      },
+      {
+        "person": "nosotros/nosotras",
+        "ending": "emos",
+        "form": "comemos",
+        "swap": "com + emos → comemos"
+      },
+      {
+        "person": "vosotros/vosotras",
+        "ending": "éis",
+        "form": "coméis",
+        "swap": "com + éis → coméis"
+      },
+      {
+        "person": "ellos/ellas/ustedes",
+        "ending": "en",
+        "form": "comen",
+        "swap": "com + en → comen"
+      }
+    ]
+  },
+  {
+    "id": "we_ir_vivir",
+    "family": "ir",
+    "verb_id": "vivir",
+    "infinitive": "vivir",
+    "stem": "viv",
+    "infinitive_ending": "ir",
+    "notional_machine": "Drop the infinitive ending (-ir) to get the stem, then attach the present-tense person ending. Note: -ir matches -er in most persons; nosotros (-imos) and vosotros (-ís) differ.",
+    "endings": {
+      "yo": "o",
+      "tu": "es",
+      "el_ella_usted": "e",
+      "nosotros": "imos",
+      "vosotros": "ís",
+      "ellos_ellas_ustedes": "en"
+    },
+    "steps_overview": [
+      "Start with the infinitive: vivir",
+      "Remove the family ending -ir → stem viv-",
+      "Attach the person ending for present tense → full form"
+    ],
+    "paradigm": [
+      {
+        "person": "yo",
+        "ending": "o",
+        "form": "vivo",
+        "swap": "viv + o → vivo"
+      },
+      {
+        "person": "tú",
+        "ending": "es",
+        "form": "vives",
+        "swap": "viv + es → vives"
+      },
+      {
+        "person": "él/ella/usted",
+        "ending": "e",
+        "form": "vive",
+        "swap": "viv + e → vive"
+      },
+      {
+        "person": "nosotros/nosotras",
+        "ending": "imos",
+        "form": "vivimos",
+        "swap": "viv + imos → vivimos"
+      },
+      {
+        "person": "vosotros/vosotras",
+        "ending": "ís",
+        "form": "vivís",
+        "swap": "viv + ís → vivís"
+      },
+      {
+        "person": "ellos/ellas/ustedes",
+        "ending": "en",
+        "form": "viven",
+        "swap": "viv + en → viven"
+      }
+    ]
+  }
+]

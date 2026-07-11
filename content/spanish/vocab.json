@@ -1,0 +1,546 @@
+[
+  {
+    "id": "hablar",
+    "word": "hablar",
+    "meaning": "to speak; to talk",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "caminar",
+    "word": "caminar",
+    "meaning": "to walk",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "estudiar",
+    "word": "estudiar",
+    "meaning": "to study",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "trabajar",
+    "word": "trabajar",
+    "meaning": "to work",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "bailar",
+    "word": "bailar",
+    "meaning": "to dance",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "cantar",
+    "word": "cantar",
+    "meaning": "to sing",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "comprar",
+    "word": "comprar",
+    "meaning": "to buy",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "mirar",
+    "word": "mirar",
+    "meaning": "to look at; to watch",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "escuchar",
+    "word": "escuchar",
+    "meaning": "to listen",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "cocinar",
+    "word": "cocinar",
+    "meaning": "to cook",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "nadar",
+    "word": "nadar",
+    "meaning": "to swim",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "viajar",
+    "word": "viajar",
+    "meaning": "to travel",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "necesitar",
+    "word": "necesitar",
+    "meaning": "to need",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "contestar",
+    "word": "contestar",
+    "meaning": "to answer",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "preguntar",
+    "word": "preguntar",
+    "meaning": "to ask (a question)",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "ayudar",
+    "word": "ayudar",
+    "meaning": "to help",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "buscar",
+    "word": "buscar",
+    "meaning": "to look for; to search",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "limpiar",
+    "word": "limpiar",
+    "meaning": "to clean",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "practicar",
+    "word": "practicar",
+    "meaning": "to practice",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "ensenar",
+    "word": "enseñar",
+    "meaning": "to teach; to show",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "llevar",
+    "word": "llevar",
+    "meaning": "to carry; to wear; to take",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "tomar",
+    "word": "tomar",
+    "meaning": "to take; to drink",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "usar",
+    "word": "usar",
+    "meaning": "to use",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "llamar",
+    "word": "llamar",
+    "meaning": "to call",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "esperar",
+    "word": "esperar",
+    "meaning": "to wait; to hope",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "comer",
+    "word": "comer",
+    "meaning": "to eat",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "beber",
+    "word": "beber",
+    "meaning": "to drink",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "leer",
+    "word": "leer",
+    "meaning": "to read",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "correr",
+    "word": "correr",
+    "meaning": "to run",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "aprender",
+    "word": "aprender",
+    "meaning": "to learn",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "vender",
+    "word": "vender",
+    "meaning": "to sell",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "comprender",
+    "word": "comprender",
+    "meaning": "to understand",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "romper",
+    "word": "romper",
+    "meaning": "to break",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "temer",
+    "word": "temer",
+    "meaning": "to fear",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "responder",
+    "word": "responder",
+    "meaning": "to respond; to answer",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "esconder",
+    "word": "esconder",
+    "meaning": "to hide",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "prometer",
+    "word": "prometer",
+    "meaning": "to promise",
+    "pos": "verb",
+    "family": "er"
+  },
+  {
+    "id": "vivir",
+    "word": "vivir",
+    "meaning": "to live",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "escribir",
+    "word": "escribir",
+    "meaning": "to write",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "abrir",
+    "word": "abrir",
+    "meaning": "to open",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "recibir",
+    "word": "recibir",
+    "meaning": "to receive",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "subir",
+    "word": "subir",
+    "meaning": "to go up; to upload",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "decidir",
+    "word": "decidir",
+    "meaning": "to decide",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "permitir",
+    "word": "permitir",
+    "meaning": "to permit; to allow",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "existir",
+    "word": "existir",
+    "meaning": "to exist",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "describir",
+    "word": "describir",
+    "meaning": "to describe",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "compartir",
+    "word": "compartir",
+    "meaning": "to share",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "cumplir",
+    "word": "cumplir",
+    "meaning": "to fulfill; to turn (an age)",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "asistir",
+    "word": "asistir",
+    "meaning": "to attend; to be present",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "discutir",
+    "word": "discutir",
+    "meaning": "to discuss; to argue",
+    "pos": "verb",
+    "family": "ir"
+  },
+  {
+    "id": "realizar",
+    "word": "realizar",
+    "meaning": "to carry out; to accomplish",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "molestar",
+    "word": "molestar",
+    "meaning": "to bother; to annoy",
+    "pos": "verb",
+    "family": "ar"
+  },
+  {
+    "id": "yo",
+    "word": "yo",
+    "meaning": "I",
+    "pos": "pronoun"
+  },
+  {
+    "id": "tu",
+    "word": "tú",
+    "meaning": "you (informal singular)",
+    "pos": "pronoun"
+  },
+  {
+    "id": "el",
+    "word": "él",
+    "meaning": "he",
+    "pos": "pronoun"
+  },
+  {
+    "id": "ella",
+    "word": "ella",
+    "meaning": "she",
+    "pos": "pronoun"
+  },
+  {
+    "id": "nosotros",
+    "word": "nosotros",
+    "meaning": "we (masculine or mixed)",
+    "pos": "pronoun"
+  },
+  {
+    "id": "vosotros",
+    "word": "vosotros",
+    "meaning": "you all (informal plural, Spain)",
+    "pos": "pronoun"
+  },
+  {
+    "id": "ellos",
+    "word": "ellos",
+    "meaning": "they (masculine or mixed)",
+    "pos": "pronoun"
+  },
+  {
+    "id": "ellas",
+    "word": "ellas",
+    "meaning": "they (feminine)",
+    "pos": "pronoun"
+  },
+  {
+    "id": "casa",
+    "word": "casa",
+    "meaning": "house; home",
+    "pos": "noun"
+  },
+  {
+    "id": "libro",
+    "word": "libro",
+    "meaning": "book",
+    "pos": "noun"
+  },
+  {
+    "id": "agua",
+    "word": "agua",
+    "meaning": "water",
+    "pos": "noun"
+  },
+  {
+    "id": "comida",
+    "word": "comida",
+    "meaning": "food; meal",
+    "pos": "noun"
+  },
+  {
+    "id": "amigo",
+    "word": "amigo",
+    "meaning": "friend (masculine)",
+    "pos": "noun"
+  },
+  {
+    "id": "escuela",
+    "word": "escuela",
+    "meaning": "school",
+    "pos": "noun"
+  },
+  {
+    "id": "ciudad",
+    "word": "ciudad",
+    "meaning": "city",
+    "pos": "noun"
+  },
+  {
+    "id": "tiempo",
+    "word": "tiempo",
+    "meaning": "time; weather",
+    "pos": "noun"
+  },
+  {
+    "id": "dia",
+    "word": "día",
+    "meaning": "day",
+    "pos": "noun"
+  },
+  {
+    "id": "noche",
+    "word": "noche",
+    "meaning": "night",
+    "pos": "noun"
+  },
+  {
+    "id": "embarazada",
+    "word": "embarazada",
+    "meaning": "pregnant",
+    "pos": "adjective"
+  },
+  {
+    "id": "actual",
+    "word": "actual",
+    "meaning": "current; present-day",
+    "pos": "adjective"
+  },
+  {
+    "id": "exito",
+    "word": "éxito",
+    "meaning": "success",
+    "pos": "noun"
+  },
+  {
+    "id": "libreria",
+    "word": "librería",
+    "meaning": "bookstore",
+    "pos": "noun"
+  },
+  {
+    "id": "sensible",
+    "word": "sensible",
+    "meaning": "sensitive",
+    "pos": "adjective"
+  },
+  {
+    "id": "carpeta",
+    "word": "carpeta",
+    "meaning": "folder",
+    "pos": "noun"
+  },
+  {
+    "id": "constipado",
+    "word": "constipado",
+    "meaning": "congested; having a cold",
+    "pos": "adjective"
+  },
+  {
+    "id": "parientes",
+    "word": "parientes",
+    "meaning": "relatives",
+    "pos": "noun"
+  },
+  {
+    "id": "largo",
+    "word": "largo",
+    "meaning": "long",
+    "pos": "adjective"
+  },
+  {
+    "id": "biblioteca",
+    "word": "biblioteca",
+    "meaning": "library",
+    "pos": "noun"
+  },
+  {
+    "id": "salida",
+    "word": "salida",
+    "meaning": "exit; departure",
+    "pos": "noun"
+  },
+  {
+    "id": "padres",
+    "word": "padres",
+    "meaning": "parents",
+    "pos": "noun"
+  }
+]

@@ -1,0 +1,352 @@
+[
+  {
+    "id": "d_fc_embarazada",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_embarazada",
+    "word_id": "embarazada",
+    "correct": "pregnant",
+    "distractor": "embarrassed"
+  },
+  {
+    "id": "d_fc_actual",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_actual",
+    "word_id": "actual",
+    "correct": "current; present-day",
+    "distractor": "actual; real"
+  },
+  {
+    "id": "d_fc_exito",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_exito",
+    "word_id": "exito",
+    "correct": "success",
+    "distractor": "exit"
+  },
+  {
+    "id": "d_fc_libreria",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_libreria",
+    "word_id": "libreria",
+    "correct": "bookstore",
+    "distractor": "library"
+  },
+  {
+    "id": "d_fc_sensible",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_sensible",
+    "word_id": "sensible",
+    "correct": "sensitive",
+    "distractor": "sensible; reasonable"
+  },
+  {
+    "id": "d_fc_carpeta",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_carpeta",
+    "word_id": "carpeta",
+    "correct": "folder",
+    "distractor": "carpet"
+  },
+  {
+    "id": "d_fc_molestar",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_molestar",
+    "word_id": "molestar",
+    "correct": "to bother; to annoy",
+    "distractor": "to molest"
+  },
+  {
+    "id": "d_fc_constipado",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_constipado",
+    "word_id": "constipado",
+    "correct": "congested; having a cold",
+    "distractor": "constipated"
+  },
+  {
+    "id": "d_fc_parientes",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_parientes",
+    "word_id": "parientes",
+    "correct": "relatives",
+    "distractor": "parents"
+  },
+  {
+    "id": "d_fc_largo",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_largo",
+    "word_id": "largo",
+    "correct": "long",
+    "distractor": "large"
+  },
+  {
+    "id": "d_fc_asistir",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_asistir",
+    "word_id": "asistir",
+    "correct": "to attend; to be present",
+    "distractor": "to assist; to help"
+  },
+  {
+    "id": "d_fc_realizar",
+    "type": "false_cognate",
+    "misconception_id": "false_cognate_realizar",
+    "word_id": "realizar",
+    "correct": "to carry out; to accomplish",
+    "distractor": "to realize; to become aware"
+  },
+  {
+    "id": "d_og_comer_tu_comas",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_er",
+    "verb_id": "comer",
+    "person": "tú",
+    "correct_form": "comes",
+    "distractor_form": "comas",
+    "note": "Applies -ar tú ending (-as) to an -er verb"
+  },
+  {
+    "id": "d_og_comer_el_coma",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_er",
+    "verb_id": "comer",
+    "person": "él/ella/usted",
+    "correct_form": "come",
+    "distractor_form": "coma",
+    "note": "Applies -ar 3sg ending (-a) to an -er verb; also happens to be present subjunctive, out of v1 scope"
+  },
+  {
+    "id": "d_og_comer_ellos_coman",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_er",
+    "verb_id": "comer",
+    "person": "ellos/ellas/ustedes",
+    "correct_form": "comen",
+    "distractor_form": "coman",
+    "note": "Applies -ar 3pl ending (-an) to an -er verb"
+  },
+  {
+    "id": "d_og_beber_tu_bebas",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_er",
+    "verb_id": "beber",
+    "person": "tú",
+    "correct_form": "bebes",
+    "distractor_form": "bebas",
+    "note": "Applies -ar tú ending (-as) to an -er verb"
+  },
+  {
+    "id": "d_og_aprender_nosotros_aprendamos",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_er",
+    "verb_id": "aprender",
+    "person": "nosotros/nosotras",
+    "correct_form": "aprendemos",
+    "distractor_form": "aprendamos",
+    "note": "Applies -ar nosotros ending (-amos) to an -er verb"
+  },
+  {
+    "id": "d_og_vivir_tu_vivas",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_ir",
+    "verb_id": "vivir",
+    "person": "tú",
+    "correct_form": "vives",
+    "distractor_form": "vivas",
+    "note": "Applies -ar tú ending (-as) to an -ir verb"
+  },
+  {
+    "id": "d_og_vivir_el_viva",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_ir",
+    "verb_id": "vivir",
+    "person": "él/ella/usted",
+    "correct_form": "vive",
+    "distractor_form": "viva",
+    "note": "Applies -ar 3sg ending (-a) to an -ir verb"
+  },
+  {
+    "id": "d_og_escribir_ellos_escriban",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_ir",
+    "verb_id": "escribir",
+    "person": "ellos/ellas/ustedes",
+    "correct_form": "escriben",
+    "distractor_form": "escriban",
+    "note": "Applies -ar 3pl ending (-an) to an -ir verb"
+  },
+  {
+    "id": "d_og_abrir_nosotros_abramos",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ar_on_ir",
+    "verb_id": "abrir",
+    "person": "nosotros/nosotras",
+    "correct_form": "abrimos",
+    "distractor_form": "abramos",
+    "note": "Applies -ar nosotros ending (-amos) to an -ir verb"
+  },
+  {
+    "id": "d_og_hablar_tu_hables",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_er_on_ar",
+    "verb_id": "hablar",
+    "person": "tú",
+    "correct_form": "hablas",
+    "distractor_form": "hables",
+    "note": "Applies -er/-ir tú ending (-es) to an -ar verb"
+  },
+  {
+    "id": "d_og_hablar_el_hable",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_er_on_ar",
+    "verb_id": "hablar",
+    "person": "él/ella/usted",
+    "correct_form": "habla",
+    "distractor_form": "hable",
+    "note": "Applies -er/-ir 3sg ending (-e) to an -ar verb"
+  },
+  {
+    "id": "d_og_estudiar_ellos_estudien",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_er_on_ar",
+    "verb_id": "estudiar",
+    "person": "ellos/ellas/ustedes",
+    "correct_form": "estudian",
+    "distractor_form": "estudien",
+    "note": "Applies -er/-ir 3pl ending (-en) to an -ar verb"
+  },
+  {
+    "id": "d_og_trabajar_nosotros_trabajemos",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_er_on_ar",
+    "verb_id": "trabajar",
+    "person": "nosotros/nosotras",
+    "correct_form": "trabajamos",
+    "distractor_form": "trabajemos",
+    "note": "Applies -er nosotros ending (-emos) to an -ar verb"
+  },
+  {
+    "id": "d_og_vivir_nosotros_vivemos",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_er_on_ir",
+    "verb_id": "vivir",
+    "person": "nosotros/nosotras",
+    "correct_form": "vivimos",
+    "distractor_form": "vivemos",
+    "note": "Applies -er nosotros ending (-emos) to an -ir verb; key -er vs -ir contrast"
+  },
+  {
+    "id": "d_og_vivir_vosotros_viveis",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_er_on_ir",
+    "verb_id": "vivir",
+    "person": "vosotros/vosotras",
+    "correct_form": "vivís",
+    "distractor_form": "vivéis",
+    "note": "Applies -er vosotros ending (-éis) to an -ir verb"
+  },
+  {
+    "id": "d_og_escribir_nosotros_escribemos",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_er_on_ir",
+    "verb_id": "escribir",
+    "person": "nosotros/nosotras",
+    "correct_form": "escribimos",
+    "distractor_form": "escribemos",
+    "note": "Applies -er nosotros ending (-emos) to an -ir verb"
+  },
+  {
+    "id": "d_og_recibir_vosotros_recibeis",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_er_on_ir",
+    "verb_id": "recibir",
+    "person": "vosotros/vosotras",
+    "correct_form": "recibís",
+    "distractor_form": "recibéis",
+    "note": "Applies -er vosotros ending (-éis) to an -ir verb"
+  },
+  {
+    "id": "d_og_comer_nosotros_comimos",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ir_on_er",
+    "verb_id": "comer",
+    "person": "nosotros/nosotras",
+    "correct_form": "comemos",
+    "distractor_form": "comimos",
+    "note": "Applies -ir nosotros ending (-imos) to an -er verb in the present; comimos is preterite, not present"
+  },
+  {
+    "id": "d_og_comer_vosotros_comis",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ir_on_er",
+    "verb_id": "comer",
+    "person": "vosotros/vosotras",
+    "correct_form": "coméis",
+    "distractor_form": "comís",
+    "note": "Applies -ir vosotros ending (-ís) to an -er verb"
+  },
+  {
+    "id": "d_og_beber_nosotros_bebimos",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ir_on_er",
+    "verb_id": "beber",
+    "person": "nosotros/nosotras",
+    "correct_form": "bebemos",
+    "distractor_form": "bebimos",
+    "note": "Applies -ir nosotros ending (-imos) to an -er verb in the present"
+  },
+  {
+    "id": "d_og_aprender_vosotros_aprendis",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_ir_on_er",
+    "verb_id": "aprender",
+    "person": "vosotros/vosotras",
+    "correct_form": "aprendéis",
+    "distractor_form": "aprendís",
+    "note": "Applies -ir vosotros ending (-ís) to an -er verb"
+  },
+  {
+    "id": "d_og_reg_on_irr_tener_teno",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_regular_on_irregular",
+    "verb_id": null,
+    "infinitive": "tener",
+    "person": "yo",
+    "correct_form": "tengo",
+    "distractor_form": "teno",
+    "note": "Seeded irregular contrast only: regular stem+ending on tener yields *teno; not a v1 drill target"
+  },
+  {
+    "id": "d_og_reg_on_irr_saber_sabo",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_regular_on_irregular",
+    "verb_id": null,
+    "infinitive": "saber",
+    "person": "yo",
+    "correct_form": "sé",
+    "distractor_form": "sabo",
+    "note": "Seeded irregular contrast only: regular stem+ending on saber yields *sabo; not a v1 drill target"
+  },
+  {
+    "id": "d_og_reg_on_irr_hacer_haco",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_regular_on_irregular",
+    "verb_id": null,
+    "infinitive": "hacer",
+    "person": "yo",
+    "correct_form": "hago",
+    "distractor_form": "haco",
+    "note": "Seeded irregular contrast only: naive regular stem+ending on hacer; not a v1 drill target"
+  },
+  {
+    "id": "d_og_reg_on_irr_venir_veno",
+    "type": "overgeneralization",
+    "misconception_id": "overgen_regular_on_irregular",
+    "verb_id": null,
+    "infinitive": "venir",
+    "person": "yo",
+    "correct_form": "vengo",
+    "distractor_form": "veno",
+    "note": "Seeded irregular contrast only: regular stem+ending on venir yields *veno; not a v1 drill target"
+  }
+]
