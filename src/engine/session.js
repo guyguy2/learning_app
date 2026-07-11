@@ -23,9 +23,3 @@ export function buildSession(progressState, { sessionNumber, today, reviewCap = 
 
   return { reviewChunkIds, newChunkId, phase }
 }
-
-/** Ordered chunk-id sequence for the session: review block, then the new chunk (if any). */
-export function sessionOrder(progressState, opts) {
-  const { reviewChunkIds, newChunkId } = buildSession(progressState, opts)
-  return newChunkId == null ? reviewChunkIds : [...reviewChunkIds, newChunkId]
-}

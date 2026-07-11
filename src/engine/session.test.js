@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildSession, sessionOrder } from './session.js'
+import { buildSession } from './session.js'
 
 function chunk(id, overrides = {}) {
   return {
@@ -81,33 +81,5 @@ describe('buildSession', () => {
     const snapshot = JSON.parse(JSON.stringify(progress))
     buildSession(progress, { sessionNumber: 3, today: '2026-07-10' })
     expect(progress).toEqual(snapshot)
-  })
-})
-
-describe('sessionOrder', () => {
-  it('concatenates review block then new chunk', () => {
-    const progress = {
-      words: [],
-      chunks: [
-        chunk('ar', { mastered: true, next_due_date: '2026-07-05' }),
-        chunk('er', { streak_count: 1, production_phase: 'guided' }),
-        chunk('ir'),
-      ],
-    }
-    const order = sessionOrder(progress, { sessionNumber: 5, today: '2026-07-10' })
-    expect(order).toEqual(['ar', 'er'])
-  })
-
-  it('omits new chunk entry when none is selected', () => {
-    const progress = {
-      words: [],
-      chunks: [
-        chunk('ar', { mastered: true, next_due_date: '2026-07-05' }),
-        chunk('er', { mastered: true, next_due_date: '2026-07-20' }),
-        chunk('ir', { mastered: true, next_due_date: '2026-07-20' }),
-      ],
-    }
-    const order = sessionOrder(progress, { sessionNumber: 5, today: '2026-07-10' })
-    expect(order).toEqual(['ar'])
   })
 })
