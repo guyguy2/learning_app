@@ -226,7 +226,10 @@ function App() {
     setProgress(persisted)
 
     if (attempt.action === 'worked_example_ack') {
-      setStimulus(result.next)
+      // After the worked example, the next production drill may be null (no mastered
+      // vocab yet) — re-pick via the phase selector so we fall back to recognition
+      // rather than rendering a blank screen.
+      enterNewPhase(persisted, newChunkId, null)
       return
     }
 
