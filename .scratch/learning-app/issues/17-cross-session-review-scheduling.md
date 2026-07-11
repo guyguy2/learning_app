@@ -11,17 +11,17 @@ flow on a miss, and draws from the same exercise-type mix as the chunk (not reco
 **Blocked by:** 14 — Chunk advancement gate + session chunk ordering, 15 — Misconception
 detection and repair
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Test: given chunks with varying `last_reviewed_date`/`ladder_step`, the due-set query
+- [x] Test: given chunks with varying `last_reviewed_date`/`ladder_step`, the due-set query
       returns exactly the chunks whose interval has elapsed, ordered most-overdue-first
-- [ ] Test: a successful review clear (reusing the ticket-14 gate mechanic) advances
+- [x] Test: a successful review clear (reusing the ticket-14 gate mechanic) advances
       `ladder_step` by exactly one
-- [ ] Test: a missed review resets `ladder_step` to 0 (interval back to 1 day), not one step back
-- [ ] Review queue is capped at 5-8 items per session; anything beyond the cap is deferred to the
+- [x] Test: a missed review resets `ladder_step` to 0 (interval back to 1 day), not one step back
+- [x] Review queue is capped at 5-8 items per session; anything beyond the cap is deferred to the
       next session and re-queued most-overdue-first
-- [ ] A review miss triggers ticket 15's named-misconception feedback and within-session recheck,
+- [x] A review miss triggers ticket 15's named-misconception feedback and within-session recheck,
       not a separate pass/fail path
-- [ ] Review items are drawn from the same 2-3 exercise types as the chunk's normal content, not
+- [x] Review items are drawn from the same 2-3 exercise types as the chunk's normal content, not
       restricted to recognition
-- [ ] Session ordering: the review block is presented before new-chunk work begins
+- [x] Session ordering: the review block is presented before new-chunk work begins

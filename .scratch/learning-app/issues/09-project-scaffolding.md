@@ -8,15 +8,15 @@ reads/writes an empty/default `progress.json` shape through a bare endpoint roun
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `npm run dev` (or equivalent documented script) starts the Vite frontend and Express
+- [x] `npm run dev` (or equivalent documented script) starts the Vite frontend and Express
       backend together
-- [ ] Repo layout matches SPEC.md's suggested layout (`content/`, `server/`, `src/`, `progress.json`
+- [x] Repo layout matches SPEC.md's suggested layout (`content/`, `server/`, `src/`, `progress.json`
       gitignored)
-- [ ] A GET endpoint returns the current `progress.json` contents (default/empty shape if the
+- [x] A GET endpoint returns the current `progress.json` contents (default/empty shape if the
       file doesn't exist yet)
-- [ ] A POST (or PUT) endpoint writes a new state to `progress.json` and the change is visible on
+- [x] A POST (or PUT) endpoint writes a new state to `progress.json` and the change is visible on
       the next GET
-- [ ] Vitest is configured and runs (even a placeholder test) via a documented script
-- [ ] `progress.json` is gitignored; no runtime state is committed
+- [x] Vitest is configured and runs (even a placeholder test) via a documented script
+- [x] `progress.json` is gitignored; no runtime state is committed

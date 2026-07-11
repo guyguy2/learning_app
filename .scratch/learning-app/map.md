@@ -80,6 +80,22 @@ Planning only — this map produces the spec, not app code.
 
 (none — fog is clear, no open tickets remain)
 
+## Implementation status (2026-07-11)
+
+SPEC.md drafted from decisions 01-08, then implementation tickets 09-17 authored and all
+**closed/done**. The app is built and playable (`npm run dev`, review -> new-content -> gate ->
+summary), 93 unit tests + `vite build` green, all work committed to `main`.
+
+- 09 scaffolding, 10 Spanish v1 content, 11 vocab/word-mastery, 12 conjugation production +
+  worked example, 13 role-tagging, 14 advancement gate + session ordering, 15 misconception
+  detection + repair, 16 technique-transparency badge, 17 cross-session review scheduling.
+- Session runner (`src/App.jsx`) wires the pure engine (`src/engine/*`) to the three exercise
+  screens; review runs the full gate mechanic across mixed exercise types; session 2+ interleaves
+  families via per-drill `selectChunkForSession`; false-cognate recognition reachable via
+  `newContentSchedule.js`. All three behaviors verified in-browser.
+- Known v1 limitations recorded in `README.md` (false-cognate surfaces after family verbs
+  mastered; review cap is per-chunk with only 3 chunks).
+
 ## Out of scope
 
 (none yet — see Notes for standing constraints agreed at chart time: auth, monetization, social

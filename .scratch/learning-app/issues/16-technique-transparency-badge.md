@@ -11,11 +11,11 @@ misconception-repair screens, per the prototype verdict at
 **Blocked by:** 12 — Conjugation production exercise + worked example, 15 — Misconception
 detection and repair
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Badge component renders top-right, collapsed by default, on all four session-flow screens
+- [x] Badge component renders top-right, collapsed by default, on all four session-flow screens
       (worked example, guided practice, independent recall, misconception repair)
-- [ ] Tapping/clicking the badge expands a one-line technique explanation; tapping again collapses it
-- [ ] Each screen's badge names the technique actually in play on that screen (not a generic label)
-- [ ] Visual pattern matches the corner-badge (Variant A) design from the prototype, not the
+- [x] Tapping/clicking the badge expands a one-line technique explanation; tapping again collapses it
+- [x] Each screen's badge names the technique actually in play on that screen (not a generic label)
+- [x] Visual pattern matches the corner-badge (Variant A) design from the prototype, not the
       rejected margin-rail or moment-only variants

@@ -9,14 +9,14 @@ ticket 09, persisting to `progress.json`.
 
 **Blocked by:** 09 — Project scaffolding, 10 — Spanish v1 content
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Engine function is plain JS/TS with no DOM/HTTP/filesystem dependency, covered by Vitest
+- [x] Engine function is plain JS/TS with no DOM/HTTP/filesystem dependency, covered by Vitest
       unit tests (per SPEC's Testing Decisions seam)
-- [ ] Test: 2 consecutive correct answers on the same word flips it from "learning" to "mastered"
-- [ ] Test: any wrong answer resets `streak_count` to 0, regardless of prior streak length
-- [ ] Recognition screen presents a word from `content/spanish/vocab.json` and accepts an answer
-- [ ] Answering correctly/incorrectly updates state via the engine and persists through the
+- [x] Test: 2 consecutive correct answers on the same word flips it from "learning" to "mastered"
+- [x] Test: any wrong answer resets `streak_count` to 0, regardless of prior streak length
+- [x] Recognition screen presents a word from `content/spanish/vocab.json` and accepts an answer
+- [x] Answering correctly/incorrectly updates state via the engine and persists through the
       ticket-09 endpoints
-- [ ] Reloading the app after closing the browser shows previously mastered words as already
+- [x] Reloading the app after closing the browser shows previously mastered words as already
       mastered (progress survives across sessions)

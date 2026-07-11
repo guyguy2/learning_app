@@ -8,15 +8,15 @@ vocab already mastered per ticket 11 (vocab-gates-conjugation).
 
 **Blocked by:** 11 — Vocab recognition exercise + word mastery engine
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Engine extended with a "production" attempt type and chunk state
+- [x] Engine extended with a "production" attempt type and chunk state
       (`streak_count`, `types_in_streak` per SPEC's data model) — unit tested
-- [ ] Worked-example screen shows the stem + ending swap explicitly before any practice is asked
-- [ ] Guided-practice screen offers hints; independent-recall screen offers none
-- [ ] Production drills only draw verbs/vocab from words already at "mastered" status
+- [x] Worked-example screen shows the stem + ending swap explicitly before any practice is asked
+- [x] Guided-practice screen offers hints; independent-recall screen offers none
+- [x] Production drills only draw verbs/vocab from words already at "mastered" status
       (verified: an unmastered word never appears as a drill ingredient)
-- [ ] Sequencing enforced: worked example always precedes guided practice, which always precedes
+- [x] Sequencing enforced: worked example always precedes guided practice, which always precedes
       independent recall, for a given chunk encounter
-- [ ] Test: a production attempt records into the same chunk state used later by the advancement
+- [x] Test: a production attempt records into the same chunk state used later by the advancement
       gate (ticket 14)
