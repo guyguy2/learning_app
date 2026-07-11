@@ -11,6 +11,7 @@ import SessionSummary from './components/SessionSummary.jsx'
 import TechniqueBadge from './components/TechniqueBadge.jsx'
 import { techniqueFor } from './screenTechniques.js'
 import { buildSession } from './engine/session.js'
+import { selectChunkForSession } from './engine/sessionPlan.js'
 import { getNextStimulus, applyAttempt } from './engine/wordMastery.js'
 import { applyProductionAttempt, findChunk, getNextProductionStimulus } from './engine/conjugation.js'
 import { applyRoleTaggingAttempt, getNextRoleTaggingStimulus } from './engine/roleTagging.js'
@@ -145,7 +146,7 @@ function App() {
       enterReviewChunk(progressState, s.reviewChunkIds[0])
     } else if (s.phase === 'new') {
       setReviewQueue([])
-      enterNewPhase(progressState, s.newChunkId, null)
+      enterNewPhase(progressState)
     } else {
       setReviewQueue([])
       setMode('summary')
@@ -168,13 +169,49 @@ function App() {
     setMode('review')
   }
 
-  function enterNewPhase(progressState, chunkId, lastType) {
+  // Session 1 is blocked to the single chunk selected at session start; session 2+
+  // interleaves by re-polling selectChunkForSession on every drill (ticket 14).
+  function activeChunkFor(progressState) {
+    return progressState.session_number <= 1
+      ? newChunkId
+      : selectChunkForSession(progressState, progressState.session_number)
+  }
+
+  function enterActiveDrill(progressState, lastType) {
     setFeedback(null)
     setRepair(null)
+    const chunkId = activeChunkFor(progressState)
+    if (chunkId == null) {
+      setMode('summary')
+      return
+    }
     const picked = pickNewPhaseStimulus(progressState, chunkId, lastType)
     setExerciseType(picked.exerciseType)
     setStimulus(picked.stimulus)
     setMode('new')
+  }
+
+  // Entry point for the new-content phase. From session 2 on, every not-yet-mastered
+  // chunk still sitting at 'worked_example' must be introduced (I-do shown, ack'd to
+  // 'guided') before interleaved drilling begins, so each ack re-enters here and either
+  // shows the next worked example or falls through to active-drill selection.
+  function enterNewPhase(progressState, lastType = null) {
+    setFeedback(null)
+    setRepair(null)
+
+    if (progressState.session_number >= 2) {
+      const toIntroduce = progressState.chunks
+        .filter((c) => !c.mastered && (c.production_phase ?? 'worked_example') === 'worked_example')
+        .map((c) => c.id)
+      if (toIntroduce.length > 0) {
+        setExerciseType('production')
+        setStimulus(getNextProductionStimulus(progressState, toIntroduce[0], CONTENT))
+        setMode('new')
+        return
+      }
+    }
+
+    enterActiveDrill(progressState, lastType)
   }
 
   function handleMiss(attempt, pendingStimulus) {
@@ -236,7 +273,7 @@ function App() {
     if (rest.length > 0) {
       enterReviewChunk(persistedProgress, rest[0])
     } else if (newChunkId != null) {
-      enterNewPhase(persistedProgress, newChunkId, null)
+      enterNewPhase(persistedProgress)
     } else {
       setFeedback(null)
       setRepair(null)
@@ -260,9 +297,10 @@ function App() {
     setProgress(persisted)
 
     if (attempt.action === 'worked_example_ack') {
-      // The next production drill may be null (no mastered vocab yet) — re-pick via the
-      // phase rotation so we fall back to recognition rather than rendering a blank screen.
-      enterNewPhase(persisted, newChunkId, null)
+      // Re-enter the new-content phase entry point: it will show the next un-introduced
+      // chunk's worked example if any remain (session 2+), or fall back to active-drill
+      // selection rather than rendering a blank screen.
+      enterNewPhase(persisted)
       return
     }
 
@@ -275,7 +313,7 @@ function App() {
         return
       }
       setFeedback('correct')
-      enterNewPhase(persisted, newChunkId, attempt.type)
+      enterActiveDrill(persisted, attempt.type)
       return
     }
 
