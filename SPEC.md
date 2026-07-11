@@ -1,13 +1,33 @@
 # Meta-learning app — SPEC
 
-A personal, subject-agnostic web learning app whose pedagogy is grounded in the cognitive-science
-techniques from Felienne Hermans' *The Programmer's Brain*. This spec covers a proof-of-concept
-build for one subject — Spanish vocab + regular present-tense conjugation. The pedagogy engine
-must generalize to other subjects later, but nothing beyond Spanish is built now.
+Status: ready-for-agent
 
 This document compiles decisions made across the `wayfinder` map at
 `.scratch/learning-app/map.md` (tickets 01-08, all closed). Each section below cites the ticket
-it came from; consult the ticket for the full reasoning behind a decision.
+it came from; consult the ticket for the full reasoning behind a decision. Published in place
+at `learning_app/SPEC.md` rather than under `.scratch/learning-app/spec.md` — the wayfinder
+effort named this path as its destination directly, and the tracker's own tickets already live
+alongside it under `.scratch/learning-app/`.
+
+## Problem Statement
+
+The user wants to learn a new skill (starting with Spanish vocab and basic conjugation) using
+spaced repetition and deliberate practice, the way cognitive science says learning actually
+sticks — chunking, worked examples before independent recall, misconceptions caught and
+corrected by name, review timed to calendar forgetting curves. Existing apps (Duolingo, Anki,
+etc.) either hide their pedagogy entirely or implement only one technique (e.g. bare spaced
+repetition) without the surrounding scaffolding *The Programmer's Brain* describes for
+programming education. There's no personal tool that applies that book's full technique set to
+a non-programming subject and shows its work.
+
+## Solution
+
+A personal, single-user web app that runs a subject-agnostic "pedagogy engine" — chunked
+content, I-do/We-do/You-do sequencing, seeded-misconception detection and repair, and a
+calendar-driven review ladder — proven first against one small, general subject (Spanish vocab +
+regular present-tense conjugation) before any other subject is attempted. Every screen names the
+cognitive-science technique it's using via an expandable badge, so the pedagogy stays visible
+rather than hidden inside the UI.
 
 ## Standing constraints
 
@@ -31,7 +51,57 @@ figure, and monthly/10-min-a-day review cadences were consistently reported but 
 against the book's primary text. This spec treats them as starting defaults, not fixed constants
 (see Review scheduling below, which adopts its own ladder rather than these numbers).
 
-## Proof subject: Spanish (ticket 02)
+## User Stories
+
+**Session structure and learning loop**
+
+1. As a learner, I want each new-content session to teach one verb family at a time, so that I'm never juggling more than one notional machine at once.
+2. As a learner, I want to see a fully worked example (I-do) before I'm asked to practice, so that I understand the mechanism before being tested on it.
+3. As a learner, I want guided practice with hints (We-do) between the worked example and independent recall, so that the difficulty ramps up gradually.
+4. As a learner, I want a final independent-recall step (You-do) with no hints, so that I know whether I've actually internalized the pattern.
+5. As a learner, I want 2-3 different exercise types per session (recognition, production, role-tagging), so that my working memory isn't overloaded by a single repetitive drill.
+6. As a learner, I want conjugation drills to only use vocab I've already mastered, so that each exercise tests exactly one new thing at a time.
+7. As a learner, I want a session to end when I've clearly demonstrated mastery of the current chunk, not after a fixed number of questions or a timer, so that the session length matches how quickly I actually learn.
+8. As a learner, I want verb families introduced one at a time (blocked) in my first session, then mixed together (interleaved) from my second session onward, so that I build a solid foundation before being asked to discriminate between families.
+
+**Misconception detection and repair**
+
+9. As a learner, I want wrong answers that match a known misconception (e.g. a false cognate, or overgeneralizing a regular pattern) to be recognized as that specific misconception, not just marked "wrong," so that I understand *why* I got it wrong.
+10. As a learner, I want feedback that names my misconception and re-shows the correct notional machine, so that I can correct my mental model, not just memorize the right answer.
+11. As a learner, I want to be re-tested on a similar item shortly after a misconception correction, so that I (and the app) can confirm the correction actually held.
+12. As a learner, when I miss an item during review, I want the same named-misconception repair flow as during initial learning, so that a resurfacing misconception gets the same quality of correction as a first-time one.
+
+**Progress gating and advancement**
+
+13. As a learner, I want to advance from one verb family to the next only after answering correctly several times across at least two different exercise types, so that I can't game advancement by only ever practicing my strongest exercise type.
+14. As a learner, I want any wrong answer to reset my current streak toward the next gate, so that mastery reflects consistent, current performance rather than an average over time.
+15. As a learner, I want all three verb families available to start from day one (no artificial locking), so that "learn one family at a time" is guidance for how I structure a session, not a hard restriction on what I'm allowed to touch.
+
+**Review and retention**
+
+16. As a learner, I want a review block at the start of every session covering whatever content is actually due by calendar time, so that review timing tracks real forgetting rather than how often I happen to open the app.
+17. As a learner, I want successfully-reviewed content to move to a longer interval before its next review (1, then 3, then 7, then 14, then 30 days), so that well-retained material is reviewed less often over time.
+18. As a learner, I want a missed review item to reset fully to the shortest interval, so that content I'm clearly still shaky on gets revisited soon, not just one step sooner.
+19. As a learner, I want review capped at roughly 5-8 items per session, so that a backlog day doesn't crowd out all my new-content learning.
+20. As a learner, I want overflow review items (beyond the cap) to roll into future sessions in most-overdue-first order, so that nothing due gets silently dropped.
+21. As a learner, I want review exercises to be drawn from the same mix of exercise types as new content (not recognition-only), so that review actually tests whether I can still produce the form, not just recognize it.
+22. As a learner, I want mastered vocab to keep showing up as an ingredient inside later conjugation drills, so that words I've learned don't silently fade from practice even without a dedicated vocab review schedule.
+
+**Technique transparency**
+
+23. As a learner, I want to see a small badge on every screen naming the cognitive-science technique currently in play (e.g. "Notional machine," "Retrieval practice"), so that I understand the pedagogy behind what I'm doing.
+24. As a learner, I want that badge collapsed by default and expandable on demand, so that the explanation doesn't clutter the screen when I don't want it.
+25. As a learner, I want the same badge pattern used consistently across the worked example, guided practice, independent recall, and misconception-repair screens, so that I always know where to look for it.
+
+**Content and persistence**
+
+26. As a learner, I want my progress (which words/chunks I've mastered, current streaks, review due dates) to persist across browser sessions and survive clearing browser data, so that I don't lose progress by accident.
+27. As a learner, I want the app to run entirely on my own machine with no account or login, so that using it has zero setup friction and no data leaves my machine.
+28. As a developer of this app, I want v1 Spanish content (vocab, distractors, worked examples, misconception seeds) authored once via LLM generation plus manual review and shipped as static version-controlled files, so that content quality is checked before it reaches a learner without needing to build authoring tooling for a single-subject proof.
+
+## Implementation Decisions
+
+### Proof subject: Spanish (ticket 02)
 
 **Scope:** core vocab (~50-100 words) + regular present-tense conjugation, -ar/-er/-ir verb
 families only. No irregulars, no other tenses/moods in v1.
@@ -55,7 +125,7 @@ that exercises all four target mechanics:
 Irregulars, additional tenses, and moods are out of scope for this proof — candidates for later
 expansion once the engine is validated.
 
-## Core learning loop (ticket 03)
+### Core learning loop (ticket 03)
 
 **Exercise types** (2-3 per session, working-memory limit): recognition (word-meaning match),
 production (fill-in conjugation), role-tagging (word/sentence role: subject, stem, ending,
@@ -89,7 +159,7 @@ progress. Keeps each exercise testing exactly one new thing at a time.
 **Session boundary:** gate-driven, not fixed-count or time-boxed. A session runs until the
 current chunk's advancement gate is hit, or the user quits.
 
-## Review scheduling (ticket 04)
+### Review scheduling (ticket 04)
 
 **Trigger — hybrid:** every session opens with a review block, but *which* chunks are due is
 decided by real elapsed calendar time since last review, not session count.
@@ -114,7 +184,7 @@ resurfacing, not simple forgetting.
 recognition-only — recognizing a form isn't evidence the notional machine still holds under
 production.
 
-## Progress / mastery data model (ticket 05)
+### Progress / mastery data model (ticket 05)
 
 **Chunk granularity:** one chunk = one whole verb family (-ar, -er, -ir — 3 chunks total for v1).
 Vocab words are tracked separately, not as chunks.
@@ -163,7 +233,7 @@ the review queue, and vocab-gates-conjugation are all queries over this state, n
 *Known limitation, non-blocking:* a review round can run long if the learner keeps missing —
 same open-ended-until-clear behavior already accepted for new-content sessions.
 
-## UI: technique transparency (ticket 06)
+### UI: technique transparency (ticket 06)
 
 **Pattern — corner badge (Variant A):** a small expandable pill, top-right of each screen, naming
 the active technique (e.g. "Notional machine", "Retrieval practice", "Named-error feedback").
@@ -175,7 +245,7 @@ Two other variants (margin rail, moment-only prose) were prototyped and rejected
 `prototype/session-flow-technique-transparency.PROTOTYPE.html` for the comparison; only the
 corner-badge pattern carries into the build.
 
-## Content authoring (ticket 07)
+### Content authoring (ticket 07)
 
 v1 Spanish content (vocab pool, distractor sets, worked examples, misconception seeds) is
 generated via LLM at build time, then fully manually reviewed before use — not hand-authored from
@@ -187,7 +257,7 @@ Future content work (fixing v1 content, adding a subject beyond Spanish) repeats
 generate-then-review-then-edit-static-files process ad hoc — no authoring tooling is built now,
 deferred until a second subject actually demands it.
 
-## Tech stack / architecture (ticket 08)
+### Tech stack / architecture (ticket 08)
 
 - **Repo:** `learning_app/` is a git repo (initialized as part of this effort).
 - **Frontend:** Vite + React, client-only SPA. No SSR, no routing framework beyond simple
@@ -201,7 +271,7 @@ deferred until a second subject actually demands it.
 - **Hosting:** local-only, no deploy. Runs on the user's own machine (`npm run dev` plus a start
   script for the Express server). No cloud, no self-host — single-user personal tool.
 
-### Suggested repo layout
+#### Suggested repo layout
 
 ```
 learning_app/
@@ -219,6 +289,43 @@ learning_app/
   .scratch/learning-app/ # wayfinder map + tickets (this spec's provenance)
 ```
 
+## Testing Decisions
+
+**Seam: the pedagogy engine, as plain functions — no DOM, no HTTP, no filesystem.** Confirmed
+with the user when this spec was written (over UI-component tests and Express integration
+tests as alternatives) as the single highest-value seam: one framework-free module of pure
+functions, `(progress state, attempt) -> (new progress state, next exercise stimulus)`, that the
+React frontend and Express backend both wrap thinly. This is a proof-of-concept build with no
+code written yet, so there's no existing seam to prefer — this is the seam to establish going
+forward.
+
+**What a good test looks like here:** assert on the engine's external behavior — the state
+transition and the next stimulus it returns for a given input — never on internal representation
+of that state. Concretely:
+
+- Advancement gate: given a sequence of correct/incorrect attempts across exercise types, does
+  the chunk's `mastered` flag flip at exactly the point the gate rule (3-in-a-row, >=2 types)
+  is satisfied, and not before?
+- Streak reset: does any single miss reset `streak_count` and `types_in_streak` to zero,
+  regardless of how long the prior streak was?
+- Misconception mapping: given a wrong answer matching a seeded distractor, does the engine
+  return the specific misconception it matches (not a generic "incorrect")?
+- Review-due queries: given a set of chunks with varying `last_reviewed_date`/`ladder_step`,
+  does the engine select the correct due set, in most-overdue-first order, capped at the
+  session limit?
+- Ladder advancement/reset: does a successful review advance exactly one ladder step, and a
+  missed review reset fully to step 1?
+
+**Modules tested:** the engine functions covering advancement gating, streak/miss handling,
+misconception detection, and review-due scheduling (tickets 03-05). React components and Express
+routes are thin wrappers around this engine and are not tested directly in v1 — a bug there
+would show up as the engine receiving/returning the wrong shape, not as engine logic error.
+
+**Prior art:** none — this is a from-scratch repo with no test suite yet. The first ticket that
+touches the engine establishes the pattern (a plain unit-test runner against pure functions;
+Vitest is the natural fit given the Vite frontend, but the runner choice itself is an
+implementation detail for `/to-tickets` and `/implement` to settle, not fixed by this spec).
+
 ## Out of scope (this proof)
 
 - Auth, accounts, monetization, social/multiplayer features, native mobile — excluded by the
@@ -228,8 +335,18 @@ learning_app/
   it.
 - Cloud hosting / deployment / multi-device sync.
 
-## Provenance
+## Further Notes
 
-Every decision above traces to a closed ticket under `.scratch/learning-app/issues/`; the
-tickets hold the full reasoning and rejected alternatives this spec omits for brevity. The
-wayfinder map itself (`.scratch/learning-app/map.md`) is the index.
+**Provenance:** every decision above traces to a closed ticket under
+`.scratch/learning-app/issues/`; the tickets hold the full reasoning and rejected alternatives
+this spec omits for brevity. The wayfinder map itself (`.scratch/learning-app/map.md`) is the
+index.
+
+**Numeric specifics are starting defaults, not validated constants** (see Pedagogical
+foundation above) — chunk capacity, retention-decay figures, and review cadences were reported
+consistently across research but never confirmed against the book's primary text. Revisit if v1
+usage suggests they're off.
+
+**Known non-blocking limitation:** a review round can run arbitrarily long if the learner keeps
+missing the same items — the same open-ended-until-gate-clear behavior already accepted for
+new-content sessions (ticket 05).
