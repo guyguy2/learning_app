@@ -1,22 +1,9 @@
-import { useEffect, useState } from 'react'
-import vocab from '../content/spanish/vocab.json'
-import workedExamples from '../content/spanish/worked_examples.json'
-import { applyProductionAttempt, getNextProductionStimulus } from './engine/conjugation.js'
-
-const CHUNK_ID = 'ar'
-const CONTENT = { vocab, workedExamples }
+import { useState } from 'react'
+import TechniqueBadge from './components/TechniqueBadge.jsx'
+import { techniqueFor } from './screenTechniques.js'
 
 function normalize(text) {
   return text.trim().toLowerCase()
-}
-
-async function persist(progress) {
-  const res = await fetch('/api/progress', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(progress),
-  })
-  return res.json()
 }
 
 function WorkedExample({ workedExample, onContinue }) {
@@ -70,50 +57,26 @@ function ProductionDrill({ stimulus, onSubmit }) {
   )
 }
 
-function ProductionScreen() {
-  const [progress, setProgress] = useState(null)
-  const [stimulus, setStimulus] = useState(undefined)
-  const [feedback, setFeedback] = useState(null)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    fetch('/api/progress')
-      .then((res) => res.json())
-      .then((loaded) => {
-        setProgress(loaded)
-        setStimulus(getNextProductionStimulus(loaded, CHUNK_ID, CONTENT))
-      })
-      .catch((err) => setError(err.message))
-  }, [])
-
-  async function handleAck() {
-    const attempt = { type: 'production', chunkId: CHUNK_ID, action: 'worked_example_ack' }
-    const { progress: newProgress, next } = applyProductionAttempt(progress, attempt, CONTENT)
-    setProgress(await persist(newProgress))
-    setStimulus(next)
+function ProductionScreen({ stimulus, onAttempt, feedback }) {
+  function handleAck() {
+    onAttempt({ type: 'production', chunkId: stimulus.chunkId, action: 'worked_example_ack' })
   }
 
-  async function handleDrillSubmit(answer) {
+  function handleDrillSubmit(answer) {
     const correct = normalize(answer) === normalize(stimulus.expectedForm)
-    const attempt = {
+    onAttempt({
       type: 'production',
-      chunkId: CHUNK_ID,
+      chunkId: stimulus.chunkId,
       wordId: stimulus.verb.id,
       person: stimulus.person,
       correct,
-    }
-    const { progress: newProgress, next } = applyProductionAttempt(progress, attempt, CONTENT)
-    setProgress(await persist(newProgress))
-    setStimulus(next)
-    setFeedback(correct ? 'correct' : `incorrect — expected "${stimulus.expectedForm}"`)
+      given: answer,
+    })
   }
-
-  if (error) return <p>Error: {error}</p>
-  if (stimulus === undefined) return <p>Loading...</p>
-  if (stimulus === null) return <p>No mastered -ar vocab yet — master some words via recognition first.</p>
 
   return (
     <div>
+      <TechniqueBadge {...techniqueFor('production')} />
       {stimulus.phase === 'worked_example' ? (
         <WorkedExample workedExample={stimulus.workedExample} onContinue={handleAck} />
       ) : (
