@@ -1,3 +1,6 @@
+import { applyProductionAttempt } from './conjugation.js'
+import { applyRoleTaggingAttempt } from './roleTagging.js'
+
 const MASTERY_STREAK = 2
 
 function statusOf(wordId, words) {
@@ -15,7 +18,15 @@ export function getNextStimulus(progressState, vocabPool) {
   return pickStimulus(vocabPool, progressState.words, null)
 }
 
-export function applyAttempt(progressState, attempt, vocabPool) {
+export function applyAttempt(progressState, attempt, contentPool) {
+  if (attempt.type === 'production') {
+    return applyProductionAttempt(progressState, attempt, contentPool)
+  }
+  if (attempt.type === 'role-tagging') {
+    return applyRoleTaggingAttempt(progressState, attempt, contentPool)
+  }
+
+  const vocabPool = contentPool
   const { wordId, correct } = attempt
   const words = progressState.words.map((w) => ({ ...w }))
   let word = words.find((w) => w.id === wordId)

@@ -18,6 +18,7 @@ function defaultProgress() {
         ladder_step: null,
         last_reviewed_date: null,
         next_due_date: null,
+        production_phase: 'worked_example',
       },
       {
         id: 'er',
@@ -28,6 +29,7 @@ function defaultProgress() {
         ladder_step: null,
         last_reviewed_date: null,
         next_due_date: null,
+        production_phase: 'worked_example',
       },
       {
         id: 'ir',
@@ -38,6 +40,7 @@ function defaultProgress() {
         ladder_step: null,
         last_reviewed_date: null,
         next_due_date: null,
+        production_phase: 'worked_example',
       },
     ],
   }
