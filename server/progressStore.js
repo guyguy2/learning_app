@@ -7,6 +7,7 @@ export const PROGRESS_PATH = path.join(dirname, '..', 'progress.json')
 
 function defaultProgress() {
   return {
+    session_number: 1,
     words: [],
     chunks: [
       {
