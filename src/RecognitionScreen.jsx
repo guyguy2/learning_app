@@ -2,8 +2,12 @@ import { useState } from 'react'
 import TechniqueBadge from './components/TechniqueBadge.jsx'
 import { techniqueFor } from './screenTechniques.js'
 
-function normalize(text) {
+export function normalize(text) {
   return text.trim().toLowerCase()
+}
+
+export function acceptedMeanings(meaning) {
+  return meaning.split(/[;,]/).map(normalize).filter(Boolean)
 }
 
 function feedbackClass(feedback) {
@@ -16,7 +20,7 @@ function RecognitionScreen({ stimulus, onAttempt, feedback }) {
 
   function submitAnswer(event) {
     event.preventDefault()
-    const correct = normalize(answer) === normalize(stimulus.word.meaning)
+    const correct = acceptedMeanings(stimulus.word.meaning).includes(normalize(answer))
     onAttempt({ type: 'recognition', wordId: stimulus.word.id, correct, given: answer })
     setAnswer('')
   }
