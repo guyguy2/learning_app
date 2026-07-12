@@ -1,0 +1,56 @@
+/* SessionSummary styles matching theme variables */
+
+.session-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 400px;
+  margin: 20px auto;
+  box-shadow: var(--shadow);
+  text-align: center;
+  font-family: var(--font-sans), sans-serif;
+  color: var(--text);
+}
+
+.summary-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--primary);
+}
+
+.summary-text {
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.summary-success-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--success);
+  margin-bottom: 20px;
+}
+
+.summary-button {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
+}
+
+.summary-button:hover {
+  filter: brightness(1.1);
+}
+
+.summary-button:active {
+  filter: brightness(0.95);
+}

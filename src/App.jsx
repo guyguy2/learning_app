@@ -333,8 +333,20 @@ function App() {
     startSession(persisted)
   }
 
-  if (error) return <p>Error: {error}</p>
-  if (progress === null || mode === 'loading') return <p>Loading...</p>
+  if (error) {
+    return (
+      <div className="app">
+        <p className="app-status app-status--error">Error: {error}</p>
+      </div>
+    )
+  }
+  if (progress === null || mode === 'loading') {
+    return (
+      <div className="app">
+        <p className="app-status">Loading…</p>
+      </div>
+    )
+  }
 
   if (mode === 'summary') {
     return <SessionSummary reviewedCount={reviewedCount} masteredChunkId={masteredChunkId} onStartNext={startNextSession} />
@@ -346,7 +358,7 @@ function App() {
   ]
 
   return (
-    <div>
+    <div className="app">
       {mode === 'review' && <TechniqueBadge {...techniqueFor('review')} />}
       {repair ? (
         repair.misconception ? (
@@ -360,9 +372,9 @@ function App() {
             />
           </>
         ) : (
-          <div>
-            <p>{feedback}</p>
-            <button type="button" onClick={handleRetry}>
+          <div className="retry-panel">
+            <p className="retry-panel__message">{feedback}</p>
+            <button type="button" className="btn" onClick={handleRetry}>
               Try again
             </button>
           </div>

@@ -6,6 +6,11 @@ function normalize(text) {
   return text.trim().toLowerCase()
 }
 
+function feedbackClass(feedback) {
+  if (!feedback) return ''
+  return feedback === 'correct' ? 'feedback--success' : 'feedback--error'
+}
+
 function RecognitionScreen({ stimulus, onAttempt, feedback }) {
   const [answer, setAnswer] = useState('')
 
@@ -19,19 +24,26 @@ function RecognitionScreen({ stimulus, onAttempt, feedback }) {
   return (
     <div>
       <TechniqueBadge {...techniqueFor('recognition')} />
-      <h1>Recognition</h1>
-      <p>What does this word mean?</p>
-      <p style={{ fontSize: '1.5em', fontWeight: 'bold' }}>{stimulus.word.word}</p>
-      <form onSubmit={submitAnswer}>
-        <input
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          placeholder="Enter meaning"
-          autoFocus
-        />
-        <button type="submit">Submit</button>
-      </form>
-      {feedback && <p>{feedback}</p>}
+      <div className="drill">
+        <h1 className="drill__title">Recognition</h1>
+        <p className="drill__prompt">What does this word mean?</p>
+        <p className="drill__prompt-word">{stimulus.word.word}</p>
+        <form className="drill__form" onSubmit={submitAnswer}>
+          <input
+            className="input"
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            placeholder="Enter meaning"
+            autoFocus
+          />
+          <div className="drill__actions">
+            <button type="submit" className="btn">
+              Submit
+            </button>
+          </div>
+        </form>
+        {feedback && <p className={`feedback ${feedbackClass(feedback)}`}>{feedback}</p>}
+      </div>
     </div>
   )
 }

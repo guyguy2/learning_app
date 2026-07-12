@@ -6,12 +6,23 @@ function normalize(text) {
   return text.trim().toLowerCase()
 }
 
+function feedbackClass(feedback) {
+  if (!feedback) return ''
+  return feedback === 'correct' ? 'feedback--success' : 'feedback--error'
+}
+
 function WorkedExample({ workedExample, onContinue }) {
   return (
-    <div>
-      <h1>Worked example — I do</h1>
-      <p>{workedExample.notional_machine}</p>
-      <table>
+    <div className="drill">
+      <h1 className="drill__title">Worked example — I do</h1>
+      <p className="notional-machine">{workedExample.notional_machine}</p>
+      <table className="paradigm-table">
+        <thead>
+          <tr>
+            <th>Person</th>
+            <th>Form</th>
+          </tr>
+        </thead>
         <tbody>
           {workedExample.paradigm.map((row) => (
             <tr key={row.person}>
@@ -21,7 +32,11 @@ function WorkedExample({ workedExample, onContinue }) {
           ))}
         </tbody>
       </table>
-      <button onClick={onContinue}>Continue to guided practice</button>
+      <div className="drill__actions">
+        <button type="button" className="btn" onClick={onContinue}>
+          Continue to guided practice
+        </button>
+      </div>
     </div>
   )
 }
@@ -37,21 +52,26 @@ function ProductionDrill({ stimulus, onSubmit }) {
   }
 
   return (
-    <div>
-      <h1>{heading}</h1>
-      <p>
+    <div className="drill">
+      <h1 className="drill__title">{heading}</h1>
+      <p className="drill__prompt">
         Conjugate <strong>{stimulus.verb.word}</strong> ({stimulus.verb.meaning}) for{' '}
         <strong>{stimulus.person}</strong>:
       </p>
-      {stimulus.hint && <p>Hint: {stimulus.hint}</p>}
-      <form onSubmit={submit}>
+      {stimulus.hint && <p className="drill__hint">Hint: {stimulus.hint}</p>}
+      <form className="drill__form" onSubmit={submit}>
         <input
+          className="input"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           placeholder="Enter conjugated form"
           autoFocus
         />
-        <button type="submit">Submit</button>
+        <div className="drill__actions">
+          <button type="submit" className="btn">
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   )
@@ -82,7 +102,7 @@ function ProductionScreen({ stimulus, onAttempt, feedback }) {
       ) : (
         <ProductionDrill stimulus={stimulus} onSubmit={handleDrillSubmit} />
       )}
-      {feedback && <p>{feedback}</p>}
+      {feedback && <p className={`feedback ${feedbackClass(feedback)}`}>{feedback}</p>}
     </div>
   )
 }

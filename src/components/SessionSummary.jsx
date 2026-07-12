@@ -1,4 +1,5 @@
 import React from 'react'
+import './SessionSummary.css'
 
 /**
  * SessionSummary - Presentational session-end screen.
@@ -15,13 +16,15 @@ export default function SessionSummary({
   onStartNext,
 }) {
   return (
-    <div>
-      <h1>Session complete</h1>
-      <p>Reviewed {reviewedCount} items</p>
+    <div className="session-summary-card">
+      <h1 className="summary-title">Session complete</h1>
+      <p className="summary-text">Reviewed {reviewedCount} items</p>
       {masteredChunkId != null && masteredChunkId !== '' && (
-        <p>Congratulations — you mastered the {masteredChunkId} chunk!</p>
+        <p className="summary-success-text">
+          Congratulations — you mastered the {masteredChunkId} chunk!
+        </p>
       )}
-      <button type="button" onClick={onStartNext}>
+      <button type="button" className="summary-button" onClick={onStartNext}>
         Start next session
       </button>
     </div>

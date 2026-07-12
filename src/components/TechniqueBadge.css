@@ -1,4 +1,4 @@
-/* TechniqueBadge styles matching Variant A from the prototype */
+/* TechniqueBadge styles matching theme variables */
 
 .technique-badge {
   position: absolute;
@@ -6,6 +6,7 @@
   right: 16px;
   z-index: 10;
   display: inline-block;
+  font-family: var(--font-sans), sans-serif;
 }
 
 .technique-badge summary {
@@ -16,8 +17,9 @@
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--accent, #2f6f4f);
-  background: var(--accent-bg, #e8f3ec);
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 5px 12px;
   user-select: none;
@@ -36,14 +38,16 @@
 
 .technique-badge p {
   margin: 0;
-  background: var(--accent-bg, #e8f3ec);
-  border-radius: 0 0 8px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
   padding: 10px 12px;
   font-size: 12.5px;
   font-weight: 400;
-  color: var(--ink, #234);
+  color: var(--text);
   max-width: 220px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow);
   text-align: left;
   line-height: 1.4;
   word-wrap: break-word;
