@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import deskVariant from './index.jsx'
+import deskVariant, { correctMessage, getTechniqueKey } from './index.jsx'
 import SessionStartCard from './SessionStartCard.jsx'
 import RecognitionCard, { acceptedMeanings, normalize } from './RecognitionCard.jsx'
 import WorkedExampleCard from './WorkedExampleCard.jsx'
@@ -146,6 +146,52 @@ describe('IndependentCard', () => {
     expect(html).toContain('hablar')
     expect(html).toContain('Enter conjugated form for yo...')
     expect(html).toContain('Submit Recall')
+  })
+})
+
+describe('Person labels', () => {
+  it('shows accented person labels instead of engine keys', () => {
+    const stimulus = {
+      chunkId: 'ar',
+      verb: { id: 'estudiar', word: 'estudiar', meaning: 'to study' },
+      person: 'el_ella_usted',
+      expectedForm: 'estudia',
+    }
+    const independent = renderToStaticMarkup(<IndependentCard stimulus={stimulus} onSubmit={() => {}} />)
+    const guided = renderToStaticMarkup(<GuidedCard stimulus={stimulus} attemptCount={0} onSubmit={() => {}} />)
+    for (const html of [independent, guided]) {
+      expect(html).toContain('él/ella/usted')
+      expect(html).not.toContain('el_ella_usted')
+    }
+  })
+})
+
+describe('getTechniqueKey', () => {
+  it('uses the misconception repair badge only for named misconceptions', () => {
+    expect(getTechniqueKey({ misconception: { id: 'overgen_er_on_ar' } }, 'new', 'production')).toBe('repair')
+    expect(getTechniqueKey({ misconception: null }, 'new', 'production')).toBe('production')
+    expect(getTechniqueKey({ misconception: null }, 'review', 'production')).toBe('review')
+  })
+})
+
+describe('correctMessage', () => {
+  it('formats role-tagging answers instead of printing an object', () => {
+    const msg = correctMessage(
+      {
+        type: 'role-tagging',
+        correct: true,
+        given: { subject: 'tú', stem: 'camin', ending: 'as', object: 'libro' },
+      },
+      {}
+    )
+    expect(msg).toBe('Correct: tú | camin + as | libro')
+    expect(msg).not.toContain('[object Object]')
+  })
+
+  it('keeps the expected form for production answers', () => {
+    expect(correctMessage({ type: 'production', given: 'hablo', expectedForm: 'hablo' }, {})).toBe(
+      'Correct: "hablo"'
+    )
   })
 })
 

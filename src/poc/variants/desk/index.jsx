@@ -19,8 +19,20 @@ function getFamilyColor(chunkId) {
   return 'var(--family-ar)'
 }
 
-function getTechniqueKey(repair, mode, exerciseType) {
-  if (repair) return 'repair'
+/** Message for the docked strip after a correct attempt. */
+export function correctMessage(attempt, stimulus) {
+  if (attempt.type === 'recognition') {
+    return `Correct: "${stimulus?.word?.word}" means "${attempt.expectedMeaning || attempt.given}"`
+  }
+  if (attempt.type === 'role-tagging') {
+    const { subject, stem, ending, object } = attempt.given
+    return `Correct: ${subject} | ${stem} + ${ending} | ${object}`
+  }
+  return `Correct: "${attempt.expectedForm || attempt.given}"`
+}
+
+export function getTechniqueKey(repair, mode, exerciseType) {
+  if (repair?.misconception) return 'repair'
   if (mode === 'review') return 'review'
   return exerciseType
 }
@@ -101,12 +113,7 @@ function DeskVariant() {
     setLastAttempt(attemptPayload)
 
     if (attemptPayload.correct) {
-      const message =
-        attemptPayload.type === 'recognition'
-          ? `Correct: "${stimulus?.word?.word}" means "${attemptPayload.expectedMeaning || attemptPayload.given}"`
-          : `Correct: "${attemptPayload.expectedForm || attemptPayload.given}"`
-
-      setLocalFeedback({ type: 'correct', message })
+      setLocalFeedback({ type: 'correct', message: correctMessage(attemptPayload, stimulus) })
 
       if (retestActive) {
         setMentalModelAligned(true)

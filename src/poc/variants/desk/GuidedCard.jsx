@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import StemEndingTile from './StemEndingTile.jsx'
+import { personLabel } from './personLabel.js'
 
 function normalize(text) {
   return text.trim().toLowerCase()
@@ -16,12 +17,13 @@ export default function GuidedCard({ stimulus, attemptCount, onSubmit }) {
   const [answer, setAnswer] = useState('')
 
   const stem = stimulus.verb.word.slice(0, -stimulus.chunkId.length)
+  const person = personLabel(stimulus.person)
 
   // Derive hint based purely on attemptCount (UI-only fading)
   const hintText =
     attemptCount === 0
-      ? `Person cue: target subject is "${stimulus.person}"`
-      : stimulus.hint || `Stem: "${stem}-", ending for ${stimulus.person}`
+      ? `Person cue: target subject is "${person}"`
+      : stimulus.hint || `Stem: "${stem}-", ending for ${person}`
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -46,7 +48,7 @@ export default function GuidedCard({ stimulus, attemptCount, onSubmit }) {
       <div className="desk-label">Guided Practice (We-Do)</div>
       <p className="desk-prompt">
         Conjugate <strong>{stimulus.verb.word}</strong> ({stimulus.verb.meaning}) for{' '}
-        <strong>{stimulus.person}</strong>:
+        <strong>{person}</strong>:
       </p>
 
       {/* Tactile Slips with Blank Ending */}
@@ -70,7 +72,7 @@ export default function GuidedCard({ stimulus, attemptCount, onSubmit }) {
           className="desk-input"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
-          placeholder={`Enter conjugated form for ${stimulus.person}...`}
+          placeholder={`Enter conjugated form for ${person}...`}
           autoFocus
           autoComplete="off"
           autoCorrect="off"

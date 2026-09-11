@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { personLabel } from './personLabel.js'
 
 function normalize(text) {
   return text.trim().toLowerCase()
@@ -38,7 +39,7 @@ export default function IndependentCard({ stimulus, onSubmit }) {
 
       <div className="desk-target-word">{stimulus.verb.word}</div>
       <div className="desk-subtext">
-        Meaning: {stimulus.verb.meaning} | Person: <strong>{stimulus.person}</strong>
+        Meaning: {stimulus.verb.meaning} | Person: <strong>{personLabel(stimulus.person)}</strong>
       </div>
 
       <form className="desk-form" onSubmit={handleSubmit}>
@@ -46,7 +47,7 @@ export default function IndependentCard({ stimulus, onSubmit }) {
           className="desk-input"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
-          placeholder={`Enter conjugated form for ${stimulus.person}...`}
+          placeholder={`Enter conjugated form for ${personLabel(stimulus.person)}...`}
           autoFocus
           autoComplete="off"
           autoCorrect="off"
