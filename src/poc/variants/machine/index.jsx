@@ -40,6 +40,17 @@ export function stemOf(verbWord, family) {
   return verbWord.slice(0, -family.length)
 }
 
+/** Only a diagnosed misconception is labelled as misconception repair; a generic miss is a correction. */
+export function repairLabel(repair) {
+  return repair?.misconception ? 'Misconception Repair' : 'Correction'
+}
+
+export function techniqueKeyFor(repair, mode, exerciseType, plan) {
+  if (repair?.misconception) return 'repair'
+  if (mode === 'review') return 'review'
+  return exerciseType || (plan?.phase === 'review' ? 'review' : 'production')
+}
+
 function formatGiven(given) {
   if (given == null) return ''
   if (typeof given === 'string') return given
@@ -143,11 +154,7 @@ function MachineVariant() {
   }
 
   // Technique lookup
-  const techniqueKey = repair
-    ? 'repair'
-    : mode === 'review'
-    ? 'review'
-    : exerciseType || (plan?.phase === 'review' ? 'review' : 'production')
+  const techniqueKey = techniqueKeyFor(repair, mode, exerciseType, plan)
   const activeTechnique = techniqueFor(techniqueKey)
 
   // Determine active family for colors
@@ -361,7 +368,7 @@ function MachineVariant() {
 
             <div className="machine-repair__header">
               <span className="machine-badge" style={{ color: 'var(--feedback-amber)', borderColor: 'var(--feedback-amber)', background: 'var(--feedback-amber-bg)' }}>
-                Misconception Repair
+                {repairLabel(repair)}
               </span>
             </div>
 

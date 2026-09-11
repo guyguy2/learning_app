@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import machineVariant, { normalize, acceptedMeanings, stemOf, displayPerson } from './index.jsx'
+import machineVariant, {
+  normalize,
+  acceptedMeanings,
+  stemOf,
+  displayPerson,
+  repairLabel,
+  techniqueKeyFor,
+} from './index.jsx'
 import StemEndingBlock from './StemEndingBlock.jsx'
 import SummaryLadder, { LADDER_DAYS } from './SummaryLadder.jsx'
 import RoleTaggingDrill from './RoleTaggingDrill.jsx'
@@ -107,5 +114,21 @@ describe('RoleTaggingDrill', () => {
     expect(html).toContain('yo')
     expect(html).toContain('el libro')
     expect(html).toContain('machine-verb-token')
+  })
+})
+
+describe('Machine repair labelling', () => {
+  const named = { misconception: { id: 'overgen_er_on_ar', name: 'x', explanation: 'y' } }
+  const generic = { misconception: null, correctForm: 'hablo' }
+
+  it('labels only diagnosed misconceptions as misconception repair', () => {
+    expect(repairLabel(named)).toBe('Misconception Repair')
+    expect(repairLabel(generic)).toBe('Correction')
+  })
+
+  it('shows the repair technique only for diagnosed misconceptions', () => {
+    expect(techniqueKeyFor(named, 'new', 'production', null)).toBe('repair')
+    expect(techniqueKeyFor(generic, 'new', 'production', null)).toBe('production')
+    expect(techniqueKeyFor(generic, 'review', 'production', null)).toBe('review')
   })
 })
