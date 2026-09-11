@@ -134,11 +134,12 @@ export default function PocShell() {
 
       <main className="poc-shell__content">
         {activeTab === 'current' && <App key={`current-${progressVersion}`} />}
-        {variants.map((variant) =>
-          activeTab === variant.id ? (
-            <variant.Component key={`${variant.id}-${progressVersion}`} />
-          ) : null,
-        )}
+        {variants.map((variant) => {
+          const Comp = variant.Component
+          return activeTab === variant.id ? (
+            <Comp key={`${variant.id}-${progressVersion}`} />
+          ) : null
+        })}
       </main>
     </div>
   )
