@@ -1,10 +1,10 @@
 # Design POC Variants Guide
 
-Welcome to the POC variant workspace! This directory holds competing UI/UX design variants for the Spanish learning application. Each variant implements a distinct visual presentation and user experience for the exact same underlying cognitive-science learning flow.
+This directory holds competing UI/UX design variants for the Spanish learning application. Each variant implements a distinct visual presentation and user experience for the exact same underlying cognitive-science learning flow.
 
 ---
 
-## 🚀 Quick Start for Variant Developers
+## Quick Start for Variant Developers
 
 To create a new variant:
 
@@ -16,7 +16,7 @@ To create a new variant:
 
 ---
 
-## 🎨 CSS Scoping Rules (CRITICAL)
+## CSS Scoping Rules (CRITICAL)
 
 To prevent stylesheet collisions between competing variants:
 - Every variant **MUST** wrap its root JSX element in a container with class `variant-<id>`.
@@ -44,7 +44,7 @@ To prevent stylesheet collisions between competing variants:
 
 ---
 
-## ⚙️ Hook Contract: `useSessionRunner`
+## Hook Contract: `useSessionRunner`
 
 Each variant component receives **no props**. It calls `useSessionRunner({ autoStart })` to coordinate with the pedagogy engine, persistence layer, and misconception repair subsystem.
 
@@ -98,7 +98,7 @@ function MyVariant() {
 
 ---
 
-## 📦 Stimulus Shapes
+## Stimulus Shapes
 
 The `stimulus` object returned by the hook takes one of the following shapes depending on `exerciseType` and drill phase:
 
@@ -118,34 +118,37 @@ Vocabulary retrieval drill.
 ```
 
 ### 2. Production - Worked Example (`exerciseType === 'production'`, `stimulus.phase === 'worked_example'`)
-Initial "I do" screen presenting the notional machine and paradigm table.
+Initial "I do" screen presenting the notional machine and paradigm table. `workedExample` is the matching entry from `content/spanish/worked_examples.json`, passed through unchanged (abridged below; the real file lists all six persons).
 ```json
 {
   "type": "production",
   "phase": "worked_example",
   "chunkId": "ar",
   "workedExample": {
+    "id": "we_ar_hablar",
     "family": "ar",
-    "notional_machine": "Regular -ar verbs swap the infinitive ending -ar for person endings: -o, -as, -a, -amos, -áis, -an.",
-    "paradigm": [
-      { "person": "yo", "swap": "-o" },
-      { "person": "tú", "swap": "-as" },
-      { "person": "él/ella/usted", "swap": "-a" },
-      { "person": "nosotros/nosotras", "swap": "-amos" },
-      { "person": "vosotros/vosotras", "swap": "-áis" },
-      { "person": "ellos/ellas/ustedes", "swap": "-an" }
-    ],
+    "verb_id": "hablar",
+    "infinitive": "hablar",
+    "stem": "habl",
+    "infinitive_ending": "ar",
+    "notional_machine": "Drop the infinitive ending (-ar) to get the stem, then attach the present-tense person ending.",
     "endings": {
       "yo": "o",
       "tu": "as",
       "el_ella_usted": "a",
       "nosotros": "amos",
-      "vosotros": "ais",
+      "vosotros": "áis",
       "ellos_ellas_ustedes": "an"
-    }
+    },
+    "steps_overview": ["Start with the infinitive: hablar", "..."],
+    "paradigm": [
+      { "person": "yo", "ending": "o", "form": "hablo", "swap": "habl + o → hablo" },
+      { "person": "tú", "ending": "as", "form": "hablas", "swap": "habl + as → hablas" }
+    ]
   }
 }
 ```
+Each paradigm row is `{ person, ending, form, swap }`. `swap` is a display string, not a bare ending.
 
 ### 3. Production - Guided Practice (`exerciseType === 'production'`, `stimulus.phase === 'guided'`)
 "We do" scaffolded retrieval drill with stem/ending hints.
@@ -207,7 +210,7 @@ Grammatical sentence analysis drill.
 
 ---
 
-## 🎯 Attempt Shapes (`onAttempt(attempt)`)
+## Attempt Shapes (`onAttempt(attempt)`)
 
 Pass the following payload shapes to `onAttempt`:
 
@@ -263,7 +266,7 @@ onAttempt({
 
 ---
 
-## 🛠️ Misconception Repair Shape (`repair`)
+## Misconception Repair Shape (`repair`)
 
 When a learner misses an item, `repair` is non-null. If the wrong answer matches a seeded distractor, `repair.misconception` contains the diagnosed error:
 
@@ -287,14 +290,14 @@ When the learner acknowledges the repair or clicks "Try again", call `onRetry()`
 
 ---
 
-## 🔍 Technique Badges
+## Technique Badges
 
 To maintain cognitive transparency, you can import and show technique metadata:
 ```javascript
 import { techniqueFor } from '../../screenTechniques.js'
 // techniqueFor('recognition') -> { techniqueName: 'Retrieval practice', explanation: '...' }
 // techniqueFor('production')  -> { techniqueName: 'Notional machine', explanation: '...' }
-// techniqueFor('role-tagging') -> { techniqueName: 'Roles of variables', explanation: '...' }
+// techniqueFor('role-tagging') -> { techniqueName: 'Chunking', explanation: '...' }
 // techniqueFor('repair')       -> { techniqueName: 'Misconception repair', explanation: '...' }
 // techniqueFor('review')       -> { techniqueName: 'Spaced repetition', explanation: '...' }
 ```
