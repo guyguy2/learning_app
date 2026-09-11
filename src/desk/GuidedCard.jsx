@@ -89,7 +89,7 @@ export default function GuidedCard({ stimulus, attemptCount, onSubmit, technique
       {/* Faded Hint Callout */}
       <div className="desk-hint-box">
         <span className="desk-hint-box__label">
-          {attemptCount === 0 ? 'Scaffold' : 'Detailed Rule'}:
+          {attemptCount === 0 ? 'Hint' : 'Detailed Rule'}:
         </span>
         <span>{hintText}</span>
       </div>

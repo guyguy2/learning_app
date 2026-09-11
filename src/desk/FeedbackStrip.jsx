@@ -20,9 +20,6 @@ export default function FeedbackStrip({ feedback }) {
       aria-live="polite"
     >
       <span>{text}</span>
-      <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>
-        {isCorrect ? 'Retained' : 'Review'}
-      </span>
     </div>
   )
 }

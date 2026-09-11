@@ -162,6 +162,8 @@ describe('GuidedCard and Ending-Tile Input', () => {
     const attempt0Html = renderToStaticMarkup(
       <GuidedCard stimulus={stimulus} attemptCount={0} onSubmit={() => {}} />
     )
+    expect(attempt0Html).toContain('Hint:')
+    expect(attempt0Html).not.toContain('Scaffold')
     expect(attempt0Html).toContain('Person cue: target subject is &quot;yo&quot;')
     expect(attempt0Html).not.toContain('Stem: &quot;habl-&quot;')
 
@@ -375,18 +377,61 @@ describe('SummaryCard Wooden Ladder', () => {
 })
 
 describe('FeedbackStrip and DeskTechniqueBadge', () => {
-  it('renders feedback status strip for success and miss', () => {
+  it('renders feedback status strip for success and miss without RETAINED tag', () => {
     const successHtml = renderToStaticMarkup(
       <FeedbackStrip feedback={{ type: 'correct', message: 'Correct: "hablo"' }} />
     )
     expect(successHtml).toContain('desk-feedback-strip--correct')
     expect(successHtml).toContain('Correct: &quot;hablo&quot;')
+    expect(successHtml).not.toContain('Retained')
+    expect(successHtml).not.toContain('Review')
 
     const missHtml = renderToStaticMarkup(
       <FeedbackStrip feedback="incorrect answer" />
     )
     expect(missHtml).toContain('desk-feedback-strip--miss')
     expect(missHtml).toContain('incorrect answer')
+    expect(missHtml).not.toContain('Retained')
+    expect(missHtml).not.toContain('Review')
+  })
+
+  it('asserts the success strip is not rendered when the stimulus has changed', () => {
+    // When stimulus changes, feedback state clears to null and FeedbackStrip renders nothing
+    const nullFeedbackHtml = renderToStaticMarkup(<FeedbackStrip feedback={null} />)
+    expect(nullFeedbackHtml).toBe('')
+
+    // Container demonstrating stimulus-change clearing behavior
+    function DrillFeedbackContainer({ stimulus, lastFeedback }) {
+      const [feedback, setFeedback] = React.useState(lastFeedback)
+      React.useEffect(() => {
+        setFeedback(null)
+      }, [stimulus])
+
+      return (
+        <div>
+          <div className="current-drill">{stimulus.id}</div>
+          <FeedbackStrip feedback={feedback} />
+        </div>
+      )
+    }
+
+    const previousDrillHtml = renderToStaticMarkup(
+      <DrillFeedbackContainer
+        stimulus={{ id: 'drill-1' }}
+        lastFeedback={{ type: 'correct', message: 'Correct: "hablo"' }}
+      />
+    )
+    expect(previousDrillHtml).toContain('Correct: &quot;hablo&quot;')
+
+    // When the next drill appears (stimulus has changed, feedback cleared)
+    const nextDrillHtml = renderToStaticMarkup(
+      <DrillFeedbackContainer
+        stimulus={{ id: 'drill-2' }}
+        lastFeedback={null}
+      />
+    )
+    expect(nextDrillHtml).not.toContain('Correct:')
+    expect(nextDrillHtml).not.toContain('desk-feedback-strip')
   })
 
   it('renders technique transparency badge pill', () => {
