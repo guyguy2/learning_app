@@ -28,9 +28,17 @@ Execute the Vitest test suite:
 npm test
 ```
 
+## UI
+
+The production interface uses the **Desk** design, located in `src/desk/`. It adopts a tactile Skola-style physical index-card metaphor: warm paper cards on a dotted desk, serif display typography for target vocabulary, morphological paper slips for stem and ending, commit-then-reveal docked feedback strips, a tap-to-tag sentence interface with clickable verb boundaries for role tagging, and wooden five-rung spaced repetition ladders on the summary card.
+
+The production UI incorporates two interactions borrowed from the Machine design:
+1. In guided practice, the learner types the ending directly into the blank ending tile next to the stem (typing the full form is also accepted).
+2. Primary action buttons display their keyboard shortcut as a small keycap (such as Enter).
+
 ## Design POC mode
 
-`npm run dev` opens a tabbed shell (`src/poc/PocShell.jsx`) instead of the bare app. The **Current** tab is the existing app; **Desk**, **Editorial**, and **Machine** are competing UI directions over the same engine, and **Template (raw)** is the contract harness. The Progress buttons in the top bar reset or seed `progress.json` (fresh, mid, review-due) so every tab can be compared from the same starting point.
+The production app renders the Desk UI (`src/desk/DeskApp.jsx`) by default. To compare UI directions side by side, append `?poc=1` to the URL (for example, `http://localhost:5173/?poc=1`). This opens the tabbed comparison shell (`src/poc/PocShell.jsx`) where **Current** is the legacy app, and **Desk**, **Editorial**, and **Machine** are competing UI directions over the same pedagogy engine. The Progress buttons in the top bar reset or seed `progress.json` (fresh, mid, review-due) so every variant can be compared from the same starting point.
 
 See [docs/design/poc-comparison.md](docs/design/poc-comparison.md) for what each variant does, how to reach every screen, screenshots, and a checklist for picking one. The variant contract is in [src/poc/variants/README.md](src/poc/variants/README.md).
 
