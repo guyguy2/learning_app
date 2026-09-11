@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import editorialVariant from './index.jsx'
+import React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import editorialVariant, { isRetestSuccess } from './index.jsx'
 import SessionStartCard from './SessionStartCard.jsx'
+import ProductionDrill from './ProductionDrill.jsx'
 import RepairPanel from './RepairPanel.jsx'
 import SummaryView from './SummaryView.jsx'
 
@@ -91,5 +94,67 @@ describe('Editorial Variant', () => {
     expect(text).toContain('3d')
     expect(text).toContain('7d')
     expect(text).toContain('Next due date: 2026-09-14')
+  })
+})
+
+describe('Editorial integration fixes', () => {
+  const nextStimulus = {
+    type: 'production',
+    phase: 'independent',
+    chunkId: 'ar',
+    verb: { id: 'estudiar', word: 'estudiar', meaning: 'to study' },
+    person: 'el_ella_usted',
+    expectedForm: 'estudia',
+    hint: null,
+  }
+
+  it('does not leak the current drill answer in the review success strip', () => {
+    const html = renderToStaticMarkup(
+      <ProductionDrill
+        stimulus={nextStimulus}
+        attemptCount={0}
+        onAttempt={() => {}}
+        feedback="correct"
+        lastAttempt={{ type: 'production', given: 'hablo', correct: true }}
+        isReview
+      />
+    )
+    expect(html).toContain('Correct: hablo')
+    expect(html).not.toContain('estudia<')
+    expect(html).not.toContain('Correct: estudia')
+  })
+
+  it('uses a neutral strip when the previous answer was a different drill type', () => {
+    const html = renderToStaticMarkup(
+      <ProductionDrill
+        stimulus={nextStimulus}
+        attemptCount={0}
+        onAttempt={() => {}}
+        feedback="correct"
+        lastAttempt={{ type: 'role-tagging', given: {}, correct: true }}
+        isReview
+      />
+    )
+    expect(html).toContain('Previous answer correct.')
+    expect(html).not.toContain('Correct: estudia')
+  })
+
+  it('does not label a generic miss with the misconception repair technique', () => {
+    const html = renderToStaticMarkup(
+      <RepairPanel
+        repair={{ misconception: null, correctForm: 'hablo', notionalMachine: null, pendingType: 'production' }}
+        lastAttempt={{ type: 'production', given: 'hablx', chunkId: 'ar' }}
+        onRetry={() => {}}
+        isReview={false}
+      />
+    )
+    expect(html).not.toContain('Misconception repair')
+    expect(html).toContain('Notional machine')
+  })
+
+  it('confirms the mental model only for a correct attempt after a repair', () => {
+    expect(isRetestSuccess(true, { correct: true })).toBe(true)
+    expect(isRetestSuccess(true, { correct: false })).toBe(false)
+    expect(isRetestSuccess(false, { correct: true })).toBe(false)
   })
 })

@@ -26,7 +26,10 @@ export default function RepairPanel({ repair, lastAttempt, onRetry, isReview }) 
 
   return (
     <div className={`editorial-card family-${family} editorial-drill-enter`}>
-      <TechniquePill techniqueKey="repair" isReview={isReview} />
+      <TechniquePill
+        techniqueKey={misconception ? 'repair' : isReview ? 'review' : pendingType}
+        isReview={isReview}
+      />
 
       <div className="editorial-repair-panel">
         {misconception ? (

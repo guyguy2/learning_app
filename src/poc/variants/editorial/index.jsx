@@ -9,6 +9,10 @@ import RepairPanel from './RepairPanel.jsx'
 import SummaryView from './SummaryView.jsx'
 import './editorial.css'
 
+export function isRetestSuccess(wasRepairing, attempt) {
+  return Boolean(wasRepairing && attempt?.correct)
+}
+
 function EditorialVariant() {
   const runner = useSessionRunner({ autoStart: false })
   const {
@@ -57,19 +61,22 @@ function EditorialVariant() {
     }
   }, [repair])
 
-  // If previous repair was retried and now correct, trigger mental model aligned confirmation
+  // Auto-dismiss the mental model aligned confirmation
   useEffect(() => {
-    if (feedback === 'correct' && wasRepairing) {
-      setMentalModelAligned(true)
-      setWasRepairing(false)
-      const timer = setTimeout(() => setMentalModelAligned(false), 4000)
-      return () => clearTimeout(timer)
-    }
-  }, [feedback, wasRepairing])
+    if (!mentalModelAligned) return
+    const timer = setTimeout(() => setMentalModelAligned(false), 4000)
+    return () => clearTimeout(timer)
+  }, [mentalModelAligned])
 
-  // Track last attempt for repair panel comparisons
+  // Track last attempt for repair panel comparisons. A correct retest after a repair
+  // confirms the mental model; detected here because the runner clears feedback in
+  // new-content mode as soon as it advances to the next drill.
   function handleAttempt(attempt) {
     lastAttemptRef.current = attempt
+    if (isRetestSuccess(wasRepairing, attempt)) {
+      setMentalModelAligned(true)
+      setWasRepairing(false)
+    }
     return onAttempt(attempt)
   }
 
@@ -131,6 +138,7 @@ function EditorialVariant() {
                 stimulus={stimulus}
                 onAttempt={handleAttempt}
                 feedback={feedback}
+                lastAttempt={lastAttemptRef.current}
                 isReview={isReview}
                 mentalModelAligned={mentalModelAligned}
               />
@@ -150,6 +158,7 @@ function EditorialVariant() {
                 attemptCount={attemptCount}
                 onAttempt={handleAttempt}
                 feedback={feedback}
+                lastAttempt={lastAttemptRef.current}
                 isReview={isReview}
                 mentalModelAligned={mentalModelAligned}
               />
@@ -160,9 +169,17 @@ function EditorialVariant() {
                 stimulus={stimulus}
                 onAttempt={handleAttempt}
                 feedback={feedback}
+                lastAttempt={lastAttemptRef.current}
                 isReview={isReview}
                 mentalModelAligned={mentalModelAligned}
               />
+            )}
+
+            {mentalModelAligned && feedback !== 'correct' && (
+              <div className="editorial-feedback-strip editorial-feedback-strip--correct">
+                Retest passed.
+                <span className="editorial-aligned-pill">Mental model aligned</span>
+              </div>
             )}
           </div>
         )}

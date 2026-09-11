@@ -5,6 +5,7 @@ export default function RoleTaggingDrill({
   stimulus,
   onAttempt,
   feedback,
+  lastAttempt,
   isReview,
   mentalModelAligned,
 }) {
@@ -280,7 +281,9 @@ export default function RoleTaggingDrill({
 
       {feedback === 'correct' && (
         <div className="editorial-feedback-strip editorial-feedback-strip--correct">
-          Correct: All grammatical roles identified accurately.
+          {lastAttempt?.type === 'role-tagging'
+            ? 'Correct: All grammatical roles identified accurately.'
+            : 'Previous answer correct.'}
           {mentalModelAligned && (
             <span className="editorial-aligned-pill">Mental model aligned</span>
           )}

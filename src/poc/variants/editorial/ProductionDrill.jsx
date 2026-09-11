@@ -19,10 +19,13 @@ export default function ProductionDrill({
   attemptCount,
   onAttempt,
   feedback,
+  lastAttempt,
   isReview,
   mentalModelAligned,
 }) {
   const [input, setInput] = useState('')
+  // The strip confirms the previous answer; never echo the current stimulus's expected form
+  const confirmed = lastAttempt?.type === 'production' ? lastAttempt.given : null
   const { chunkId, verb, person, phase, expectedForm, hint } = stimulus
   const isGuided = phase === 'guided'
   const personDisplay = PERSON_LABELS[person] || person
@@ -107,7 +110,7 @@ export default function ProductionDrill({
 
       {feedback === 'correct' && (
         <div className="editorial-feedback-strip editorial-feedback-strip--correct">
-          Correct: {expectedForm}
+          {confirmed ? `Correct: ${confirmed}` : 'Previous answer correct.'}
           {mentalModelAligned && (
             <span className="editorial-aligned-pill">Mental model aligned</span>
           )}

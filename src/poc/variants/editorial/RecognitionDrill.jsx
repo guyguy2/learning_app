@@ -13,10 +13,13 @@ export default function RecognitionDrill({
   stimulus,
   onAttempt,
   feedback,
+  lastAttempt,
   isReview,
   mentalModelAligned,
 }) {
   const [input, setInput] = useState('')
+  // The strip confirms the previous answer; never echo the current word's meaning
+  const confirmed = lastAttempt?.type === 'recognition' ? lastAttempt.given : null
   const family = stimulus.word.family || 'ar'
 
   function handleSubmit(e) {
@@ -74,7 +77,7 @@ export default function RecognitionDrill({
 
       {feedback === 'correct' && (
         <div className="editorial-feedback-strip editorial-feedback-strip--correct">
-          Correct: {stimulus.word.meaning}
+          {confirmed ? `Correct: ${confirmed}` : 'Previous answer correct.'}
           {mentalModelAligned && (
             <span className="editorial-aligned-pill">Mental model aligned</span>
           )}
