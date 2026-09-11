@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 export const PROGRESS_PATH = path.join(dirname, '..', 'progress.json')
 
-function defaultProgress() {
+export function defaultProgress() {
   return {
     session_number: 1,
     words: [],
