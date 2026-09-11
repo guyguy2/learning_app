@@ -28,6 +28,12 @@ Execute the Vitest test suite:
 npm test
 ```
 
+## Design POC mode
+
+`npm run dev` opens a tabbed shell (`src/poc/PocShell.jsx`) instead of the bare app. The **Current** tab is the existing app; **Desk**, **Editorial**, and **Machine** are competing UI directions over the same engine, and **Template (raw)** is the contract harness. The Progress buttons in the top bar reset or seed `progress.json` (fresh, mid, review-due) so every tab can be compared from the same starting point.
+
+See [docs/design/poc-comparison.md](docs/design/poc-comparison.md) for what each variant does, how to reach every screen, screenshots, and a checklist for picking one. The variant contract is in [src/poc/variants/README.md](src/poc/variants/README.md).
+
 ## How a session works
 
 Each session is assembled as **review first, then new content** (`buildSession` in `src/engine/session.js`).
