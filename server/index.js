@@ -5,6 +5,7 @@ import { buildSeed } from './seeds.js'
 const app = express()
 const PORT = process.env.SERVER_PORT || process.env.PORT || 3001
 
+
 app.use(express.json())
 
 app.get('/api/progress', async (_req, res) => {
