@@ -3,7 +3,7 @@ import { defaultProgress, readProgress, writeProgress } from './progressStore.js
 import { buildSeed } from './seeds.js'
 
 const app = express()
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 app.use(express.json())
 
