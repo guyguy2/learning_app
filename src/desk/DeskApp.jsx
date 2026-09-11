@@ -100,6 +100,11 @@ export default function DeskApp() {
   const techniqueKey = getTechniqueKey(repair, mode, exerciseType)
   const technique = techniqueFor(techniqueKey)
 
+  // Clear feedback strip when the next drill appears (consistent across review and new modes)
+  useEffect(() => {
+    setLocalFeedback(null)
+  }, [stimulus])
+
   // Auto-dismiss transient correct feedback strip
   useEffect(() => {
     if (localFeedback?.type === 'correct') {
