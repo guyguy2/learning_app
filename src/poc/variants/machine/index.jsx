@@ -40,6 +40,18 @@ export function stemOf(verbWord, family) {
   return verbWord.slice(0, -family.length)
 }
 
+function formatGiven(given) {
+  if (given == null) return ''
+  if (typeof given === 'string') return given
+  if (typeof given === 'object') {
+    if (given.subject || given.stem || given.ending || given.object) {
+      return [given.subject, `${given.stem || ''}${given.ending || ''}`, given.object].filter(Boolean).join(' ')
+    }
+    return JSON.stringify(given)
+  }
+  return String(given)
+}
+
 function MachineVariant() {
   const runner = useSessionRunner({ autoStart: false })
   const {
@@ -115,9 +127,10 @@ function MachineVariant() {
   // Handle wrapped attempts to track lastAttempt and retest state
   function handleAttempt(payload) {
     setLastAttempt(payload)
-    if (payload.correct) {
-      // successful attempt
-    } else {
+    if (inRetest && payload.correct) {
+      setShowModelAligned(true)
+      setInRetest(false)
+    } else if (!inRetest) {
       setShowModelAligned(false)
     }
     return onAttempt(payload)
@@ -359,7 +372,9 @@ function MachineVariant() {
             <p className="machine-repair__explanation">
               {repair.misconception
                 ? repair.misconception.explanation
-                : `Expected correct answer: "${repair.correctForm}". Review the model and try again.`}
+                : repair.correctForm
+                ? `Expected correct answer: "${repair.correctForm}". Review the model and try again.`
+                : `Sentence parts mismatch. Expected: subject "${stimulus?.parts?.subject}", stem "${stimulus?.parts?.stem}", ending "${stimulus?.parts?.ending}", object "${stimulus?.parts?.object}".`}
             </p>
 
             {/* Visual Re-demonstration of the Notional Machine */}
@@ -380,7 +395,7 @@ function MachineVariant() {
                     family={activeFamily}
                     isRepair={true}
                     struckEnding={
-                      lastAttempt?.given
+                      typeof lastAttempt?.given === 'string' && lastAttempt.given
                         ? (lastAttempt.given.length > 2
                             ? lastAttempt.given.slice(
                                 stemOf(stimulus?.verb?.word || '', getFamily(stimulus?.chunkId || 'ar')).length,
@@ -408,7 +423,7 @@ function MachineVariant() {
                   <div style={{ fontSize: '1.1rem' }}>
                     {lastAttempt?.given && (
                       <span className="machine-tile__struck" style={{ marginRight: '1rem' }}>
-                        "{lastAttempt.given}"
+                        "{formatGiven(lastAttempt.given)}"
                       </span>
                     )}
                     <span className="machine-tile__correct">"{repair.correctForm}"</span>
@@ -447,6 +462,16 @@ function MachineVariant() {
                 </summary>
                 <div className="machine-technique__body">{activeTechnique.explanation}</div>
               </details>
+            )}
+
+            {showModelAligned && (
+              <div
+                className="machine-result-strip machine-result-strip--correct"
+                style={{ margin: '1rem 0' }}
+              >
+                <span className="machine-aligned-badge">Mental model aligned</span>
+                <span>Retest confirmed: your mental model is aligned with the notional machine.</span>
+              </div>
             )}
 
             {/* Recognition Drill */}
@@ -515,7 +540,7 @@ function MachineVariant() {
                 {/* Result Strip Directly Under Input */}
                 {feedback === 'correct' && (
                   <div className="machine-result-strip machine-result-strip--correct">
-                    <span>Confirmed Correct: "{lastAttempt?.given}"</span>
+                    <span>Confirmed Correct: "{formatGiven(lastAttempt?.given)}"</span>
                     {showModelAligned && (
                       <span className="machine-aligned-badge">Mental model aligned</span>
                     )}
@@ -726,7 +751,7 @@ function MachineVariant() {
                     {/* Result Strip Directly Under Input */}
                     {feedback === 'correct' && (
                       <div className="machine-result-strip machine-result-strip--correct">
-                        <span>Confirmed Form: "{lastAttempt?.given}"</span>
+                        <span>Confirmed Form: "{formatGiven(lastAttempt?.given)}"</span>
                         {showModelAligned && (
                           <span className="machine-aligned-badge">Mental model aligned</span>
                         )}
@@ -789,7 +814,7 @@ function MachineVariant() {
                     {/* Result Strip Directly Under Input */}
                     {feedback === 'correct' && (
                       <div className="machine-result-strip machine-result-strip--correct">
-                        <span>Confirmed Correct: "{lastAttempt?.given}"</span>
+                        <span>Confirmed Correct: "{formatGiven(lastAttempt?.given)}"</span>
                         {showModelAligned && (
                           <span className="machine-aligned-badge">Mental model aligned</span>
                         )}
