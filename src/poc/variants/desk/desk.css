@@ -1,0 +1,1108 @@
+/* ==========================================================================
+   DESK DESIGN VARIANT STYLES
+   All rules scoped under .variant-desk
+   Strictly no emojis and no em dashes in any comments or content.
+   ========================================================================== */
+
+.variant-desk {
+  --desk-bg: #f5f2eb;
+  --desk-surface: #fffdf9;
+  --desk-text: #2d2623;
+  --desk-text-muted: #736b63;
+  --desk-border: #e4dfd3;
+  --desk-line: #ece8dc;
+  --desk-shadow-soft: 0 3px 6px rgba(45, 35, 25, 0.04), 0 10px 24px rgba(45, 35, 25, 0.07);
+  --desk-radius: 8px;
+
+  /* Family accent colors */
+  --family-ar: #c2593f; /* terracotta */
+  --family-er: #4f7759; /* sage */
+  --family-ir: #3e648f; /* slate blue */
+  --family-neutral: #8c827a;
+
+  /* Fixed role tagging colors */
+  --role-subject: #92400e;
+  --role-subject-bg: #fef3c7;
+  --role-subject-border: #f59e0b;
+
+  --role-stem: #0f766e;
+  --role-stem-bg: #ccfbf1;
+  --role-stem-border: #14b8a6;
+
+  --role-ending: #6b21a8;
+  --role-ending-bg: #f3e8ff;
+  --role-ending-border: #a855f7;
+
+  --role-object: #166534;
+  --role-object-bg: #dcfce7;
+  --role-object-border: #22c55e;
+
+  /* Feedback stamp colors */
+  --feedback-green: #1d7344;
+  --feedback-green-bg: #edfbf2;
+  --feedback-green-border: #74caa0;
+
+  --feedback-amber: #944e05;
+  --feedback-amber-bg: #fff8eb;
+  --feedback-amber-border: #e8b063;
+
+  min-height: 85vh;
+  padding: 2rem 1.25rem 4rem;
+  background-color: var(--desk-bg);
+  background-image:
+    radial-gradient(#e5dfd2 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(243, 239, 230, 0.5));
+  background-size: 24px 24px, 100% 100%;
+  color: var(--desk-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Top Bar / Session Indicator
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-topbar {
+  max-width: 44rem;
+  margin: 0 auto 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+.variant-desk .desk-session-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--desk-text-muted);
+}
+
+.variant-desk .desk-review-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 4px;
+  background: #f0ebe1;
+  border: 1px solid #ded6c8;
+  color: #594f45;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.variant-desk .desk-aligned-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 4px;
+  background: var(--feedback-green-bg);
+  border: 1px solid var(--feedback-green-border);
+  color: var(--feedback-green);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Technique Badge (Consistent top-right on card)
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  z-index: 10;
+}
+
+.variant-desk .desk-badge details {
+  display: inline-block;
+}
+
+.variant-desk .desk-badge summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 12px;
+  background: #f4eee3;
+  border: 1px solid #dfd8c8;
+  color: #61574c;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.variant-desk .desk-badge summary::-webkit-details-marker {
+  display: none;
+}
+
+.variant-desk .desk-badge summary:hover {
+  background: #eae2d3;
+  border-color: #cfc4b0;
+}
+
+.variant-desk .desk-badge summary:focus-visible {
+  outline: 2px solid var(--family-ar);
+  outline-offset: 1px;
+}
+
+.variant-desk .desk-badge p {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.75rem;
+  max-width: 18rem;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #dcd4c3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  color: #4a4138;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  position: absolute;
+  right: 0;
+  top: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Index Card Main Frame
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-card {
+  position: relative;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2.25rem 2.25rem 2rem;
+  background-color: var(--desk-surface);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 31px,
+    var(--desk-line) 32px
+  );
+  border: 1px solid var(--desk-border);
+  border-top: 6px solid var(--card-family-color, var(--family-neutral));
+  border-radius: var(--desk-radius);
+  box-shadow: var(--desk-shadow-soft);
+}
+
+.variant-desk .desk-card--slide {
+  animation: deskCardSlideIn 200ms ease-out;
+}
+
+@keyframes deskCardSlideIn {
+  from {
+    opacity: 0.4;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Typography and Headings
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--desk-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.variant-desk .desk-title {
+  font-family: 'Playfair Display', Georgia, 'Palatino Linotype', Palatino, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--desk-text);
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.variant-desk .desk-prompt {
+  font-size: 1rem;
+  color: var(--desk-text-muted);
+  margin: 0 0 1.25rem;
+}
+
+.variant-desk .desk-target-word {
+  font-family: 'Playfair Display', Georgia, 'Palatino Linotype', Palatino, serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--desk-text);
+  margin: 0.5rem 0 1rem;
+  letter-spacing: -0.01em;
+}
+
+.variant-desk .desk-subtext {
+  font-size: 0.9375rem;
+  color: var(--desk-text-muted);
+  margin: 0 0 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Inputs and Forms
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.variant-desk .desk-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  font-family: inherit;
+  font-size: 1.125rem;
+  color: var(--desk-text);
+  background: #ffffff;
+  border: 1px solid var(--desk-border);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.variant-desk .desk-input:focus {
+  outline: none;
+  border-color: var(--card-family-color, var(--family-ar));
+  box-shadow: 0 0 0 3px rgba(194, 89, 63, 0.15);
+}
+
+.variant-desk .desk-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  color: var(--desk-text);
+  background: #ffffff;
+  border: 1px solid var(--desk-border);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  resize: vertical;
+  margin-top: 0.5rem;
+}
+
+.variant-desk .desk-textarea:focus {
+  outline: none;
+  border-color: var(--card-family-color, var(--family-ar));
+  box-shadow: 0 0 0 3px rgba(194, 89, 63, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Buttons (Tactile Paper Feel)
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.variant-desk .desk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6875rem 1.375rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.25;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.variant-desk .desk-btn:active {
+  transform: translateY(1px);
+}
+
+.variant-desk .desk-btn--primary {
+  color: #ffffff;
+  background-color: var(--card-family-color, #c2593f);
+  border-color: color-mix(in srgb, var(--card-family-color, #c2593f) 80%, black);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.variant-desk .desk-btn--primary:hover {
+  filter: brightness(0.93);
+}
+
+.variant-desk .desk-btn--secondary {
+  color: var(--desk-text);
+  background-color: #f7f3ec;
+  border-color: #ded7c8;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.variant-desk .desk-btn--secondary:hover {
+  background-color: #ece5d8;
+  border-color: #cdc3af;
+}
+
+/* --------------------------------------------------------------------------
+   Stem & Ending Paper Slips (Tactile Visual Unit)
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-tiles-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.variant-desk .desk-tiles {
+  display: inline-flex;
+  align-items: stretch;
+  background: #ffffff;
+  border: 1px solid var(--desk-border);
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.variant-desk .desk-tiles--separated {
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.variant-desk .desk-slip {
+  padding: 0.75rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid var(--desk-border);
+  border-radius: 4px;
+  min-width: 5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.variant-desk .desk-tiles--joined .desk-slip {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.variant-desk .desk-tiles--joined .desk-slip--stem {
+  background: #fffefb;
+  border-right: 1px dashed var(--desk-border);
+}
+
+.variant-desk .desk-tiles--joined .desk-slip--ending {
+  background: #fdfbf7;
+}
+
+.variant-desk .desk-slip--blank {
+  background: #faf6ed;
+  border: 1px dashed #d8ceba;
+  min-width: 5.5rem;
+}
+
+.variant-desk .desk-slip__tag {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--desk-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.variant-desk .desk-slip__content {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--desk-text);
+  line-height: 1.1;
+}
+
+.variant-desk .desk-slip--ending-animated {
+  animation: deskEndingSwap 250ms ease-out;
+}
+
+@keyframes deskEndingSwap {
+  from {
+    opacity: 0.2;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.variant-desk .desk-slip__struck-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.variant-desk .desk-slip__struck {
+  color: #b91c1c;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.8;
+}
+
+.variant-desk .desk-slip__replacement {
+  color: var(--feedback-green);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Worked Example Paradigm Stepwise Reveal
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-paradigm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 1.25rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.variant-desk .desk-paradigm-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.875rem;
+  background: #f9f6ef;
+  border: 1px solid #ebe4d5;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: var(--desk-text);
+}
+
+.variant-desk .desk-paradigm-item--active {
+  background: #ffffff;
+  border-color: var(--card-family-color, var(--family-ar));
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+}
+
+.variant-desk .desk-paradigm-person {
+  font-weight: 600;
+  color: var(--desk-text-muted);
+  width: 11rem;
+}
+
+.variant-desk .desk-paradigm-swap {
+  font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  color: var(--desk-text);
+}
+
+/* --------------------------------------------------------------------------
+   Hint Callout (Guided Practice)
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-hint-box {
+  margin: 0.75rem 0 1.25rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 6px;
+  background: #f7f3ea;
+  border: 1px solid #ded5c2;
+  font-size: 0.875rem;
+  color: #574d41;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.variant-desk .desk-hint-box__label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: #7d6f5c;
+}
+
+/* --------------------------------------------------------------------------
+   Role Tagging Interactive Sentence & Token Dividers
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-role-palette {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0 1.5rem;
+}
+
+.variant-desk .desk-role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.4375rem 0.875rem;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.variant-desk .desk-role-pill--subject {
+  color: var(--role-subject);
+  background: var(--role-subject-bg);
+  border-color: var(--role-subject-border);
+}
+
+.variant-desk .desk-role-pill--stem {
+  color: var(--role-stem);
+  background: var(--role-stem-bg);
+  border-color: var(--role-stem-border);
+}
+
+.variant-desk .desk-role-pill--ending {
+  color: var(--role-ending);
+  background: var(--role-ending-bg);
+  border-color: var(--role-ending-border);
+}
+
+.variant-desk .desk-role-pill--object {
+  color: var(--role-object);
+  background: var(--role-object-bg);
+  border-color: var(--role-object-border);
+}
+
+.variant-desk .desk-role-pill--selected {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 1px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.variant-desk .desk-role-key-cue {
+  font-size: 0.6875rem;
+  font-family: monospace;
+  opacity: 0.7;
+  padding: 0.0625rem 0.25rem;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+}
+
+.variant-desk .desk-sentence-flow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1.25rem;
+  background: #fbf9f4;
+  border: 1px solid #e2dbcd;
+  border-radius: 8px;
+  margin: 1rem 0 1.5rem;
+}
+
+.variant-desk .desk-token-card {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.875rem;
+  background: #ffffff;
+  border: 2px solid #ded5c2;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.variant-desk .desk-token-card:hover {
+  border-color: #b5a892;
+}
+
+.variant-desk .desk-token-card--tagged-subject {
+  color: var(--role-subject);
+  background: var(--role-subject-bg);
+  border-color: var(--role-subject-border);
+}
+
+.variant-desk .desk-token-card--tagged-stem {
+  color: var(--role-stem);
+  background: var(--role-stem-bg);
+  border-color: var(--role-stem-border);
+}
+
+.variant-desk .desk-token-card--tagged-ending {
+  color: var(--role-ending);
+  background: var(--role-ending-bg);
+  border-color: var(--role-ending-border);
+}
+
+.variant-desk .desk-token-card--tagged-object {
+  color: var(--role-object);
+  background: var(--role-object-bg);
+  border-color: var(--role-object-border);
+}
+
+.variant-desk .desk-token-role-tag {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.125rem;
+}
+
+.variant-desk .desk-token-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+/* Verb Token with Clickable Letter Gaps */
+.variant-desk .desk-verb-token {
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 2px solid #d2c7b3;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  position: relative;
+}
+
+.variant-desk .desk-verb-token--split {
+  border: none;
+  background: transparent;
+  padding: 0;
+  gap: 0.5rem;
+}
+
+.variant-desk .desk-letter-gap-wrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.variant-desk .desk-letter-char {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.375rem;
+  font-weight: 600;
+  padding: 0.25rem 0.125rem;
+  user-select: none;
+}
+
+.variant-desk .desk-letter-boundary-btn {
+  width: 14px;
+  height: 28px;
+  margin: 0 1px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+}
+
+.variant-desk .desk-letter-boundary-line {
+  width: 2px;
+  height: 18px;
+  background: #ded5c2;
+  border-radius: 1px;
+  transition: background 0.15s ease, height 0.15s ease;
+}
+
+.variant-desk .desk-letter-boundary-btn:hover .desk-letter-boundary-line {
+  background: var(--card-family-color, var(--family-ar));
+  height: 24px;
+  width: 3px;
+}
+
+.variant-desk .desk-boundary-hint {
+  font-size: 0.8125rem;
+  color: var(--desk-text-muted);
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.variant-desk .desk-role-diff-panel {
+  margin: 1rem 0;
+  padding: 0.875rem 1rem;
+  background: #fff8f5;
+  border: 1px solid #f2cfc4;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.variant-desk .desk-role-diff-title {
+  font-weight: 700;
+  color: #b91c1c;
+  margin-bottom: 0.5rem;
+}
+
+.variant-desk .desk-role-diff-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+}
+
+.variant-desk .desk-role-diff-mismatch {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Feedback Stamp Strip (Card Bottom Docked)
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-feedback-strip {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-family: 'SF Mono', Monaco, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.variant-desk .desk-feedback-strip--correct {
+  color: var(--feedback-green);
+  background-color: var(--feedback-green-bg);
+  border: 2px dashed var(--feedback-green-border);
+}
+
+.variant-desk .desk-feedback-strip--miss {
+  color: var(--feedback-amber);
+  background-color: var(--feedback-amber-bg);
+  border: 2px dashed var(--feedback-amber-border);
+}
+
+/* --------------------------------------------------------------------------
+   Misconception Repair Panel (Distinct Screen)
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-repair-panel {
+  border-top-color: var(--feedback-amber);
+}
+
+.variant-desk .desk-repair-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #9a4704;
+  margin: 0 0 0.75rem;
+}
+
+.variant-desk .desk-repair-explanation {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--desk-text);
+  margin: 0 0 1.5rem;
+}
+
+.variant-desk .desk-notional-machine-box {
+  padding: 1rem 1.25rem;
+  background: #fbf9f4;
+  border: 1px solid #ded6c5;
+  border-radius: 6px;
+  margin: 1rem 0 1.5rem;
+}
+
+.variant-desk .desk-notional-machine-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #756a5c;
+  margin-bottom: 0.375rem;
+}
+
+.variant-desk .desk-notional-machine-text {
+  font-size: 0.9375rem;
+  color: #3b332b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Session Summary & Five-Rung Wooden Ladder
+   -------------------------------------------------------------------------- */
+.variant-desk .desk-summary-stats {
+  display: flex;
+  gap: 1rem;
+  margin: 1.25rem 0 2rem;
+  flex-wrap: wrap;
+}
+
+.variant-desk .desk-stat-card {
+  flex: 1;
+  min-width: 10rem;
+  padding: 1rem;
+  background: #fbf9f4;
+  border: 1px solid #ded5c2;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.variant-desk .desk-stat-value {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--desk-text);
+  margin-bottom: 0.25rem;
+}
+
+.variant-desk .desk-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--desk-text-muted);
+}
+
+.variant-desk .desk-ladder-card {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: #faf7f0;
+  border: 1px solid #dfd7c5;
+  border-radius: 6px;
+}
+
+.variant-desk .desk-ladder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.25rem;
+}
+
+.variant-desk .desk-ladder-family {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--desk-text);
+}
+
+.variant-desk .desk-ladder-due {
+  font-size: 0.8125rem;
+  color: var(--desk-text-muted);
+}
+
+.variant-desk .desk-ladder-rig {
+  position: relative;
+  max-width: 280px;
+  height: 220px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column-reverse; /* rung 0 at bottom, rung 4 at top */
+  justify-content: space-between;
+  padding: 14px 28px;
+}
+
+/* Wooden vertical rails */
+.variant-desk .desk-ladder-rig::before,
+.variant-desk .desk-ladder-rig::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #5c3818, #8a592e, #4a2c12);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), inset 1px 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.variant-desk .desk-ladder-rig::before {
+  left: 16px;
+}
+
+.variant-desk .desk-ladder-rig::after {
+  right: 16px;
+}
+
+/* Wooden rungs */
+.variant-desk .desk-ladder-rung {
+  position: relative;
+  height: 10px;
+  margin: 0 4px;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #8f5a2b, #6b401c, #4a2b10);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+}
+
+.variant-desk .desk-ladder-rung--climbed {
+  background: linear-gradient(to bottom, #aa723e, #825026, #543114);
+}
+
+.variant-desk .desk-ladder-rung--active {
+  background: linear-gradient(to bottom, #bd824c, #966133, #693e1b);
+  box-shadow: 0 0 6px rgba(189, 130, 76, 0.6), 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Brass Marker Peg on active rung */
+.variant-desk .desk-ladder-peg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffd700, #c89519, #704b12);
+  border: 1px solid #4a300c;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.variant-desk .desk-ladder-rung-label {
+  position: absolute;
+  left: 100%;
+  margin-left: 18px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--desk-text-muted);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Prefers Reduced Motion & Dark Mode Support
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .variant-desk *,
+  .variant-desk *::before,
+  .variant-desk *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .variant-desk {
+    --desk-bg: #191715;
+    --desk-surface: #24211e;
+    --desk-text: #ede7df;
+    --desk-text-muted: #a19a90;
+    --desk-border: #38332d;
+    --desk-line: #2d2925;
+
+    --family-ar: #d96f52;
+    --family-er: #63966f;
+    --family-ir: #527ea8;
+
+    --role-subject: #fef3c7;
+    --role-subject-bg: #78350f;
+    --role-subject-border: #b45309;
+
+    --role-stem: #ccfbf1;
+    --role-stem-bg: #115e59;
+    --role-stem-border: #0d9488;
+
+    --role-ending: #f3e8ff;
+    --role-ending-bg: #581c87;
+    --role-ending-border: #7e22ce;
+
+    --role-object: #dcfce7;
+    --role-object-bg: #14532d;
+    --role-object-border: #15803d;
+
+    --feedback-green: #4ade80;
+    --feedback-green-bg: #143823;
+    --feedback-green-border: #22c55e;
+
+    --feedback-amber: #fbb724;
+    --feedback-amber-bg: #3d2407;
+    --feedback-amber-border: #d97706;
+
+    background-color: var(--desk-bg);
+    background-image:
+      radial-gradient(#2c2722 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(25, 23, 21, 0.8), rgba(20, 18, 16, 0.8));
+  }
+
+  .variant-desk .desk-input,
+  .variant-desk .desk-textarea {
+    background: #1c1a18;
+    color: var(--desk-text);
+  }
+
+  .variant-desk .desk-slip {
+    background: #2a2723;
+  }
+
+  .variant-desk .desk-tiles--joined .desk-slip--stem {
+    background: #2a2723;
+  }
+
+  .variant-desk .desk-tiles--joined .desk-slip--ending {
+    background: #25221e;
+  }
+
+  .variant-desk .desk-slip--blank {
+    background: #201e1b;
+  }
+
+  .variant-desk .desk-badge summary {
+    background: #2f2a24;
+    border-color: #453e35;
+    color: #c9c2b5;
+  }
+
+  .variant-desk .desk-badge p {
+    background: #26221d;
+    border-color: #453e35;
+    color: #ede7df;
+  }
+
+  .variant-desk .desk-btn--secondary {
+    background-color: #2e2a25;
+    border-color: #4a4339;
+    color: var(--desk-text);
+  }
+
+  .variant-desk .desk-btn--secondary:hover {
+    background-color: #38332d;
+  }
+
+  .variant-desk .desk-paradigm-item {
+    background: #201d1a;
+    border-color: #332d26;
+  }
+
+  .variant-desk .desk-paradigm-item--active {
+    background: #2b2723;
+  }
+
+  .variant-desk .desk-hint-box {
+    background: #25211c;
+    border-color: #423b32;
+    color: #cdc4b7;
+  }
+
+  .variant-desk .desk-token-card {
+    background: #2a2622;
+    border-color: #423b32;
+  }
+
+  .variant-desk .desk-verb-token {
+    background: #2a2622;
+    border-color: #423b32;
+  }
+
+  .variant-desk .desk-sentence-flow {
+    background: #1f1c19;
+    border-color: #352f28;
+  }
+
+  .variant-desk .desk-stat-card,
+  .variant-desk .desk-ladder-card,
+  .variant-desk .desk-notional-machine-box {
+    background: #1f1c19;
+    border-color: #352f28;
+  }
+}
