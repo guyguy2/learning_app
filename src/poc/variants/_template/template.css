@@ -1,0 +1,100 @@
+.variant-_template {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  color: var(--text, #1a1d23);
+}
+
+.variant-_template .template-header {
+  border-bottom: 2px solid var(--border, #dde2e8);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.variant-_template .template-header h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+}
+
+.variant-_template .template-header p {
+  margin: 0;
+  color: var(--text-muted, #5c6570);
+  font-size: 0.875rem;
+}
+
+.variant-_template .template-panel {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #dde2e8);
+  border-radius: var(--radius, 12px);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow, 0 4px 24px rgba(0, 0, 0, 0.05));
+}
+
+.variant-_template .template-panel h3 {
+  margin-top: 0;
+  font-size: 1.125rem;
+  margin-bottom: 0.75rem;
+}
+
+.variant-_template .btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.variant-_template .btn-action {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--border, #dde2e8);
+  background: var(--surface, #ffffff);
+  color: var(--text, #1a1d23);
+  cursor: pointer;
+}
+
+.variant-_template .btn-action:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.variant-_template .btn-action--primary {
+  background: var(--primary, #2563eb);
+  color: var(--primary-contrast, #ffffff);
+  border-color: var(--primary, #2563eb);
+}
+
+.variant-_template .btn-action--danger {
+  background: var(--error, #dc2626);
+  color: #ffffff;
+  border-color: var(--error, #dc2626);
+}
+
+.variant-_template .template-json-viewer {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  max-height: 25rem;
+}
+
+.variant-_template .template-form-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.variant-_template .template-input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border, #dde2e8);
+  border-radius: 6px;
+  background: var(--surface, #ffffff);
+  color: var(--text, #1a1d23);
+  font-size: 0.875rem;
+}
