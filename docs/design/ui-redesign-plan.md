@@ -18,10 +18,10 @@ These map onto Mayer's coherence, signaling, segmenting, and pre-training princi
 
 - Session start: A single card showing what is due for review, which family is up, and one "Begin" button. Replaces jumping straight into a drill.
 - Worked example (I-do): Stem and ending rendered as two joined tiles. "Next step" reveals one paradigm row at a time. After the table completes, one prompt ("Why does yo take -o?") with a free-text box, not graded. Adds segmenting and self-explanation.
-- Guided practice (We-do): Same tile layout with the ending tile blank. Hint fades over attempts: full hint, then person only, then nothing. Today the hint is a static string.
+- Guided practice (We-do): Same tile layout with the ending tile blank. Hint fades over attempts: full hint, then person only, then nothing, derived from chunk streak and attempt count without altering engine schema.
 - Independent recall (You-do): Verb, person, input. Submit shows a full-width result strip: green with the form, or amber leading into repair.
 - Recognition: Word large, input below, accepted synonyms shown after submit. Small "false friend" tag on repair for seeded cognates.
-- Role tagging: Sentence rendered as word tokens. Learner taps a role pill then a token. Wrong tags show which role was confused.
+- Role tagging: Sentence rendered as word tokens. The verb is a single token that the learner splits at the letter boundary before tagging stem and ending. Learner taps role pills to tag subject, stem, ending, and object. Wrong boundary or tags show which role was confused.
 - Misconception repair: Named title, one-sentence explanation, notional machine tiles re-shown with the wrong ending struck through, one "Try a similar one" button.
 - Session summary: Chunks reviewed, ladder steps advanced, next due dates as a small calendar strip. No XP, streak fire, or leaderboards.
 - Technique badge: Keep the corner pill, consistent icon per technique, keyboard shortcut.
@@ -32,17 +32,18 @@ These map onto Mayer's coherence, signaling, segmenting, and pre-training princi
 - Color: Neutral warm background, one accent hue per family (ar, er, ir), semantic green and amber for feedback only. Fixed role colors for subject, stem, ending, object across screens.
 - Motion: Only two animations: stem-ending swap in the worked example, short slide when a new drill arrives.
 - Texture: Skola-style index-card metaphor: drills are cards on a desk, not form fields on a page.
-- Stack: Keep Vite + React. Consider Tailwind + shadcn (Base UI primitives) for accessible inputs/dialogs/focus. Existing src/theme.css tokens can seed the theme.
+- Stack: Keep Vite + React. Reject Tailwind and shadcn; extend existing src/theme.css design tokens. Zero new dependencies, zero build config churn, lightweight for a personal PoC.
 
 ## Proposed Tickets
 
-1. Design tokens and Tailwind/shadcn setup, migrating theme.css values.
-2. Worked example with stepwise reveal, stem-ending tiles, self-explanation prompt.
-3. Hint fading in guided practice, driven by a new hint_level in progress state.
-4. Tap-to-tag role-tagging screen.
-5. Repair panel and feedback strip redesign.
-6. Session start and summary cards.
-7. Move the session state machine from App.jsx into the engine so screens stay thin and testable. (Should land before 2-6.)
+1. Move session state machine from App.jsx into pure engine module (src/engine/sessionRunner.js) with tests, resolving React async state bugs.
+2. Design tokens, family colors, and card/desk layout system in src/theme.css.
+3. Session start card and enhanced session summary (calendar strip and ladder rungs).
+4. Worked example with stepwise reveal, stem-ending tiles, self-explanation prompt.
+5. Hint fading in guided practice, derived from production_phase, streak_count, and attempt count.
+6. Independent recall and recognition redesign with bottom-docked feedback strip.
+7. Tap-to-tag role-tagging screen with single verb token split interaction.
+8. Named misconception repair panel redesign with notional machine strike-through.
 
 ## Sources
 

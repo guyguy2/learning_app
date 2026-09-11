@@ -47,9 +47,11 @@ In this application, fun is derived entirely from intrinsic, learning-aligned de
 The existing role-tagging screen requires learners to manually type Spanish substrings into four separate text inputs: Subject, Stem, Ending, and Object. This creates substantial extraneous cognitive load, causes typing mistakes, and breaks the rhythm of sentence analysis.
 
 ### Redesigned Interaction Flow
-The sentence is presented as a horizontal sequence of interactive token chips. The conjugated verb token is pre-split into stem and ending segments:
+In the sentence view, the Spanish sentence is rendered as individual word tokens. Crucially, the verb is presented as ONE single token:
 
-`[ Yo ]` `[ habl ][ o ]` `[ español ]`
+`[ Yo ]` `[ hablo ]` `[ español ]`
+
+Pre-splitting the verb into `[habl]` and `[o]` during initial presentation is avoided because identifying the stem and ending boundary is the primary retrieval task in role-tagging. Pre-splitting would reveal the answer in advance. A pre-split view is only shown during misconception repair screens.
 
 Above or below the sentence sits a Role Palette containing four distinct, color-coded role badges:
 - Subject: Soft violet
@@ -58,22 +60,26 @@ Above or below the sentence sits a Role Palette containing four distinct, color-
 - Object: Sea green
 
 ### Interaction Steps
-1. Tap-to-Tag (Palette-First):
-   - Learner taps a role badge in the palette (for example, `Stem`), giving it an active glow.
-   - Learner taps the corresponding token segment (`habl`). The segment takes on the role's background tint and a colored role tag beneath it.
-2. Direct Token Tap (Token-First Alternative):
-   - Learner taps any untagged token segment, opening a small four-item role pill selector directly above it.
-   - Tapping an option assigns the role immediately.
+1. Tagging Subject and Object:
+   - Learner taps a role badge in the palette (for example, `Subject`), giving it an active highlight.
+   - Learner taps the corresponding word token (`Yo`). The token receives the role color tint and role label.
+   - Alternatively, learner taps the token directly to open an inline four-option role selector.
+2. Splitting the Verb (Stem and Ending):
+   - The learner taps the letter boundary inside the verb token (for example, tapping between 'l' and 'o' in `hablo`) or drags a boundary divider blade.
+   - Tapping the boundary splits the single verb token into two halves: `[ habl ]` and `[ o ]`.
+   - The learner then assigns the `Stem` role to `habl` and the `Ending` role to `o`.
+   - Tapping the boundary seam again merges the two halves back into a single token if the learner wants to adjust the split point.
 3. Quick Reset:
-   - Tapping an already-tagged token removes its assignment.
+   - Tapping an already-tagged token clears its assignment.
 4. Keyboard Accessibility:
-   - Keys 1 to 4 select the role from the palette.
-   - Tab and arrow keys navigate across tokens.
-   - Space or Enter assigns the selected role to the active token.
-5. Submission and Misconception Feedback:
-   - Once all required components are tagged, the Submit button activates.
-   - On success, all tokens gently flash in their role colors and advance.
-   - On error, the screen shows a targeted diagnostic (for example: "Confusion between Stem and Ending: 'habl' was marked as Ending") rather than a generic failure message.
+   - Keys 1 to 4 select roles from the palette.
+   - Tab and arrow keys navigate across tokens and letter boundaries.
+   - Space or Enter splits a verb token or assigns the active role.
+5. Mapping to Existing Attempt Shape (No Engine Changes):
+   - The boundary split and role assignments map directly to the engine's expected attempt shape:
+     `given: { subject: tags.subject, stem: tags.stem, ending: tags.ending, object: tags.object }`
+   - If the learner splits `hablo` at the wrong boundary (for example, `hab` and `lo`), `given.stem` is `"hab"` and `given.ending` is `"lo"`. The validation evaluates `correct: false` against `stimulus.parts.stem` (`"habl"`) and `stimulus.parts.ending` (`"o"`).
+   - The UI immediately pinpoints the error (for example: "Stem boundary incorrect: 'hab' is missing the 'l'"). No schema or engine changes are required.
 
 ---
 
@@ -81,18 +87,19 @@ Above or below the sentence sits a Role Palette containing four distinct, color-
 
 Maintaining a pure, testable pedagogy engine requires clear boundaries between persistent learning state and ephemeral view state.
 
-### 1. Hint Fading (`hint_level`)
-- Engine State (Persisted in `progress.json`):
-  - `hint_level` belongs in the chunk's progress state in `progress.json`.
-  - Level definitions:
-    - Level 0 (Full Scaffold): Shows base infinitive, removal step, and person ending rule.
-    - Level 1 (Faded Rule): Shows person and ending family hint (for example: "yo ending for -ar").
-    - Level 2 (Minimal Cue): Shows person only.
-    - Level 3 (Unassisted Retrieval): Independent recall with zero hints.
-  - Progression logic:
-    - Two consecutive correct answers at the current hint level advance the chunk to the next level (`hint_level + 1`).
-    - An uncorrected error drops the level back down to provide scaffolding.
-  - Why engine state: Hint fading represents the learner's true retrieval fluency across sessions. When returning tomorrow, the engine must know whether the learner still requires scaffolding.
+### 1. Hint Fading (Derived, Not Stored)
+- Rationale for Rejection of Stored `hint_level`:
+  - The chunk data model in SPEC already tracks `production_phase` (`'worked_example' -> 'guided' -> 'independent'`) and `streak_count`.
+  - Adding a separate stored 4-level ladder creates an overlapping second fluency tracker on top of `streak_count`, and level 3 (unassisted retrieval) directly duplicates `production_phase === 'independent'`.
+  - The SPEC data model remains completely untouched: no new fields in `progress.json`.
+- Dynamic Derived Fading:
+  - Guided-phase hint text is a pure function of existing state: `deriveHintText({ production_phase, streak_count, attemptCount, stimulus })`.
+  - Level logic:
+    - `streak_count === 0` and `attemptCount === 0`: Full prompt with stem-ending rule (for example: "hablar: drop -ar, attach yo ending -o").
+    - `streak_count >= 1` and `attemptCount === 0`: Faded rule showing person and ending cue (for example: "yo ending for -ar").
+    - `attemptCount >= 1` (local retry on the current stimulus): Re-presents the full rule to scaffold recovery.
+    - `production_phase === 'independent'`: Hints are omitted entirely.
+  - Handled cleanly in a small pure helper module with unit tests.
 
 ### 2. Stepwise Worked-Example Reveal
 - UI-Only State (Ephemeral Component State):
@@ -133,6 +140,9 @@ The existing `src/theme.css` already provides a clean foundation with dark-mode 
 
 ### Ticket 1: Move Session State Machine from `App.jsx` into Pure Engine Module
 - Goal: Extract all session lifecycle logic, phase transitions (review, new content, summary), drill routing, retry handling, and misconception wiring out of `App.jsx` into a pure, framework-free engine module (`src/engine/sessionRunner.js`), leaving `App.jsx` as a thin view coordinator.
+- Motivation and Existing `App.jsx` Bugs to Resolve:
+  1. Stale React State on Session Start and Drill Transitions: `startSession` sets `newChunkId` via React `useState` and synchronously invokes drill selection in the same event tick. Because React state setters are asynchronous, `newChunkId` reads stale `null`, causing fresh sessions to mistakenly fall through to `summary` (fixed by ad-hoc derivation in commit `0444138`, but closure state bugs persist in `advanceReviewQueue` and `setMasteredChunkId`).
+  2. Blank Screen / Null Stimulus on Worked-Example Acknowledgment: After acknowledging a worked example (`worked_example_ack`), the production stimulus is null because no vocabulary has been mastered yet. In `App.jsx`, setting stimulus directly from engine output caused the UI to render a completely blank page instead of cycling through phase rotation back to recognition (addressed in commit `20ace31`, but still fragile in React state).
 - Files touched:
   - `src/engine/sessionRunner.js` (new)
   - `src/engine/sessionRunner.test.js` (new)
@@ -196,25 +206,20 @@ The existing `src/theme.css` already provides a clean foundation with dark-mode 
 - Verification in browser:
   - Trigger a worked example (session 1 or new chunk). Click "Next step" through all persons. Verify tile animation executes smoothly. Enter reflection text and click continue.
 
-### Ticket 5: Hint Fading in Guided Practice
-- Goal: Implement adaptive hint fading in guided practice driven by engine progress state.
+### Ticket 5: Hint Fading in Guided Practice (Derived)
+- Goal: Implement adaptive hint fading in guided practice as a derived pure function of chunk state and attempt count, leaving `progress.json` untouched.
 - Files touched:
-  - `src/engine/conjugation.js`
-  - `src/engine/conjugation.test.js`
+  - `src/engine/hintFading.js` (new)
+  - `src/engine/hintFading.test.js` (new)
   - `src/ProductionScreen.jsx`
 - Engine changes (with tests):
-  - Add `hint_level` (0 to 3) to chunk schema in `progress.json`.
-  - Update `getNextProductionStimulus` to generate hint text based on `hint_level`:
-    - 0: Full prompt with stem-ending rule.
-    - 1: Person and family ending cue.
-    - 2: Person cue only.
-    - 3: No hint.
-  - Update `applyProductionAttempt` to advance `hint_level` on correct guided attempts.
-  - Unit tests verifying hint level progression and stimulus hint text matching.
+  - No schema changes to `progress.json`.
+  - Implement pure helper function `deriveHintText({ production_phase, streak_count, attemptCount, stimulus })`.
+  - Unit tests verifying: full rule on streak 0, person and family cue on streak 1+, recovery hint on retry, and null on independent phase.
 - UI changes:
-  - Render guided practice with blank ending tile; hint display matches engine `hint_level`.
+  - Guided practice calls `deriveHintText(...)` and displays the blank ending tile with the derived hint text.
 - Verification in browser:
-  - Complete guided practice drills: observe the hint text fading over successive correct answers.
+  - Complete guided practice drills: observe the hint text fading over successive correct answers, and restoring on a retry.
 
 ### Ticket 6: Independent Recall and Recognition with Docked Feedback Strip
 - Goal: Re-skin independent recall and vocabulary recognition onto focused cards with a bottom-docked commit-then-reveal feedback strip.
@@ -231,20 +236,20 @@ The existing `src/theme.css` already provides a clean foundation with dark-mode 
 - Verification in browser:
   - Test both correct and incorrect submissions on recognition and production screens; verify feedback strip appears cleanly beneath the card and Enter key submits without page reload.
 
-### Ticket 7: Tap-to-Tag Role-Tagging Screen
-- Goal: Replace the four text inputs in role-tagging with an interactive sentence token tap-to-tag interface.
+### Ticket 7: Tap-to-Tag Role-Tagging Screen (Single Verb Token Split)
+- Goal: Replace four text inputs with interactive sentence tokens where the verb is presented as one token that the learner splits at the letter boundary before tagging.
 - Files touched:
   - `src/RoleTaggingScreen.jsx`
   - `src/RoleTaggingScreen.css`
   - `src/RoleTaggingScreen.test.jsx`
-- Engine changes (with tests): None (engine already expects `{ subject, stem, ending, object }`).
+- Engine changes (with tests): None (boundary split maps directly to `{ subject, stem, ending, object }`).
 - UI changes:
-  - Tokenize sentence into subject, stem, ending, and object chips.
-  - Render Role Palette with distinct role colors.
-  - Support tapping a role then a token (and direct token tap).
-  - Highlight confused roles upon incorrect submission.
+  - Render sentence with intact verb token `[ hablo ]`.
+  - Interactive boundary tap or divider drag splits the verb token into stem and ending halves.
+  - Role palette allows assigning Subject, Stem, Ending, and Object.
+  - Highlight misidentified roles or incorrect split boundaries upon incorrect submission.
 - Verification in browser:
-  - Complete a role-tagging drill by tapping tokens. Submit and verify correct detection. Deliberately misclassify a token to verify the diagnostic highlight.
+  - Complete a role-tagging drill by splitting the verb and tagging tokens. Submit and verify correct detection. Test deliberate wrong boundaries (for example: `hab` / `lo`) to verify diagnostic error feedback.
 
 ### Ticket 8: Named Misconception Repair Panel Redesign
 - Goal: Redesign repair panel to prominently name misconceptions, show stem-ending tiles with the wrong ending struck through, and offer immediate retest.
@@ -268,9 +273,9 @@ The existing `src/theme.css` already provides a clean foundation with dark-mode 
 1. Animation Distraction:
    - Risk: Gratuitous or bouncy animations increase extraneous cognitive load.
    - Mitigation: Restrict animations strictly to two purposeful transitions: (1) the stem-plus-ending tile swap (250ms ease-out) and (2) the card slide transition between drills (200ms ease-out).
-2. Review Lockup on Repeated Misses:
-   - Risk: Because review runs until the gate clears, a struggling learner could get stuck in an endless review loop.
-   - Mitigation: When a miss occurs, the misconception repair immediately re-scaffolds the mental model. If a chunk receives three consecutive misses during review, the engine resets the streak and schedules an expedited next-day revisit rather than trapping the learner.
+2. Open-Ended Review Fatigue on Repeated Misses:
+   - Risk: SPEC explicitly accepts open-ended review sessions until the gate clears as a known limitation, but consecutive misses on shaky material could cause learner frustration.
+   - UI-Only Mitigation: Keep the engine review gate strictly compliant with SPEC (no arbitrary streak resets or ladder modifications). In the UI, after two consecutive misses on the same chunk in review, render a supportive pedagogical checkpoint card offering a focused worked-example refresher or an optional "Take a break" action that gracefully saves progress to `progress.json` without penalty, allowing the learner to rest working memory.
 3. Sentence Tokenization Brittleness:
    - Risk: Splitting sentences into tokens could fail if punctuation or irregular word order appears.
    - Mitigation: The v1 content pool consists exclusively of regular present-tense sentences with standardized subject-verb-object structures. Tokens are generated from known stimulus keys (`stimulus.parts`).
