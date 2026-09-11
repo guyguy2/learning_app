@@ -13,6 +13,17 @@
   --success: #16a34a;
   --error: #dc2626;
   --warning: #d97706;
+
+  /* Verb family accent tokens */
+  --family-ar: #c2593f;
+  --family-er: #4f7759;
+  --family-ir: #3e648f;
+
+  /* Grammatical role tagging tokens */
+  --role-subject: #92400e;
+  --role-stem: #0f766e;
+  --role-ending: #6b21a8;
+  --role-object: #166534;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,6 +39,17 @@
     --success: #22c55e;
     --error: #ef4444;
     --warning: #f59e0b;
+
+    /* Verb family accent tokens */
+    --family-ar: #d96f52;
+    --family-er: #63966f;
+    --family-ir: #527ea8;
+
+    /* Grammatical role tagging tokens */
+    --role-subject: #fef3c7;
+    --role-stem: #ccfbf1;
+    --role-ending: #f3e8ff;
+    --role-object: #dcfce7;
   }
 }
 
