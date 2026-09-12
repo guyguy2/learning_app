@@ -21,6 +21,7 @@ import { getMisconception, matchMisconception } from './misconception.js'
 import { mapPersonForMisconception } from './misconceptionInput.js'
 import { gradeProduction, gradeRecognition, gradeRoleTagging } from './grading.js'
 import { validateSpanishContent } from './validate.js'
+import { scenarios as seeds } from './seeds.js'
 
 function namedRepair(matcherAttempt, content, notionalMachine) {
   const match = matchMisconception(matcherAttempt, content.distractors)
@@ -113,6 +114,7 @@ const spanish = {
   content: { vocab, workedExamples, distractors, misconceptions },
   validate: validateSpanishContent,
   techniques: screenTechniques,
+  seeds,
 }
 
 export default spanish

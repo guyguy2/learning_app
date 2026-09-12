@@ -58,6 +58,10 @@
  * @property {(content: object) => void} validate  Throws an Error naming the first malformed entry
  * @property {Object<string, {techniqueName: string, explanation: string}>} techniques
  *   Badge map: one entry per exercise type, plus the engine phases `review` and `repair`.
+ * @property {Object<string, (content: object, options?: {referenceDate?: Date}) => object>} seeds
+ *   Seed scenario -> progress builder, used by POST /api/progress/seed and /reset. `fresh` is
+ *   required (reset writes it); `review-due` is expected. Builders live in `<subject>/seeds.js`,
+ *   which must not import JSON so the Node server can load it (see server/seeds.js).
  * @property {SubjectUi} [ui]  Present on subjects returned by the registry
  *
  * @typedef {Object} SubjectUi

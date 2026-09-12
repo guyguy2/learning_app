@@ -73,6 +73,17 @@ describe.each(SUBJECT_IDS)('subject contract: %s', (id) => {
     expect(subject.exerciseTypes).toContain(state.exerciseType)
     expect(state.stimulus).not.toBeNull()
   })
+
+  it('seeds fresh and review-due progress over its own chunks', () => {
+    expect(subject.seeds.fresh(subject.content)).toEqual(fresh())
+    for (const scenario of Object.keys(subject.seeds)) {
+      const seed = subject.seeds[scenario](subject.content, { referenceDate: new Date(`${TODAY}T12:00:00Z`) })
+      expect(seed.chunks.map((c) => c.id)).toEqual(chunkOrder(subject))
+    }
+    const reviewDue = subject.seeds['review-due'](subject.content, { referenceDate: new Date(`${TODAY}T12:00:00Z`) })
+    const state = begin(createRunnerState(reviewDue, { today: TODAY, subject }), subject.content, subject)
+    expect(state.mode).toBe('review')
+  })
 })
 
 describe('subject registry and contract helpers', () => {

@@ -20,6 +20,7 @@ import {
 } from '../../engine/chunkProgress.js'
 import { getMisconception } from '../../engine/misconception.js'
 import { validateProgrammingContent } from './validate.js'
+import { scenarios as seeds } from './seeds.js'
 
 /** Placeholder a completion item's code uses for the missing piece. */
 export const BLANK = '____'
@@ -155,6 +156,7 @@ const programming = {
     review: screenTechniques.review,
     repair: screenTechniques.repair,
   },
+  seeds,
 }
 
 export default programming
