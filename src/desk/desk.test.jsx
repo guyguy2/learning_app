@@ -13,7 +13,9 @@ import RepairPanel from './RepairPanel.jsx'
 import SummaryCard from './SummaryCard.jsx'
 import FeedbackStrip from './FeedbackStrip.jsx'
 import DeskTechniqueBadge from './DeskTechniqueBadge.jsx'
+import SubjectPicker from './SubjectPicker.jsx'
 import { personLabel } from './personLabel.js'
+import { SUBJECT_IDS, listSubjects } from '../subjects/index.js'
 
 describe('DeskApp helpers', () => {
   it('formats correct messages for all exercise types', () => {
@@ -80,6 +82,78 @@ describe('SessionStartCard', () => {
     )
     expect(html).toContain('No review chunks currently due today.')
     expect(html).toContain('Working family: -ar')
+  })
+})
+
+describe('SubjectPicker', () => {
+  /** Every element of `type` in a rendered element tree. */
+  function findAll(node, type, found = []) {
+    if (Array.isArray(node)) {
+      node.forEach((child) => findAll(child, type, found))
+    } else if (node && typeof node === 'object' && node.props) {
+      if (node.type === type) found.push(node)
+      findAll(node.props.children, type, found)
+    }
+    return found
+  }
+
+  it('lists every registered subject by display name, from the registry', () => {
+    expect(listSubjects().map((s) => s.id)).toEqual(SUBJECT_IDS)
+    const html = renderToStaticMarkup(<SubjectPicker subjectId="spanish" onChange={() => {}} />)
+    for (const s of listSubjects()) expect(html).toContain(s.displayName)
+    expect(html).toContain('Spanish')
+    expect(html).toContain('JavaScript')
+    expect(findAll(SubjectPicker({ subjectId: 'spanish', onChange: () => {} }), 'input')).toHaveLength(
+      SUBJECT_IDS.length,
+    )
+  })
+
+  it('renders whatever subjects it is given, marking the current one', () => {
+    const subjects = [
+      { id: 'a', displayName: 'Alpha' },
+      { id: 'b', displayName: 'Beta' },
+    ]
+    const inputs = findAll(SubjectPicker({ subjectId: 'b', onChange: () => {}, subjects }), 'input')
+    expect(inputs.map((i) => [i.props.value, i.props.checked])).toEqual([
+      ['a', false],
+      ['b', true],
+    ])
+  })
+
+  it('reports the chosen subject id on change', () => {
+    const chosen = []
+    const inputs = findAll(SubjectPicker({ subjectId: 'spanish', onChange: (id) => chosen.push(id) }), 'input')
+    inputs.find((i) => i.props.value === 'programming').props.onChange()
+    expect(chosen).toEqual(['programming'])
+  })
+
+  it('shows on the overview card only when switching is wired up', () => {
+    const plan = { reviewChunkIds: [], newChunkId: 'ar', phase: 'new' }
+    const withPicker = renderToStaticMarkup(
+      <SessionStartCard plan={plan} begin={() => {}} subjectId="programming" onSubjectChange={() => {}} />
+    )
+    expect(withPicker).toContain('desk-subject-picker')
+    expect(withPicker).toContain('checked="" value="programming"')
+    expect(withPicker).toContain('Begin Session')
+
+    const without = renderToStaticMarkup(<SessionStartCard plan={plan} begin={() => {}} />)
+    expect(without).not.toContain('desk-subject-picker')
+  })
+
+  it('shows on the summary card so the learner can switch after finishing', () => {
+    const html = renderToStaticMarkup(
+      <SummaryCard
+        progress={{ chunks: [] }}
+        reviewedCount={0}
+        masteredChunkId={null}
+        onStartNext={() => {}}
+        subjectId="spanish"
+        onSubjectChange={() => {}}
+      />
+    )
+    expect(html).toContain('desk-subject-picker')
+    expect(html).toContain('checked="" value="spanish"')
+    expect(html).toContain('Start Next Session')
   })
 })
 

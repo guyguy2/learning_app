@@ -1,11 +1,13 @@
 import React from 'react'
 import DeskTechniqueBadge from './DeskTechniqueBadge.jsx'
+import SubjectPicker from './SubjectPicker.jsx'
 import { DEFAULT_COPY, defaultChunkLabel } from './copy.js'
 
 /**
  * SessionStartCard
  * Shown when status is 'ready' (autoStart: false).
  * Summarizes review queue and upcoming new chunk before the session begins.
+ * With `onSubjectChange`, a subject picker sits above the summary.
  */
 export default function SessionStartCard({
   plan,
@@ -13,6 +15,8 @@ export default function SessionStartCard({
   technique,
   chunkLabel = defaultChunkLabel,
   copy = DEFAULT_COPY,
+  subjectId,
+  onSubjectChange,
 }) {
   const reviewCount = plan?.reviewChunkIds?.length ?? 0
   const hasReview = reviewCount > 0
@@ -37,6 +41,8 @@ export default function SessionStartCard({
       <p className="desk-prompt">
         {copy.startIntro}
       </p>
+
+      {onSubjectChange && <SubjectPicker subjectId={subjectId} onChange={onSubjectChange} />}
 
       <div style={{ margin: '1.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         <div

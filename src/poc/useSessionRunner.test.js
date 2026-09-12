@@ -233,6 +233,32 @@ describe('useSessionRunner', () => {
     expect(state.stimulus.phase).toBe('worked_example')
   })
 
+  it('loads the new subject\'s progress when remounted for a switched subject', async () => {
+    const { default: programming } = await import('../subjects/programming/index.js')
+    const programmingSeed = buildSeed('review-due', { subject: 'programming' })
+    const urls = []
+    global.fetch = vi.fn().mockImplementation((url) => {
+      urls.push(url)
+      const body = url === '/api/progress' ? buildSeed('fresh') : programmingSeed
+      return Promise.resolve({ json: async () => body })
+    })
+
+    const spanishHook = renderHook({ autoStart: false })
+    await spanishHook.runEffects()
+    expect(spanishHook.current.plan.newChunkId).toBe('ar')
+
+    // DeskRoot keys DeskApp by subject id, so a switch mounts a fresh hook for the new subject.
+    resetHookHarness()
+    const programmingHook = renderHook({ autoStart: false, subject: programming })
+    await programmingHook.runEffects()
+
+    expect(urls).toEqual(['/api/progress', '/api/progress?subject=programming'])
+    const state = programmingHook.current
+    expect(state.status).toBe('ready')
+    expect(state.plan.reviewChunkIds).toEqual(['closures'])
+    expect(state.plan.newChunkId).toBe('iteration')
+  })
+
   it('handles error state when progress fetch fails', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Network error'))
 

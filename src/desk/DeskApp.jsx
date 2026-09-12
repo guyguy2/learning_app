@@ -32,9 +32,10 @@ export function getTechniqueKey(repair, mode, exerciseType) {
  * commit-then-reveal feedback, and cognitive transparency badges.
  *
  * Subject-agnostic: exercise cards come from `subject.ui.cards`, badges from
- * `subject.techniques`. Defaults to the Spanish subject.
+ * `subject.techniques`. Defaults to the Spanish subject. With `onSubjectChange`, the
+ * overview and summary cards show a subject picker (see DeskRoot).
  */
-export default function DeskApp({ subject = DEFAULT_SUBJECT }) {
+export default function DeskApp({ subject = DEFAULT_SUBJECT, onSubjectChange }) {
   const runner = useSessionRunner({ autoStart: false, subject })
   const {
     status,
@@ -188,6 +189,8 @@ export default function DeskApp({ subject = DEFAULT_SUBJECT }) {
           technique={technique}
           chunkLabel={chunkLabel}
           copy={copy}
+          subjectId={subject.id}
+          onSubjectChange={onSubjectChange}
         />
       )}
 
@@ -233,6 +236,8 @@ export default function DeskApp({ subject = DEFAULT_SUBJECT }) {
           technique={technique}
           chunkLabel={chunkLabel}
           copy={copy}
+          subjectId={subject.id}
+          onSubjectChange={onSubjectChange}
         />
       )}
     </div>

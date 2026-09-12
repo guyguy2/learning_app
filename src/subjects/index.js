@@ -17,6 +17,11 @@ const SUBJECTS = {
 
 export const SUBJECT_IDS = Object.keys(SUBJECTS)
 
+/** Every registered subject as `{ id, displayName }`, in registration order (for pickers). */
+export function listSubjects() {
+  return SUBJECT_IDS.map((id) => ({ id, displayName: SUBJECTS[id].displayName }))
+}
+
 const validated = new Set()
 
 /**

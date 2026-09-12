@@ -355,6 +355,68 @@
 }
 
 /* --------------------------------------------------------------------------
+   Subject Picker (segmented control on the overview and summary cards)
+   -------------------------------------------------------------------------- */
+.app-desk .desk-subject-picker {
+  min-width: 0;
+  margin: 0 0 0.25rem;
+  padding: 0;
+  border: 0;
+}
+
+.app-desk .desk-subject-picker legend {
+  padding: 0;
+}
+
+.app-desk .desk-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 3px;
+  background: var(--desk-bg);
+  border: 1px solid var(--desk-border);
+  border-radius: 6px;
+}
+
+.app-desk .desk-segment {
+  position: relative;
+  padding: 0.4375rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--desk-text-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.app-desk .desk-segment:hover {
+  color: var(--desk-text);
+}
+
+.app-desk .desk-segment--active {
+  background: var(--desk-surface);
+  color: var(--desk-text);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 0 var(--card-family-color, var(--family-ar));
+}
+
+/* Native radio stays in the tab order and handles arrow keys; the label is what shows. */
+.app-desk .desk-segment input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.app-desk .desk-segment:has(input:focus-visible) {
+  outline: 2px solid var(--card-family-color, var(--family-ar));
+  outline-offset: 1px;
+}
+
+/* --------------------------------------------------------------------------
    Stem & Ending Paper Slips (Tactile Visual Unit)
    -------------------------------------------------------------------------- */
 .app-desk .desk-tiles-container {

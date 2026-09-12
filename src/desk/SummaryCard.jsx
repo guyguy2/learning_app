@@ -1,5 +1,6 @@
 import React from 'react'
 import DeskTechniqueBadge from './DeskTechniqueBadge.jsx'
+import SubjectPicker from './SubjectPicker.jsx'
 import { DEFAULT_COPY, defaultChunkLabel } from './copy.js'
 
 const LADDER_DAYS = [1, 3, 7, 14, 30]
@@ -17,6 +18,8 @@ export default function SummaryCard({
   technique,
   chunkLabel = defaultChunkLabel,
   copy = DEFAULT_COPY,
+  subjectId,
+  onSubjectChange,
 }) {
   const masteredChunks = progress?.chunks?.filter((c) => c.mastered) || []
 
@@ -104,6 +107,12 @@ export default function SummaryCard({
               </div>
             )
           })}
+        </div>
+      )}
+
+      {onSubjectChange && (
+        <div style={{ marginTop: '2rem' }}>
+          <SubjectPicker subjectId={subjectId} onChange={onSubjectChange} />
         </div>
       )}
 
