@@ -26,14 +26,14 @@ npm run dev
   - `server/index.js` listens on `SERVER_PORT`, else `PORT`, else 3001.
   - `vite.config.js` points the `/api` proxy at `SERVER_PORT`, else `BACKEND_PORT`, else 3001.
   - Setting `SERVER_PORT` moves both together, for example `SERVER_PORT=4001 npm run dev`.
-- **User Progress**: The local file `progress.json` is generated at the project root to store runtime progress. This file is gitignored.
+- **User Progress**: The local file `progress.json` is generated at the project root to store runtime progress (Spanish; other subjects use `progress.<id>.json`). These files are gitignored.
 
 ### Running Tests
 Execute the Vitest test suite:
 ```bash
 npm test
 ```
-The suite has 27 test files and 237 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the shared React components and screens, the production Desk UI (`src/desk/`), the `useSessionRunner` hook and POC variants (`src/poc/`), and the server seed scenarios and per-subject progress files (`server/`).
+The suite has 29 test files and 273 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the shared React components and screens, the production Desk UI and its subject picker (`src/desk/`), the `useSessionRunner` hook and POC variants (`src/poc/`), and the server seed scenarios, per-subject progress files, and reset and seed endpoints (`server/`).
 
 ## UI
 
@@ -43,9 +43,18 @@ The production UI incorporates two interactions borrowed from the Machine design
 1. In guided practice, the learner types the ending directly into the blank ending tile next to the stem (typing the full form is also accepted).
 2. Primary action buttons display their keyboard shortcut as a small keycap (such as Enter).
 
+### Choosing a subject
+
+The Session Overview card (the one with Begin Session) and the session summary card show a **Subject** picker listing every registered subject (Spanish, JavaScript). Pick one with the mouse, or focus it and use the arrow keys; Enter still begins the session. Switching reloads that subject's progress and writes `?subject=<id>` into the URL, so the link can be shared. The picker is hidden during a session.
+
+The subject opens in this order:
+1. `?subject=<id>` in the URL, when it names a registered subject.
+2. The subject last picked in the picker, remembered in localStorage.
+3. Spanish.
+
 ## Design POC mode
 
-The production app renders the Desk UI (`src/desk/DeskApp.jsx`) by default. To compare UI directions side by side, append `?poc=1` to the URL (for example, `http://localhost:5173/?poc=1`). This opens the tabbed comparison shell (`src/poc/PocShell.jsx`) where **Current** is the legacy app, and **Desk**, **Editorial**, and **Machine** are competing UI directions over the same pedagogy engine. The Progress buttons in the top bar reset or seed `progress.json` (fresh, mid, review-due) so every variant can be compared from the same starting point.
+The production app renders the Desk UI (`src/desk/DeskApp.jsx`) by default. To compare UI directions side by side, append `?poc=1` to the URL (for example, `http://localhost:5173/?poc=1`). This opens the tabbed comparison shell (`src/poc/PocShell.jsx`) where **Current** is the legacy app, and **Desk**, **Editorial**, and **Machine** are competing UI directions over the same pedagogy engine. The Progress buttons in the top bar reset or seed progress so every variant can be compared from the same starting point. They act on the `?subject=` subject (Spanish when absent, not the Desk picker's remembered choice) and list that subject's seed scenarios: Spanish has fresh, mid, and review-due; JavaScript has fresh and review-due. The variant tabs themselves always render Spanish.
 
 See [docs/design/poc-comparison.md](docs/design/poc-comparison.md) for what each variant does, how to reach every screen, screenshots, and a checklist for picking one. The variant contract is in [src/poc/variants/README.md](src/poc/variants/README.md).
 
@@ -81,8 +90,8 @@ Every screen can show a small badge naming the cognitive-science technique in pl
 
 The project maintains a strict separation between the user interface, backend state persistence, and pure pedagogical rules:
 
-- **Frontend SPA (`src/`)**: A React application built with Vite that renders the interactive session flow screens. `src/main.jsx` mounts the production Desk UI (`src/desk/`, entry `DeskApp.jsx`) by default, or the design comparison shell and its variants (`src/poc/`, `PocShell.jsx` and `src/poc/variants/`) with `?poc=1`. `?subject=<id>` picks the subject the Desk UI teaches (for example `http://localhost:5173/?subject=programming`); a missing or unknown id means Spanish. All UIs, including the legacy `src/App.jsx`, drive sessions through the `useSessionRunner` hook (`src/poc/useSessionRunner.js`), a thin React wrapper over the pure `sessionRunner` engine that holds its state and loads and saves progress via `/api/progress`.
-- **Backend Server (`server/`)**: An Express server that handles loading and persistence of user states to `progress.json` (`GET`/`POST /api/progress`), plus reset and seed endpoints (`POST /api/progress/reset`, `POST /api/progress/seed`) used by the POC shell. `?subject=<id>` on `/api/progress` stores any subject other than Spanish in its own `progress.<id>.json`.
+- **Frontend SPA (`src/`)**: A React application built with Vite that renders the interactive session flow screens. `src/main.jsx` mounts the production Desk UI (`src/desk/`, entry `DeskRoot.jsx`, which renders `DeskApp.jsx` for the chosen subject) by default, or the design comparison shell and its variants (`src/poc/`, `PocShell.jsx` and `src/poc/variants/`) with `?poc=1`. The subject comes from `?subject=<id>` (for example `http://localhost:5173/?subject=programming`), then the last picked subject, then Spanish; see [Choosing a subject](#choosing-a-subject). All UIs, including the legacy `src/App.jsx`, drive sessions through the `useSessionRunner` hook (`src/poc/useSessionRunner.js`), a thin React wrapper over the pure `sessionRunner` engine that holds its state and loads and saves progress via `/api/progress`.
+- **Backend Server (`server/`)**: An Express server that handles loading and persistence of user states to `progress.json` (`GET`/`POST /api/progress`), plus reset and seed endpoints (`POST /api/progress/reset`, `POST /api/progress/seed` with body `{ "scenario": "<name>" }`) used by the POC shell. All four accept `?subject=<id>`, which stores any subject other than Spanish in its own `progress.<id>.json`. Reset writes the subject's fresh progress; seed builds a scenario the subject defines (its `seeds`), and an unknown subject or scenario returns 400.
 - **Subjects (`src/subjects/`)**: Each subject is a plugin behind one contract: its exercise types and their rotation, its chunks, and per exercise type `nextStimulus`, `apply`, `grade`, `feedback`, `expectedAnswer`, and optional `repairFor` for named misconceptions, plus its content with a `validate` function, its technique badges, and its Desk cards (`ui`). Spanish (`src/subjects/spanish/`) is the default; a tiny JavaScript subject (`src/subjects/programming/`) proves the seam. See [src/subjects/README.md](src/subjects/README.md).
 - **Static Content Pools (`content/<subject>/`)**: Static JSON data files per subject:
   - `content/spanish/`: `vocab.json`, `distractors.json`, `misconceptions.json`, `worked_examples.json`

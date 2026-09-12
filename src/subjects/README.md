@@ -13,8 +13,10 @@ Two subjects are registered:
 | `spanish` (default) | `ar`, `er`, `ir` verb families | `recognition`, `production`, `role-tagging` | `content/spanish/` |
 | `programming` | `closures`, `iteration`, `off-by-one` | `recognition`, `completion` | `content/programming/` |
 
-Pick one with the `?subject=` query parameter, for example
-`http://localhost:5173/?subject=programming`. A missing or unknown id falls back to Spanish.
+The Desk overview and summary cards show a picker listing every registered subject by
+`displayName` (`listSubjects()` in `index.js`). The subject opens from the `?subject=` query
+parameter (for example `http://localhost:5173/?subject=programming`), else the last picked
+subject remembered in localStorage, else Spanish. Unknown ids are skipped.
 
 ## Files
 
@@ -23,6 +25,8 @@ Each subject is split in two so the engine never imports React:
 - `<subject>/index.js`: the framework-free subject module (default export). The engine
   imports Spanish from here as its default subject.
 - `<subject>/ui.jsx`: the Desk UI for the subject (default export).
+- `<subject>/seeds.js`: seed scenario builders. It must not import JSON, because the Node
+  server loads it directly; it exports `scenarios` and the `contentFiles` the builders read.
 - `index.js` (this directory): the registry. `getSubject(id)` joins a subject module with its
   UI into one Subject object and validates its content on first lookup.
 
@@ -43,6 +47,7 @@ A subject module exports:
 | `content` | The default content pool. |
 | `validate(content)` | Throws an `Error` naming the first malformed entry. |
 | `techniques` | Badge map: `{ techniqueName, explanation }` per exercise type, plus `review` and `repair`. |
+| `seeds` | Seed scenario name -> `(content, { referenceDate }) => progress`, from `seeds.js`. `fresh` is required (reset writes it) and `review-due` is expected. Spanish adds `mid`. |
 
 Each `exercises[type]` provides:
 
@@ -76,13 +81,17 @@ item-mastery rule, so a new subject rarely writes its own streak logic.
 
 The server keeps Spanish in `progress.json` and any other subject in `progress.<id>.json`
 (`GET`/`POST /api/progress?subject=<id>`). A subject with no saved file starts from
-`initialProgress` of its own chunks.
+`initialProgress` of its own chunks. `POST /api/progress/reset?subject=<id>` writes the
+subject's `fresh` seed and `POST /api/progress/seed?subject=<id>` writes one of its scenarios.
 
 ## Adding a subject
 
 1. Add content under `content/<id>/` and a `validate` that rejects malformed entries.
 2. Write `src/subjects/<id>/index.js` implementing the contract and `ui.jsx` with its cards.
-3. Register both in `src/subjects/index.js`.
-4. `src/subjects/contract.test.js` runs its conformance checks against every registered
-   subject automatically. Add grading and end-to-end session tests alongside the subject, as
+3. Write `src/subjects/<id>/seeds.js` with at least `fresh` and `review-due`, expose its
+   `scenarios` as the module's `seeds`, and add the file to `SUBJECT_SEEDS` in `server/seeds.js`.
+4. Register the module and UI in `src/subjects/index.js`. The Desk picker lists it automatically.
+5. `src/subjects/contract.test.js` runs its conformance checks against every registered
+   subject automatically, including its seeds; `server/seeds.test.js` fails if the server
+   has no seeds for a registered subject. Add grading and end-to-end session tests alongside the subject, as
    `programming/programming.test.js` does.
