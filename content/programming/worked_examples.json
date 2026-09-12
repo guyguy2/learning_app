@@ -1,0 +1,35 @@
+[
+  {
+    "chunk": "closures",
+    "title": "Closures",
+    "notional_machine": "A function keeps a live reference to the variables in scope where it was created, not a copy of their values. var is scoped to the whole function, so every closure made in a var loop shares one i; let makes a fresh i for each iteration.",
+    "code": "function makeGreeter(greeting) {\n  return (name) => greeting + ', ' + name;\n}\nconst hi = makeGreeter('Hi');\nconsole.log(hi('Ada')); // Hi, Ada",
+    "steps": [
+      "makeGreeter('Hi') runs and creates a local variable greeting = 'Hi'.",
+      "It returns the arrow function, which keeps a reference to greeting after makeGreeter returns.",
+      "hi('Ada') runs the arrow function. greeting is still 'Hi', so it returns 'Hi, Ada'."
+    ]
+  },
+  {
+    "chunk": "iteration",
+    "title": "Array iteration",
+    "notional_machine": "for...of walks an array by index. Removing elements during the walk shifts later elements left, so the loop skips whichever element moves into the current index. map builds a new array and leaves the original alone.",
+    "code": "const prices = [10, 20, 30];\nconst doubled = prices.map((p) => p * 2);\nconsole.log(prices.length, doubled); // 3 [ 20, 40, 60 ]",
+    "steps": [
+      "map calls the arrow function once per element, in order: 10, 20, 30.",
+      "Each return value goes into a new array at the same index.",
+      "prices is never modified, so it still has 3 elements."
+    ]
+  },
+  {
+    "chunk": "off-by-one",
+    "title": "Off-by-one bounds",
+    "notional_machine": "An array of length n has indexes 0 to n - 1. A loop starting at 0 should continue while i < n; i <= n runs one extra time and reads xs[n], which is undefined.",
+    "code": "const xs = ['a', 'b', 'c'];\nfor (let i = 0; i < xs.length; i++) {\n  console.log(i, xs[i]);\n}\n// 0 a, 1 b, 2 c",
+    "steps": [
+      "xs.length is 3, so the valid indexes are 0, 1, and 2.",
+      "The loop runs while i < 3, so i takes the values 0, 1, 2.",
+      "When i becomes 3 the condition is false and the loop stops before reading xs[3]."
+    ]
+  }
+]

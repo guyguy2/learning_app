@@ -1,0 +1,22 @@
+[
+  {
+    "id": "var_block_scoped",
+    "name": "Expecting var to be block scoped",
+    "explanation": "var is scoped to the whole function, not to the loop body. Every closure created in a var loop shares the same i, which already holds its final value when the closures run. let creates a new binding for each iteration."
+  },
+  {
+    "id": "closure_copies_value",
+    "name": "Thinking a closure copies values",
+    "explanation": "A closure keeps a reference to the variable itself, not a snapshot of its value. Each call to next() updates the same count, so the second call returns 2."
+  },
+  {
+    "id": "mutate_while_iterating",
+    "name": "Mutating an array while iterating over it",
+    "explanation": "for...of walks the array by index. splice shifts every later element one place left, so the element that moves into the current index is skipped. Build a new array instead, for example nums.filter((n) => n % 2 !== 0)."
+  },
+  {
+    "id": "off_by_one_bounds",
+    "name": "Off-by-one on array bounds",
+    "explanation": "An array of length n has indexes 0 to n - 1. xs[xs.length] is undefined, and a loop condition of i <= xs.length runs one step too far. Use i < xs.length, and xs[xs.length - 1] for the last element."
+  }
+]

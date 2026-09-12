@@ -5,11 +5,14 @@
  */
 import spanish from './spanish/index.js'
 import spanishUi from './spanish/ui.jsx'
+import programming from './programming/index.js'
+import programmingUi from './programming/ui.jsx'
 
 export const DEFAULT_SUBJECT_ID = 'spanish'
 
 const SUBJECTS = {
   spanish: { ...spanish, ui: spanishUi },
+  programming: { ...programming, ui: programmingUi },
 }
 
 export const SUBJECT_IDS = Object.keys(SUBJECTS)

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "d_closure_loop_var_0",
+    "item_id": "closure_loop_var",
+    "given": "0",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_closure_loop_let_var",
+    "item_id": "closure_loop_let",
+    "given": "var",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_closure_counter_1",
+    "item_id": "closure_counter",
+    "given": "1",
+    "misconception_id": "closure_copies_value"
+  },
+  {
+    "id": "d_iterate_splice_1",
+    "item_id": "iterate_splice",
+    "given": "1",
+    "misconception_id": "mutate_while_iterating"
+  },
+  {
+    "id": "d_obo_lte_count_3",
+    "item_id": "obo_lte_count",
+    "given": "3",
+    "misconception_id": "off_by_one_bounds"
+  },
+  {
+    "id": "d_obo_last_element_length",
+    "item_id": "obo_last_element",
+    "given": "xs[xs.length]",
+    "misconception_id": "off_by_one_bounds"
+  },
+  {
+    "id": "d_obo_sum_bound_lte",
+    "item_id": "obo_sum_bound",
+    "given": "i <= xs.length",
+    "misconception_id": "off_by_one_bounds"
+  }
+]

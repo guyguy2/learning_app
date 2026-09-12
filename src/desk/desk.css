@@ -1172,3 +1172,24 @@
     border-color: #352f28;
   }
 }
+
+/* Code blocks and worked-example steps (programming subject) */
+.desk-code {
+  margin: 1rem 0;
+  padding: 0.875rem 1rem;
+  background: var(--desk-surface);
+  border: 1px solid var(--desk-border);
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  text-align: left;
+}
+
+.desk-worked-steps {
+  margin: 0 0 1.25rem;
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
