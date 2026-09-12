@@ -207,6 +207,32 @@ describe('useSessionRunner', () => {
     expect(state.repair.pendingType).toBe('recognition')
   })
 
+  it('runs a non-default subject from its own progress endpoint, seeding fresh progress', async () => {
+    const { default: programming } = await import('../subjects/programming/index.js')
+    const urls = []
+    global.fetch = vi.fn().mockImplementation((url, opts) => {
+      urls.push(url)
+      if (opts?.body) {
+        return Promise.resolve({ json: async () => JSON.parse(opts.body) })
+      }
+      return Promise.resolve({ json: async () => null })
+    })
+
+    const hook = renderHook({ autoStart: false, subject: programming })
+    await hook.runEffects()
+
+    let state = hook.current
+    expect(urls[0]).toBe('/api/progress?subject=programming')
+    expect(state.status).toBe('ready')
+    expect(state.plan.newChunkId).toBe('closures')
+
+    state.begin()
+    state = hook.current
+    expect(state.status).toBe('running')
+    expect(state.exerciseType).toBe('completion')
+    expect(state.stimulus.phase).toBe('worked_example')
+  })
+
   it('handles error state when progress fetch fails', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Network error'))
 
