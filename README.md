@@ -33,7 +33,7 @@ Execute the Vitest test suite:
 ```bash
 npm test
 ```
-The suite has 27 test files and 236 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the shared React components and screens, the production Desk UI (`src/desk/`), the `useSessionRunner` hook and POC variants (`src/poc/`), and the server seed scenarios and per-subject progress files (`server/`).
+The suite has 27 test files and 237 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the shared React components and screens, the production Desk UI (`src/desk/`), the `useSessionRunner` hook and POC variants (`src/poc/`), and the server seed scenarios and per-subject progress files (`server/`).
 
 ## UI
 
