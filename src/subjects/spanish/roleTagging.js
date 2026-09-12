@@ -1,5 +1,5 @@
 import { GATE_STREAK_CAP, PERSONS, findChunk, masteredVerbsForFamily, stemOf } from './conjugation.js'
-import { checkGate, todayIso } from './advancement.js'
+import { checkGate, todayIso } from '../../engine/advancement.js'
 
 const PERSON_TO_PRONOUN = {
   yo: 'yo',

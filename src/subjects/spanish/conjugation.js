@@ -1,4 +1,4 @@
-import { checkGate, todayIso } from './advancement.js'
+import { checkGate, todayIso } from '../../engine/advancement.js'
 
 export const GATE_STREAK_CAP = 3
 export const PERSONS = ['yo', 'tu', 'el_ella_usted', 'nosotros', 'vosotros', 'ellos_ellas_ustedes']

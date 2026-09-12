@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { familyVerbsRemaining, recognitionPool } from './newContentSchedule'
-import realVocab from '../../content/spanish/vocab.json'
+import realVocab from '../../../content/spanish/vocab.json'
 
 const MOCK_VOCAB = [
   { id: 'hablar', word: 'hablar', pos: 'verb', family: 'ar' },

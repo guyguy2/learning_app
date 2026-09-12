@@ -25,13 +25,14 @@ import {
   findChunk,
   getNextProductionStimulus,
   masteredVerbsForFamily,
-} from './conjugation.js'
-import { applyRoleTaggingAttempt, getNextRoleTaggingStimulus } from './roleTagging.js'
+} from '../subjects/spanish/conjugation.js'
+import { applyRoleTaggingAttempt, getNextRoleTaggingStimulus } from '../subjects/spanish/roleTagging.js'
 import { advanceLadder, resetLadder } from './review.js'
-import { getMisconception, matchMisconception } from './misconception.js'
+import { getMisconception } from './misconception.js'
+import { matchMisconception } from '../subjects/spanish/misconception.js'
 import { isReviewGateCleared, nextReviewDrillType, resetReviewStreak } from './reviewGate.js'
-import { recognitionPool, familyVerbsRemaining } from './newContentSchedule.js'
-import { mapPersonForMisconception } from '../misconceptionInput.js'
+import { recognitionPool, familyVerbsRemaining } from '../subjects/spanish/newContentSchedule.js'
+import { mapPersonForMisconception } from '../subjects/spanish/misconceptionInput.js'
 
 export const NEW_PHASE_ROTATION = ['recognition', 'production', 'role-tagging']
 

@@ -1,5 +1,5 @@
-import { applyProductionAttempt } from './conjugation.js'
-import { applyRoleTaggingAttempt } from './roleTagging.js'
+import { applyProductionAttempt } from '../subjects/spanish/conjugation.js'
+import { applyRoleTaggingAttempt } from '../subjects/spanish/roleTagging.js'
 
 const MASTERY_STREAK = 2
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getMisconception, matchMisconception } from './misconception.js'
-import { applyAttempt } from './wordMastery.js'
+import { applyAttempt } from '../../engine/wordMastery.js'
 import { applyProductionAttempt } from './conjugation.js'
 
 const DISTRACTORS = [
