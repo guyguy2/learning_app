@@ -1,5 +1,6 @@
 import React from 'react'
 import DeskTechniqueBadge from './DeskTechniqueBadge.jsx'
+import { DEFAULT_COPY, defaultChunkLabel } from './copy.js'
 
 const LADDER_DAYS = [1, 3, 7, 14, 30]
 
@@ -14,6 +15,8 @@ export default function SummaryCard({
   masteredChunkId,
   onStartNext,
   technique,
+  chunkLabel = defaultChunkLabel,
+  copy = DEFAULT_COPY,
 }) {
   const masteredChunks = progress?.chunks?.filter((c) => c.mastered) || []
 
@@ -34,19 +37,19 @@ export default function SummaryCard({
       <div className="desk-label">Session Complete</div>
       <h1 className="desk-title">Knowledge Consolidation</h1>
       <p className="desk-prompt">
-        Your daily spaced repetitions and grammatical schema formations are saved.
+        {copy.summaryIntro}
       </p>
 
       {/* Session Metrics */}
       <div className="desk-summary-stats">
         <div className="desk-stat-card">
           <div className="desk-stat-value">{reviewedCount}</div>
-          <div className="desk-stat-label">Families Reviewed</div>
+          <div className="desk-stat-label">{copy.reviewedLabel}</div>
         </div>
 
         <div className="desk-stat-card">
           <div className="desk-stat-value">
-            {masteredChunkId ? `-${masteredChunkId}` : 'Consolidated'}
+            {masteredChunkId ? chunkLabel(masteredChunkId) : 'Consolidated'}
           </div>
           <div className="desk-stat-label">
             {masteredChunkId ? 'Newly Mastered' : 'Curriculum Status'}
@@ -66,7 +69,7 @@ export default function SummaryCard({
             return (
               <div key={chunk.id} className="desk-ladder-card">
                 <div className="desk-ladder-header">
-                  <span className="desk-ladder-family">-{chunk.id} Family Ladder</span>
+                  <span className="desk-ladder-family">{chunkLabel(chunk.id)} {copy.ladderSuffix}</span>
                   <span className="desk-ladder-due">
                     Next due: <strong>{chunk.next_due_date || 'Upcoming'}</strong>
                   </span>
@@ -76,7 +79,7 @@ export default function SummaryCard({
                 <div
                   className="desk-ladder-rig"
                   role="img"
-                  aria-label={`5-rung ladder for -${chunk.id}, currently at step ${currentStep + 1} (${LADDER_DAYS[currentStep]} days)`}
+                  aria-label={`5-rung ladder for ${chunkLabel(chunk.id)}, currently at step ${currentStep + 1} (${LADDER_DAYS[currentStep]} days)`}
                 >
                   {LADDER_DAYS.map((days, stepIdx) => {
                     const isClimbed = stepIdx <= currentStep

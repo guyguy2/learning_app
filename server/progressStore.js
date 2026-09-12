@@ -47,17 +47,39 @@ export function defaultProgress() {
   }
 }
 
-export async function readProgress() {
+const SUBJECT_ID = /^[a-z0-9-]+$/
+
+/** A subject id is optional; when given it must be a plain slug (no path characters). */
+export function isValidSubjectId(subject) {
+  return subject == null || SUBJECT_ID.test(subject)
+}
+
+/**
+ * progress.json holds the default (Spanish) subject, as before. Any other subject gets
+ * progress.<subject>.json so switching subjects never overwrites Spanish progress.
+ */
+export function progressPathFor(subject) {
+  if (subject == null || subject === 'spanish') return PROGRESS_PATH
+  if (!SUBJECT_ID.test(subject)) throw new Error(`invalid subject "${subject}"`)
+  return path.join(dirname, '..', `progress.${subject}.json`)
+}
+
+/**
+ * Missing progress: the default subject gets defaultProgress(); other subjects get null
+ * and the client seeds fresh progress from the subject's own chunks.
+ */
+export async function readProgress(subject) {
+  const file = progressPathFor(subject)
   try {
-    const raw = await readFile(PROGRESS_PATH, 'utf-8')
+    const raw = await readFile(file, 'utf-8')
     return JSON.parse(raw)
   } catch (err) {
-    if (err.code === 'ENOENT') return defaultProgress()
+    if (err.code === 'ENOENT') return file === PROGRESS_PATH ? defaultProgress() : null
     throw err
   }
 }
 
-export async function writeProgress(state) {
-  await writeFile(PROGRESS_PATH, JSON.stringify(state, null, 2))
+export async function writeProgress(state, subject) {
+  await writeFile(progressPathFor(subject), JSON.stringify(state, null, 2))
   return state
 }

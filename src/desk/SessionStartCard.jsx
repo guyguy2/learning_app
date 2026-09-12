@@ -1,12 +1,19 @@
 import React from 'react'
 import DeskTechniqueBadge from './DeskTechniqueBadge.jsx'
+import { DEFAULT_COPY, defaultChunkLabel } from './copy.js'
 
 /**
  * SessionStartCard
  * Shown when status is 'ready' (autoStart: false).
  * Summarizes review queue and upcoming new chunk before the session begins.
  */
-export default function SessionStartCard({ plan, begin, technique }) {
+export default function SessionStartCard({
+  plan,
+  begin,
+  technique,
+  chunkLabel = defaultChunkLabel,
+  copy = DEFAULT_COPY,
+}) {
   const reviewCount = plan?.reviewChunkIds?.length ?? 0
   const hasReview = reviewCount > 0
   const newChunk = plan?.newChunkId
@@ -28,7 +35,7 @@ export default function SessionStartCard({ plan, begin, technique }) {
       <div className="desk-label">Session Overview</div>
       <h1 className="desk-title">Daily Study Session</h1>
       <p className="desk-prompt">
-        Review consolidated verbs and construct new grammatical schemas through retrieval practice.
+        {copy.startIntro}
       </p>
 
       <div style={{ margin: '1.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -45,7 +52,7 @@ export default function SessionStartCard({ plan, begin, technique }) {
           </div>
           {hasReview ? (
             <div style={{ fontWeight: 600, color: 'var(--desk-text)' }}>
-              Due today: {plan.reviewChunkIds.map((c) => `-${c}`).join(', ')} ({reviewCount} verb family)
+              Due today: {plan.reviewChunkIds.map(chunkLabel).join(', ')} ({reviewCount} {copy.reviewUnit})
             </div>
           ) : (
             <div style={{ color: 'var(--desk-text-muted)', fontSize: '0.9375rem' }}>
@@ -63,15 +70,15 @@ export default function SessionStartCard({ plan, begin, technique }) {
           }}
         >
           <div className="desk-label" style={{ marginBottom: '0.25rem' }}>
-            Active Verb Family
+            {copy.activeChunkHeading}
           </div>
           {newChunk ? (
             <div style={{ fontWeight: 600, color: 'var(--desk-text)' }}>
-              Working family: -{newChunk}
+              {copy.workingChunk}: {chunkLabel(newChunk)}
             </div>
           ) : (
             <div style={{ color: 'var(--desk-text-muted)', fontSize: '0.9375rem' }}>
-              All core families introduced.
+              {copy.allChunksIntroduced}
             </div>
           )}
         </div>

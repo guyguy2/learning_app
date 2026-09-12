@@ -1,33 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useSessionRunner } from '../poc/useSessionRunner.js'
-import { techniqueFor } from '../screenTechniques.js'
+import { getSubject } from '../subjects/index.js'
+import { deskCopy } from './copy.js'
 import SessionStartCard from './SessionStartCard.jsx'
-import RecognitionCard from './RecognitionCard.jsx'
-import WorkedExampleCard from './WorkedExampleCard.jsx'
-import GuidedCard from './GuidedCard.jsx'
-import IndependentCard from './IndependentCard.jsx'
-import RoleTaggingCard from './RoleTaggingCard.jsx'
 import RepairPanel from './RepairPanel.jsx'
 import SummaryCard from './SummaryCard.jsx'
 import FeedbackStrip from './FeedbackStrip.jsx'
 import './desk.css'
 
-function getFamilyColor(chunkId) {
-  if (chunkId === 'er') return 'var(--family-er)'
-  if (chunkId === 'ir') return 'var(--family-ir)'
-  return 'var(--family-ar)'
-}
+const DEFAULT_SUBJECT = getSubject()
 
-/** Message for the docked strip after a correct attempt. */
-export function correctMessage(attempt, stimulus) {
-  if (attempt.type === 'recognition') {
-    return `Correct: "${stimulus?.word?.word}" means "${attempt.expectedMeaning || attempt.given}"`
-  }
-  if (attempt.type === 'role-tagging') {
-    const { subject, stem, ending, object } = attempt.given
-    return `Correct: ${subject} | ${stem} + ${ending} | ${object}`
-  }
-  return `Correct: "${attempt.expectedForm || attempt.given}"`
+/** Message for the docked strip after a correct attempt (the subject's feedback text). */
+export function correctMessage(attempt, stimulus, subject = DEFAULT_SUBJECT) {
+  const exercise = subject.exercises[attempt.type]
+  return exercise ? exercise.feedback({ correct: true, attempt }, stimulus) : 'Correct'
 }
 
 export function getTechniqueKey(repair, mode, exerciseType) {
@@ -41,12 +27,15 @@ export function getTechniqueKey(repair, mode, exerciseType) {
 
 /**
  * DeskApp
- * Production UI for the Spanish learning app adopting the Desk design:
+ * Production UI adopting the Desk design:
  * Warm paper index cards on a desk, tactile typography, morphological paper slips,
  * commit-then-reveal feedback, and cognitive transparency badges.
+ *
+ * Subject-agnostic: exercise cards come from `subject.ui.cards`, badges from
+ * `subject.techniques`. Defaults to the Spanish subject.
  */
-export default function DeskApp() {
-  const runner = useSessionRunner({ autoStart: false })
+export default function DeskApp({ subject = DEFAULT_SUBJECT }) {
+  const runner = useSessionRunner({ autoStart: false, subject })
   const {
     status,
     error,
@@ -87,18 +76,24 @@ export default function DeskApp() {
   const [retestNamedMisconception, setRetestNamedMisconception] = useState(false)
   const [mentalModelAligned, setMentalModelAligned] = useState(false)
 
-  // Current active family ID
+  const chunks = subject.chunks(subject.content)
+  const chunkLabel = (chunkId) => chunks.find((c) => c.id === chunkId)?.label ?? chunkId
+  const copy = deskCopy(subject)
+
+  // Current active chunk ID
   const activeFamily =
     stimulus?.chunkId ||
-    stimulus?.word?.family ||
+    subject.ui.chunkOf?.(stimulus) ||
     plan?.newChunkId ||
-    'ar'
+    chunks[0]?.id
 
-  const familyColor = getFamilyColor(activeFamily)
+  const familyColor = subject.ui.chunkColor?.(activeFamily) ?? 'var(--family-ar)'
 
   // Technique metadata
   const techniqueKey = getTechniqueKey(repair, mode, exerciseType)
-  const technique = techniqueFor(techniqueKey)
+  const technique = subject.techniques[techniqueKey] ?? null
+
+  const ExerciseCard = exerciseType ? subject.ui.cards[exerciseType] : null
 
   // Clear feedback strip when the next drill appears (consistent across review and new modes)
   useEffect(() => {
@@ -125,7 +120,10 @@ export default function DeskApp() {
     }
 
     if (attemptPayload.correct) {
-      setLocalFeedback({ type: 'correct', message: correctMessage(attemptPayload, stimulus) })
+      setLocalFeedback({
+        type: 'correct',
+        message: correctMessage(attemptPayload, stimulus, subject),
+      })
 
       // Mental model aligned must appear ONLY after a retest that followed a NAMED misconception
       if (retestNamedMisconception) {
@@ -184,7 +182,13 @@ export default function DeskApp() {
 
       {/* 3. Session Start Card (autoStart: false) */}
       {status === 'ready' && (
-        <SessionStartCard plan={plan} begin={begin} technique={technique} />
+        <SessionStartCard
+          plan={plan}
+          begin={begin}
+          technique={technique}
+          chunkLabel={chunkLabel}
+          copy={copy}
+        />
       )}
 
       {/* 4. Active Misconception Repair / Correction Panel */}
@@ -195,53 +199,18 @@ export default function DeskApp() {
           onRetry={handleRetryClick}
           family={activeFamily}
           technique={technique}
+          detail={subject.ui.repairDetails?.[repair.pendingType] ?? null}
+          copy={copy}
         />
       )}
 
       {/* 5. Active Drill Screens (when running and no repair) */}
       {status === 'running' && stimulus && !repair && (
         <div>
-          {exerciseType === 'recognition' && (
-            <RecognitionCard
-              key={stimulus.word.id}
-              stimulus={stimulus}
-              onSubmit={handleAttemptSubmit}
-              technique={technique}
-            />
-          )}
-
-          {exerciseType === 'production' && stimulus.phase === 'worked_example' && (
-            <WorkedExampleCard
-              key={`we-${stimulus.chunkId}`}
-              stimulus={stimulus}
-              onAcknowledge={handleAttemptSubmit}
-              technique={technique}
-            />
-          )}
-
-          {exerciseType === 'production' && stimulus.phase === 'guided' && (
-            <GuidedCard
-              key={`guided-${stimulus.verb.id}-${stimulus.person}`}
+          {ExerciseCard && (
+            <ExerciseCard
               stimulus={stimulus}
               attemptCount={attemptCount}
-              onSubmit={handleAttemptSubmit}
-              technique={technique}
-            />
-          )}
-
-          {exerciseType === 'production' && stimulus.phase === 'independent' && (
-            <IndependentCard
-              key={`ind-${stimulus.verb.id}-${stimulus.person}`}
-              stimulus={stimulus}
-              onSubmit={handleAttemptSubmit}
-              technique={technique}
-            />
-          )}
-
-          {exerciseType === 'role-tagging' && (
-            <RoleTaggingCard
-              key={`role-${stimulus.verb.id}-${stimulus.person}`}
-              stimulus={stimulus}
               onSubmit={handleAttemptSubmit}
               technique={technique}
             />
@@ -262,6 +231,8 @@ export default function DeskApp() {
           masteredChunkId={masteredChunkId}
           onStartNext={onStartNext}
           technique={technique}
+          chunkLabel={chunkLabel}
+          copy={copy}
         />
       )}
     </div>

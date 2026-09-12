@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import vocab from '../../content/spanish/vocab.json'
-import workedExamples from '../../content/spanish/worked_examples.json'
-import distractors from '../../content/spanish/distractors.json'
-import misconceptions from '../../content/spanish/misconceptions.json'
+import spanish from '../subjects/spanish/index.js'
+import { chunkOrder } from '../subjects/contract.js'
+import { initialProgress } from '../engine/chunkProgress.js'
 import {
   createRunnerState,
   begin as engineBegin,
@@ -12,10 +11,14 @@ import {
   nextSession as engineNextSession,
 } from '../engine/sessionRunner.js'
 
-const CONTENT = { vocab, workedExamples, distractors, misconceptions }
+/** Spanish keeps the original progress.json; other subjects get their own file server-side. */
+function progressUrl(subject) {
+  if (subject.id === spanish.id) return '/api/progress'
+  return `/api/progress?subject=${encodeURIComponent(subject.id)}`
+}
 
-async function persistProgress(progress) {
-  const res = await fetch('/api/progress', {
+async function persistProgress(progress, subject) {
+  const res = await fetch(progressUrl(subject), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(progress),
@@ -23,23 +26,32 @@ async function persistProgress(progress) {
   return res.json()
 }
 
+/** A subject with no saved progress yet starts from fresh chunks of its own. */
+function withInitialProgress(loaded, subject) {
+  if (loaded && Array.isArray(loaded.chunks) && loaded.chunks.length > 0) return loaded
+  return initialProgress(chunkOrder(subject))
+}
+
 /**
  * React hook wrapper around pure engine sessionRunner.
+ * `subject` is a subject module (src/subjects/); defaults to Spanish.
  */
-export function useSessionRunner({ autoStart = true } = {}) {
+export function useSessionRunner({ autoStart = true, subject = spanish } = {}) {
+  const content = subject.content
   const [today] = useState(() => new Date().toISOString().slice(0, 10))
   const [runnerState, setRunnerState] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    fetch('/api/progress')
+    fetch(progressUrl(subject))
       .then((res) => res.json())
-      .then(async (loaded) => {
-        let state = createRunnerState(loaded, { today })
+      .then(async (raw) => {
+        const loaded = withInitialProgress(raw, subject)
+        let state = createRunnerState(loaded, { today, subject })
         if (autoStart) {
-          state = engineBegin(state, CONTENT)
+          state = engineBegin(state, content, subject)
           if (state.progress !== loaded) {
-            const persisted = await persistProgress(state.progress)
+            const persisted = await persistProgress(state.progress, subject)
             state = commitProgress(state, persisted)
           }
         }
@@ -53,10 +65,10 @@ export function useSessionRunner({ autoStart = true } = {}) {
 
   function begin() {
     if (runnerState && runnerState.status === 'ready') {
-      const next = engineBegin(runnerState, CONTENT)
+      const next = engineBegin(runnerState, content, subject)
       setRunnerState(next)
       if (next.progress !== runnerState.progress) {
-        persistProgress(next.progress).then((persisted) => {
+        persistProgress(next.progress, subject).then((persisted) => {
           setRunnerState((cur) => (cur ? commitProgress(cur, persisted) : cur))
         })
       }
@@ -68,11 +80,12 @@ export function useSessionRunner({ autoStart = true } = {}) {
     const { state: nextState, progress: nextProgress } = engineSubmitAttempt(
       runnerState,
       attempt,
-      CONTENT,
+      content,
       today,
+      subject,
     )
     if (nextProgress && nextProgress !== runnerState.progress) {
-      const persisted = await persistProgress(nextProgress)
+      const persisted = await persistProgress(nextProgress, subject)
       setRunnerState(commitProgress(nextState, persisted))
     } else {
       setRunnerState(nextState)
@@ -88,14 +101,14 @@ export function useSessionRunner({ autoStart = true } = {}) {
     if (!runnerState) return
     const { state: nextState, progress: nextProgress } = engineNextSession(
       runnerState,
-      { today },
+      { today, subject },
     )
-    const persisted = await persistProgress(nextProgress)
+    const persisted = await persistProgress(nextProgress, subject)
     let finalState = commitProgress(nextState, persisted)
     if (autoStart) {
-      finalState = engineBegin(finalState, CONTENT)
+      finalState = engineBegin(finalState, content, subject)
       if (finalState.progress !== persisted) {
-        const p2 = await persistProgress(finalState.progress)
+        const p2 = await persistProgress(finalState.progress, subject)
         finalState = commitProgress(finalState, p2)
       }
     }
