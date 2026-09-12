@@ -1,6 +1,7 @@
 import { checkGate, todayIso } from '../../engine/advancement.js'
+import { GATE_STREAK_CAP } from '../../engine/chunkProgress.js'
 
-export const GATE_STREAK_CAP = 3
+export { GATE_STREAK_CAP }
 export const PERSONS = ['yo', 'tu', 'el_ella_usted', 'nosotros', 'vosotros', 'ellos_ellas_ustedes']
 
 export function findChunk(chunks, chunkId) {

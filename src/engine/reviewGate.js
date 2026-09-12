@@ -36,14 +36,19 @@ export function isReviewGateCleared(chunk) {
   )
 }
 
+// Fallback for callers that pass no types (the unit tests); the session runner always
+// passes the active subject's reviewTypes.
+const DEFAULT_REVIEW_TYPES = ['production', 'role-tagging']
+
 /**
- * Alternate between the two producible drill types so a review spans >=2 types.
- * production <-> role-tagging; null/undefined starts at production.
+ * Cycle through the subject's review types so a review spans >=2 types.
+ * Spanish: production <-> role-tagging. null/undefined or an unknown type starts at the first.
  *
  * @param {string | null | undefined} lastType
- * @returns {'production' | 'role-tagging'}
+ * @param {string[]} [types] the subject's reviewTypes
+ * @returns {string}
  */
-export function nextReviewDrillType(lastType) {
-  if (lastType === 'production') return 'role-tagging'
-  return 'production'
+export function nextReviewDrillType(lastType, types = DEFAULT_REVIEW_TYPES) {
+  const index = types.indexOf(lastType)
+  return types[(index + 1) % types.length]
 }

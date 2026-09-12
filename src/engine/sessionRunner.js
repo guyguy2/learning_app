@@ -4,6 +4,11 @@
  * Pure, framework-free session state machine for the pedagogy engine.
  * Decoupled from React, the DOM, timers/clock reads, and HTTP persistence.
  *
+ * Subject-agnostic: every subject-specific decision (which stimulus to show, how an attempt
+ * updates progress, feedback text, named-misconception repair) goes through a subject module
+ * implementing the contract in src/subjects/contract.js. Each entry point takes the subject
+ * as its last parameter, defaulting to Spanish.
+ *
  * Contract Gap Fix:
  * In prior implementations, review mode left `feedback === 'correct'` active when advancing
  * to the next stimulus, whereas new-content mode cleared it immediately upon presenting
@@ -12,45 +17,19 @@
  * across all session modes.
  */
 
-import defaultVocab from '../../content/spanish/vocab.json'
-import defaultWorkedExamples from '../../content/spanish/worked_examples.json'
-import defaultDistractors from '../../content/spanish/distractors.json'
-import defaultMisconceptions from '../../content/spanish/misconceptions.json'
+import spanish from '../subjects/spanish/index.js'
+import { chunkOrder, exerciseFor, resolveSubjectContent } from '../subjects/contract.js'
 
 import { buildSession } from './session.js'
 import { selectChunkForSession } from './sessionPlan.js'
-import { getNextStimulus, applyAttempt } from './wordMastery.js'
-import {
-  applyProductionAttempt,
-  findChunk,
-  getNextProductionStimulus,
-  masteredVerbsForFamily,
-} from '../subjects/spanish/conjugation.js'
-import { applyRoleTaggingAttempt, getNextRoleTaggingStimulus } from '../subjects/spanish/roleTagging.js'
+import { findChunk, scaffoldPhase } from './chunkProgress.js'
 import { advanceLadder, resetLadder } from './review.js'
-import { getMisconception } from './misconception.js'
-import { matchMisconception } from '../subjects/spanish/misconception.js'
 import { isReviewGateCleared, nextReviewDrillType, resetReviewStreak } from './reviewGate.js'
-import { recognitionPool, familyVerbsRemaining } from '../subjects/spanish/newContentSchedule.js'
-import { mapPersonForMisconception } from '../subjects/spanish/misconceptionInput.js'
 
-export const NEW_PHASE_ROTATION = ['recognition', 'production', 'role-tagging']
+export const DEFAULT_CONTENT = spanish.content
 
-export const DEFAULT_CONTENT = {
-  vocab: defaultVocab,
-  workedExamples: defaultWorkedExamples,
-  distractors: defaultDistractors,
-  misconceptions: defaultMisconceptions,
-}
-
-export function resolveContent(content) {
-  if (!content) return DEFAULT_CONTENT
-  return {
-    vocab: content.vocab ?? defaultVocab,
-    workedExamples: content.workedExamples ?? defaultWorkedExamples,
-    distractors: content.distractors ?? defaultDistractors,
-    misconceptions: content.misconceptions ?? defaultMisconceptions,
-  }
+export function resolveContent(content, subject = spanish) {
+  return resolveSubjectContent(subject, content)
 }
 
 export function replaceChunk(progressState, chunkId, updatedChunk) {
@@ -60,86 +39,53 @@ export function replaceChunk(progressState, chunkId, updatedChunk) {
   }
 }
 
-function stimulusForType(type, progressState, chunkId, content) {
-  if (type === 'recognition') {
-    return getNextStimulus(progressState, recognitionPool(progressState, content.vocab, chunkId))
-  }
-  if (type === 'production') {
-    return getNextProductionStimulus(progressState, chunkId, content)
-  }
-  return getNextRoleTaggingStimulus(progressState, chunkId, content)
+function stimulusForType(type, progressState, chunkId, content, subject) {
+  return exerciseFor(subject, type).nextStimulus(progressState, chunkId, content)
+}
+
+function planSession(progress, { sessionNumber, today }, content, subject) {
+  return buildSession(progress, {
+    sessionNumber,
+    today,
+    chunkOrder: chunkOrder(subject, content),
+  })
 }
 
 /**
- * 3-way rotation across recognition/production/role-tagging for the active new-content chunk.
- * If all family verbs are mastered, initial rotation starts at production; otherwise recognition.
+ * Rotation across subject.exerciseTypes for the active new-content chunk.
+ * With no previous type, starts where the subject says (firstExerciseType), else at the first type.
  * Skips slots whose stimulus is null.
  */
-export function pickNewPhaseStimulus(progressState, chunkId, lastType, content) {
+export function pickNewPhaseStimulus(progressState, chunkId, lastType, content, subject = spanish) {
+  const rotation = subject.exerciseTypes
   let startIndex
   if (lastType) {
-    startIndex = (NEW_PHASE_ROTATION.indexOf(lastType) + 1) % NEW_PHASE_ROTATION.length
+    startIndex = (rotation.indexOf(lastType) + 1) % rotation.length
   } else {
-    const hasRemaining = familyVerbsRemaining(progressState, content.vocab, chunkId)
-    startIndex = hasRemaining ? 0 : 1
+    const firstType = subject.firstExerciseType?.(progressState, chunkId, content) ?? rotation[0]
+    startIndex = Math.max(rotation.indexOf(firstType), 0)
   }
 
-  for (let i = 0; i < NEW_PHASE_ROTATION.length; i++) {
-    const type = NEW_PHASE_ROTATION[(startIndex + i) % NEW_PHASE_ROTATION.length]
-    const stimulus = stimulusForType(type, progressState, chunkId, content)
+  for (let i = 0; i < rotation.length; i++) {
+    const type = rotation[(startIndex + i) % rotation.length]
+    const stimulus = stimulusForType(type, progressState, chunkId, content, subject)
     if (stimulus) return { exerciseType: type, stimulus }
   }
-  return { exerciseType: 'recognition', stimulus: null }
+  return { exerciseType: rotation[0], stimulus: null }
 }
 
-function incorrectMessage(type, stimulus) {
-  if (type === 'recognition') {
-    return `incorrect — "${stimulus?.word?.word}" means "${stimulus?.word?.meaning}"`
-  }
-  if (type === 'production') {
-    return `incorrect — expected "${stimulus?.expectedForm}"`
-  }
-  return `incorrect — subject: "${stimulus?.parts?.subject}", stem: "${stimulus?.parts?.stem}", ending: "${stimulus?.parts?.ending}", object: "${stimulus?.parts?.object}"`
-}
+function handleMiss(attempt, stimulus, pendingStimulus, content, subject) {
+  const exercise = exerciseFor(subject, attempt.type)
+  const named = exercise.repairFor?.(attempt, stimulus, content) ?? null
+  const correctForm = exercise.expectedAnswer(stimulus)
 
-function misconceptionMatcherAttempt(attempt) {
-  if (attempt.type === 'recognition') {
-    return { type: 'false_cognate', wordId: attempt.wordId, given: attempt.given }
-  }
-  if (attempt.type === 'production') {
-    return {
-      type: 'overgeneralization',
-      verbId: attempt.wordId,
-      person: mapPersonForMisconception(attempt.person),
-      given: attempt.given,
-    }
-  }
-  return null
-}
-
-function correctFormFor(attempt, stimulus) {
-  if (attempt.type === 'recognition') return stimulus?.word?.meaning ?? null
-  if (attempt.type === 'production') return stimulus?.expectedForm ?? null
-  return null
-}
-
-function notionalMachineFor(attempt, content) {
-  if (attempt.type !== 'production') return null
-  const we = content.workedExamples?.find((w) => w.family === attempt.chunkId)
-  return we?.notional_machine ?? null
-}
-
-function handleMiss(attempt, stimulus, pendingStimulus, content) {
-  const match = matchMisconception(misconceptionMatcherAttempt(attempt), content.distractors)
-  const correctForm = correctFormFor(attempt, stimulus)
-
-  if (match) {
+  if (named) {
     return {
       feedback: null,
       repair: {
-        misconception: getMisconception(match.misconceptionId, content.misconceptions),
+        misconception: named.misconception,
         correctForm,
-        notionalMachine: notionalMachineFor(attempt, content),
+        notionalMachine: named.notionalMachine ?? null,
         pendingStimulus,
         pendingType: attempt.type,
       },
@@ -147,7 +93,7 @@ function handleMiss(attempt, stimulus, pendingStimulus, content) {
   }
 
   return {
-    feedback: incorrectMessage(attempt.type, stimulus),
+    feedback: exercise.feedback({ correct: false, attempt }, stimulus),
     repair: {
       misconception: null,
       correctForm,
@@ -158,8 +104,12 @@ function handleMiss(attempt, stimulus, pendingStimulus, content) {
   }
 }
 
-function enterActiveDrillState(state, lastType, content) {
-  const chunkId = selectChunkForSession(state.progress, state.progress.session_number)
+function enterActiveDrillState(state, lastType, content, subject) {
+  const chunkId = selectChunkForSession(
+    state.progress,
+    state.progress.session_number,
+    chunkOrder(subject, content),
+  )
   if (chunkId == null) {
     return {
       ...state,
@@ -172,7 +122,7 @@ function enterActiveDrillState(state, lastType, content) {
       attemptCount: 0,
     }
   }
-  const picked = pickNewPhaseStimulus(state.progress, chunkId, lastType, content)
+  const picked = pickNewPhaseStimulus(state.progress, chunkId, lastType, content, subject)
   return {
     ...state,
     status: 'running',
@@ -185,44 +135,47 @@ function enterActiveDrillState(state, lastType, content) {
   }
 }
 
-function enterNewPhaseState(state, content, lastType = null) {
+function enterNewPhaseState(state, content, subject, lastType = null) {
   const base = {
     ...state,
     feedback: null,
     repair: null,
   }
 
-  if (base.progress.session_number >= 2) {
+  // From session two, introduce (via its worked example) any chunk still waiting on one.
+  const { scaffoldType } = subject
+  if (base.progress.session_number >= 2 && scaffoldType) {
     const toIntroduce = base.progress.chunks
       .filter(
         (c) =>
           !c.mastered &&
-          (c.production_phase ?? 'worked_example') === 'worked_example' &&
-          masteredVerbsForFamily(content.vocab, base.progress.words, c.id).length > 0,
+          scaffoldPhase(c) === 'worked_example' &&
+          (subject.scaffoldReady?.(base.progress, c.id, content) ?? true),
       )
       .map((c) => c.id)
     if (toIntroduce.length > 0) {
-      const stimulus = getNextProductionStimulus(base.progress, toIntroduce[0], content)
+      const stimulus = stimulusForType(scaffoldType, base.progress, toIntroduce[0], content, subject)
       return {
         ...base,
         status: 'running',
         mode: 'new',
-        exerciseType: 'production',
+        exerciseType: scaffoldType,
         stimulus,
         attemptCount: 0,
       }
     }
   }
 
-  return enterActiveDrillState(base, lastType, content)
+  return enterActiveDrillState(base, lastType, content, subject)
 }
 
-function enterReviewChunkState(state, queue, content) {
+function enterReviewChunkState(state, queue, content, subject) {
   const chunkId = queue[0]
   const targetChunk = findChunk(state.progress.chunks, chunkId)
   const resetChunk = resetReviewStreak(targetChunk)
   const updatedProgress = replaceChunk(state.progress, chunkId, resetChunk)
-  const stimulus = getNextProductionStimulus(updatedProgress, chunkId, content)
+  const firstType = subject.reviewTypes[0]
+  const stimulus = stimulusForType(firstType, updatedProgress, chunkId, content, subject)
 
   return {
     ...state,
@@ -231,7 +184,7 @@ function enterReviewChunkState(state, queue, content) {
     progress: updatedProgress,
     reviewQueue: [...queue],
     reviewHadMiss: false,
-    exerciseType: 'production',
+    exerciseType: firstType,
     stimulus,
     feedback: null,
     repair: null,
@@ -243,9 +196,14 @@ function enterReviewChunkState(state, queue, content) {
  * Initialize a session runner state from loaded progress and date.
  * Returns state with status 'ready'.
  */
-export function createRunnerState(progress, { today } = {}) {
+export function createRunnerState(progress, { today, subject = spanish, content } = {}) {
   const plan = progress
-    ? buildSession(progress, { sessionNumber: progress.session_number, today })
+    ? planSession(
+        progress,
+        { sessionNumber: progress.session_number, today },
+        resolveContent(content, subject),
+        subject,
+      )
     : null
 
   return {
@@ -270,15 +228,17 @@ export function createRunnerState(progress, { today } = {}) {
  * Begin drilling based on the session plan.
  * Transitions status from 'ready' to 'running' (or 'summary' if no review or new content).
  */
-export function begin(state, content) {
+export function begin(state, content, subject = spanish) {
   if (!state || !state.progress) return state
-  const c = resolveContent(content)
+  const c = resolveContent(content, subject)
   const s =
     state.plan ||
-    buildSession(state.progress, {
-      sessionNumber: state.progress.session_number,
-      today: state.today,
-    })
+    planSession(
+      state.progress,
+      { sessionNumber: state.progress.session_number, today: state.today },
+      c,
+      subject,
+    )
 
   const base = {
     ...state,
@@ -291,7 +251,7 @@ export function begin(state, content) {
   }
 
   if (s.phase === 'review') {
-    return enterReviewChunkState(base, s.reviewChunkIds, c)
+    return enterReviewChunkState(base, s.reviewChunkIds, c, subject)
   } else if (s.phase === 'new') {
     return enterNewPhaseState(
       {
@@ -299,6 +259,7 @@ export function begin(state, content) {
         reviewQueue: [],
       },
       c,
+      subject,
     )
   } else {
     return {
@@ -316,21 +277,18 @@ export function begin(state, content) {
  * Submit a user attempt on the active drill.
  * Returns `{ state, progress }` where progress is the updated progress to persist.
  */
-export function submitAttempt(state, attempt, content, today = state?.today) {
+export function submitAttempt(state, attempt, content, today = state?.today, subject = spanish) {
   if (!state || !state.progress) return { state, progress: state?.progress ?? null }
-  const c = resolveContent(content)
+  const c = resolveContent(content, subject)
   const curToday = today ?? state.today
 
   if (state.mode === 'review') {
     const attemptCount = state.attemptCount + 1
     const chunkId = attempt.chunkId
-    const result =
-      attempt.type === 'production'
-        ? applyProductionAttempt(state.progress, attempt, c, curToday)
-        : applyRoleTaggingAttempt(state.progress, attempt, c, curToday)
+    const result = exerciseFor(subject, attempt.type).apply(state.progress, attempt, c, curToday)
 
     if (!attempt.correct) {
-      const repairState = handleMiss(attempt, state.stimulus, result.next, c)
+      const repairState = handleMiss(attempt, state.stimulus, result.next, c, subject)
       const nextState = {
         ...state,
         progress: result.progress,
@@ -360,6 +318,7 @@ export function submitAttempt(state, attempt, content, today = state?.today) {
           },
           rest,
           c,
+          subject,
         )
         return { state: nextReviewState, progress: nextReviewState.progress }
       } else if (state.plan?.newChunkId != null) {
@@ -371,6 +330,7 @@ export function submitAttempt(state, attempt, content, today = state?.today) {
             reviewedCount,
           },
           c,
+          subject,
         )
         return { state: nextState, progress: finalProgress }
       } else {
@@ -393,8 +353,8 @@ export function submitAttempt(state, attempt, content, today = state?.today) {
 
     // Review drill correct, gate NOT cleared yet:
     // CONTRACT GAP FIX: feedback cleared when next stimulus is presented (consistent with new-content mode).
-    const nextType = nextReviewDrillType(attempt.type)
-    const nextStimulus = stimulusForType(nextType, result.progress, chunkId, c)
+    const nextType = nextReviewDrillType(attempt.type, subject.reviewTypes)
+    const nextStimulus = stimulusForType(nextType, result.progress, chunkId, c, subject)
     const nextState = {
       ...state,
       progress: result.progress,
@@ -409,14 +369,7 @@ export function submitAttempt(state, attempt, content, today = state?.today) {
 
   if (state.mode === 'new') {
     const attemptCount = state.attemptCount + 1
-    let result
-    if (attempt.type === 'recognition') {
-      result = applyAttempt(state.progress, attempt, c.vocab, curToday)
-    } else if (attempt.type === 'production') {
-      result = applyProductionAttempt(state.progress, attempt, c, curToday)
-    } else {
-      result = applyRoleTaggingAttempt(state.progress, attempt, c, curToday)
-    }
+    const result = exerciseFor(subject, attempt.type).apply(state.progress, attempt, c, curToday)
 
     if (attempt.action === 'worked_example_ack') {
       const nextState = enterNewPhaseState(
@@ -428,6 +381,7 @@ export function submitAttempt(state, attempt, content, today = state?.today) {
           repair: null,
         },
         c,
+        subject,
       )
       return { state: nextState, progress: result.progress }
     }
@@ -460,12 +414,13 @@ export function submitAttempt(state, attempt, content, today = state?.today) {
         },
         attempt.type,
         c,
+        subject,
       )
       return { state: nextState, progress: result.progress }
     }
 
     // Miss:
-    const repairState = handleMiss(attempt, state.stimulus, result.next, c)
+    const repairState = handleMiss(attempt, state.stimulus, result.next, c, subject)
     const nextState = {
       ...state,
       progress: result.progress,
@@ -510,16 +465,18 @@ export function retry(state) {
  * Advance session_number by 1 and build a fresh session plan.
  * Returns `{ state, progress }` with status 'ready'.
  */
-export function nextSession(state, { today, autoStart = false, content } = {}) {
+export function nextSession(state, { today, autoStart = false, content, subject = spanish } = {}) {
   const curToday = today ?? state?.today
   const nextProgress = {
     ...state.progress,
     session_number: (state.progress?.session_number ?? 1) + 1,
   }
-  const nextPlan = buildSession(nextProgress, {
-    sessionNumber: nextProgress.session_number,
-    today: curToday,
-  })
+  const nextPlan = planSession(
+    nextProgress,
+    { sessionNumber: nextProgress.session_number, today: curToday },
+    resolveContent(content, subject),
+    subject,
+  )
   let nextState = {
     ...state,
     status: 'ready',
@@ -539,7 +496,7 @@ export function nextSession(state, { today, autoStart = false, content } = {}) {
   }
 
   if (autoStart && content) {
-    nextState = begin(nextState, content)
+    nextState = begin(nextState, content, subject)
     return { state: nextState, progress: nextState.progress }
   }
 

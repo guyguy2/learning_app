@@ -1,13 +1,8 @@
 import { useState } from 'react'
 import DeskTechniqueBadge from './DeskTechniqueBadge.jsx'
+import { acceptedMeanings, normalize } from '../subjects/spanish/grading.js'
 
-export function normalize(text) {
-  return (text || '').trim().toLowerCase()
-}
-
-export function acceptedMeanings(meaning) {
-  return (meaning || '').split(/[;,]/).map(normalize).filter(Boolean)
-}
+export { acceptedMeanings, normalize }
 
 /**
  * RecognitionCard

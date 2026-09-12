@@ -6,11 +6,13 @@ import { selectChunkForSession } from './sessionPlan.js'
  * Pure — caller supplies `today` (ISO YYYY-MM-DD) and `sessionNumber` rather than the
  * engine reading the clock. Does not mutate progressState.
  *
+ * `chunkOrder` is the subject's ordered chunk ids (see selectChunkForSession).
+ *
  * @returns {{ reviewChunkIds: string[], newChunkId: string|null, phase: 'review'|'new'|'done' }}
  */
-export function buildSession(progressState, { sessionNumber, today, reviewCap = 8 }) {
+export function buildSession(progressState, { sessionNumber, today, reviewCap = 8, chunkOrder }) {
   const reviewChunkIds = dueChunks(progressState.chunks, today, reviewCap).map((c) => c.id)
-  const newChunkId = selectChunkForSession(progressState, sessionNumber)
+  const newChunkId = selectChunkForSession(progressState, sessionNumber, chunkOrder)
 
   let phase
   if (reviewChunkIds.length > 0) {

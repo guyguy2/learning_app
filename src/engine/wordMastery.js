@@ -1,54 +1,14 @@
-import { applyProductionAttempt } from '../subjects/spanish/conjugation.js'
-import { applyRoleTaggingAttempt } from '../subjects/spanish/roleTagging.js'
+import spanish from '../subjects/spanish/index.js'
+import { exerciseFor } from '../subjects/contract.js'
 
-const MASTERY_STREAK = 2
+// Spanish vocabulary stimulus picker, kept here for existing callers.
+export { getNextStimulus } from '../subjects/spanish/recognition.js'
 
-function statusOf(wordId, words) {
-  return words.find((w) => w.id === wordId)?.status ?? 'learning'
-}
-
-function pickStimulus(vocabPool, words, preferredId) {
-  const unmastered = vocabPool.filter((v) => statusOf(v.id, words) !== 'mastered')
-  if (unmastered.length === 0) return null
-  const preferred = unmastered.find((v) => v.id === preferredId)
-  return { type: 'recognition', word: preferred ?? unmastered[0] }
-}
-
-export function getNextStimulus(progressState, vocabPool) {
-  return pickStimulus(vocabPool, progressState.words, null)
-}
-
-export function applyAttempt(progressState, attempt, contentPool, today) {
-  if (attempt.type === 'production') {
-    return applyProductionAttempt(progressState, attempt, contentPool, today)
-  }
-  if (attempt.type === 'role-tagging') {
-    return applyRoleTaggingAttempt(progressState, attempt, contentPool, today)
-  }
-
-  const vocabPool = contentPool
-  const { wordId, correct } = attempt
-  const words = progressState.words.map((w) => ({ ...w }))
-  let word = words.find((w) => w.id === wordId)
-  if (!word) {
-    word = { id: wordId, status: 'learning', streak_count: 0 }
-    words.push(word)
-  }
-
-  let justMastered = false
-  if (correct) {
-    if (word.status !== 'mastered') {
-      word.streak_count += 1
-      if (word.streak_count >= MASTERY_STREAK) {
-        word.status = 'mastered'
-        justMastered = true
-      }
-    }
-  } else {
-    word.streak_count = 0
-  }
-
-  const progress = { ...progressState, words }
-  const next = pickStimulus(vocabPool, words, justMastered ? null : wordId)
-  return { progress, next }
+/**
+ * Apply one attempt: `(progressState, attempt) -> { progress, next }`, dispatched to the
+ * subject's exercise for `attempt.type`. Each exercise owns what an attempt updates
+ * (item mastery for Spanish recognition, the chunk gate for conjugation drills).
+ */
+export function applyAttempt(progressState, attempt, contentPool, today, subject = spanish) {
+  return exerciseFor(subject, attempt.type).apply(progressState, attempt, contentPool, today)
 }
