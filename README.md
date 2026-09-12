@@ -33,7 +33,7 @@ Execute the Vitest test suite:
 ```bash
 npm test
 ```
-The suite has 22 test files and 186 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the shared React components and screens, the production Desk UI (`src/desk/`), the `useSessionRunner` hook and POC variants (`src/poc/`), and the server seed scenarios (`server/seeds.test.js`).
+The suite has 27 test files and 236 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the shared React components and screens, the production Desk UI (`src/desk/`), the `useSessionRunner` hook and POC variants (`src/poc/`), and the server seed scenarios and per-subject progress files (`server/`).
 
 ## UI
 
@@ -70,7 +70,7 @@ Each session is assembled as **review first, then new content** (`buildSession` 
 A wrong answer that matches a seeded distractor (false cognate, or overgeneralizing a conjugation ending) triggers a named repair panel: it explains the specific error, re-shows the correct form, then re-tests on a similar item.
 
 ### Technique transparency
-Every screen can show a small badge naming the cognitive-science technique in play - Retrieval practice, Notional machine, Chunking, Spaced repetition, Misconception repair - see `src/screenTechniques.js`.
+Every screen can show a small badge naming the cognitive-science technique in play - Retrieval practice, Notional machine, Chunking, Spaced repetition, Misconception repair - see `src/screenTechniques.js`. Each subject declares its badges in its `techniques` map; the programming subject adds Faded worked example for its completion drills.
 
 ## Known limitations (v1 PoC)
 
@@ -81,30 +81,30 @@ Every screen can show a small badge naming the cognitive-science technique in pl
 
 The project maintains a strict separation between the user interface, backend state persistence, and pure pedagogical rules:
 
-- **Frontend SPA (`src/`)**: A React application built with Vite that renders the interactive session flow screens. `src/main.jsx` mounts the production Desk UI (`src/desk/`, entry `DeskApp.jsx`) by default, or the design comparison shell and its variants (`src/poc/`, `PocShell.jsx` and `src/poc/variants/`) with `?poc=1`. All UIs, including the legacy `src/App.jsx`, drive sessions through the `useSessionRunner` hook (`src/poc/useSessionRunner.js`), a thin React wrapper over the pure `sessionRunner` engine that holds its state and loads and saves progress via `/api/progress`.
-- **Backend Server (`server/`)**: An Express server that handles loading and persistence of user states to `progress.json` (`GET`/`POST /api/progress`), plus reset and seed endpoints (`POST /api/progress/reset`, `POST /api/progress/seed`) used by the POC shell.
-- **Static Content Pool (`content/spanish/`)**: Static JSON data files containing vocabularies, distractors, misconceptions, and worked examples:
-  - `vocab.json`
-  - `distractors.json`
-  - `misconceptions.json`
-  - `worked_examples.json`
-- **Pedagogy Engine (`src/engine/`)**: A collection of pure, side-effect-free functions that calculate state transitions based on user attempts. They are decoupled from the DOM, HTTP requests, and the filesystem. Each attempt goes through the state transition function in `wordMastery.js`, which dispatches production and role-tagging attempts to their modules:
-  `applyAttempt(progressState, attempt, contentPool, today) -> { progress, next }`
+- **Frontend SPA (`src/`)**: A React application built with Vite that renders the interactive session flow screens. `src/main.jsx` mounts the production Desk UI (`src/desk/`, entry `DeskApp.jsx`) by default, or the design comparison shell and its variants (`src/poc/`, `PocShell.jsx` and `src/poc/variants/`) with `?poc=1`. `?subject=<id>` picks the subject the Desk UI teaches (for example `http://localhost:5173/?subject=programming`); a missing or unknown id means Spanish. All UIs, including the legacy `src/App.jsx`, drive sessions through the `useSessionRunner` hook (`src/poc/useSessionRunner.js`), a thin React wrapper over the pure `sessionRunner` engine that holds its state and loads and saves progress via `/api/progress`.
+- **Backend Server (`server/`)**: An Express server that handles loading and persistence of user states to `progress.json` (`GET`/`POST /api/progress`), plus reset and seed endpoints (`POST /api/progress/reset`, `POST /api/progress/seed`) used by the POC shell. `?subject=<id>` on `/api/progress` stores any subject other than Spanish in its own `progress.<id>.json`.
+- **Subjects (`src/subjects/`)**: Each subject is a plugin behind one contract: its exercise types and their rotation, its chunks, and per exercise type `nextStimulus`, `apply`, `grade`, `feedback`, `expectedAnswer`, and optional `repairFor` for named misconceptions, plus its content with a `validate` function, its technique badges, and its Desk cards (`ui`). Spanish (`src/subjects/spanish/`) is the default; a tiny JavaScript subject (`src/subjects/programming/`) proves the seam. See [src/subjects/README.md](src/subjects/README.md).
+- **Static Content Pools (`content/<subject>/`)**: Static JSON data files per subject:
+  - `content/spanish/`: `vocab.json`, `distractors.json`, `misconceptions.json`, `worked_examples.json`
+  - `content/programming/`: `items.json`, `distractors.json`, `misconceptions.json`, `worked_examples.json`
+- **Pedagogy Engine (`src/engine/`)**: A collection of pure, side-effect-free functions that calculate state transitions based on user attempts. They are decoupled from the DOM, HTTP requests, and the filesystem, and hold no subject knowledge. Each attempt goes through the state transition function in `wordMastery.js`, which dispatches to the subject's exercise for the attempt type:
+  `applyAttempt(progressState, attempt, contentPool, today, subject) -> { progress, next }`
 
-  The whole session loop lives in `sessionRunner.js`, a pure, framework-free state machine (`createRunnerState`, `begin`, `submitAttempt`, `commitProgress`, `retry`, `nextSession`). It has no React, DOM, clock, or HTTP dependencies. React access goes through the thin `useSessionRunner` hook described above.
+  The whole session loop lives in `sessionRunner.js`, a pure, framework-free state machine (`createRunnerState`, `begin`, `submitAttempt`, `commitProgress`, `retry`, `nextSession`). Each entry point takes the subject as its last parameter (default Spanish). It has no React, DOM, clock, or HTTP dependencies. React access goes through the thin `useSessionRunner` hook described above.
 
 ### Engine Modules
-- **`sessionRunner.js`**: Pure session state machine: builds the session, picks each stimulus, applies attempts, routes wrong answers to misconception repair, and moves between review, new content, and the summary.
+- **`sessionRunner.js`**: Pure session state machine: builds the session, asks the subject for each stimulus, applies attempts, routes wrong answers to misconception repair, and moves between review, new content, and the summary.
 - **`session.js`**: `buildSession` assembles a session as a review block first, then new content.
-- **`sessionPlan.js`**: `selectChunkForSession` picks the next verb family (blocked in session one, interleaved from session two).
+- **`sessionPlan.js`**: `selectChunkForSession` picks the next chunk in the subject's order (blocked in session one, interleaved from session two).
 - **`review.js`**: Spaced-repetition ladder (`LADDER_DAYS`), due-chunk selection, and ladder advance/reset.
-- **`reviewGate.js`**: Cross-session review as a re-run of the advancement gate (streak reset on entry, clear check, alternating drill types).
+- **`reviewGate.js`**: Cross-session review as a re-run of the advancement gate (streak reset on entry, clear check, cycling the subject's review types).
 - **`advancement.js`**: `checkGate`, the mastery gate (3 correct in a row spanning at least 2 exercise types).
-- **`newContentSchedule.js`**: Recognition-pool scheduling (family verbs first, then other vocabulary).
-- **`wordMastery.js`**: Manages spaced retrieval and progression of vocabulary words through mastery thresholds.
-- **`conjugation.js`**: Drives the scaffolded stages of conjugation production.
-- **`roleTagging.js`**: Orchestrates sentence analysis and grammatical role-tagging exercises.
-- **`misconception.js`**: Diagnoses user mistakes against known misconception profiles and guides targeted repairs.
+- **`chunkProgress.js`**: Shared chunk helpers: fresh progress, the gate streak update, and worked-example acknowledgement.
+- **`itemMastery.js`**: Shared item mastery (2 correct in a row, any miss resets, no decay).
+- **`wordMastery.js`**: `applyAttempt`, dispatching an attempt to the subject's exercise.
+- **`misconception.js`**: `getMisconception`, the catalog lookup used by every subject's repair.
+
+The Spanish modules that used to live here (`conjugation.js`, `roleTagging.js`, `newContentSchedule.js`, the distractor matcher) are now in `src/subjects/spanish/`.
 
 ## Exercise Types
 
