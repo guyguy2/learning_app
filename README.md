@@ -2,6 +2,8 @@
 
 A personal, single-user web application designed for learning Spanish vocabulary and regular present-tense verb conjugation. Built on core cognitive-science principles, the application runs a subject-agnostic **pedagogy engine** that guides the learner through deliberate practice cycles (such as worked examples, scaffolded retrieval, and independent recall) and catches misconceptions by name. To keep the learning process transparent, every screen features a Technique Transparency Badge identifying and explaining the specific pedagogical method in play.
 
+**Repository:** [github.com/guyguy2/learning_app](https://github.com/guyguy2/learning_app)
+
 ## Run Instructions
 
 ### Prerequisites
@@ -18,8 +20,12 @@ Start both the Vite frontend and Express backend concurrently:
 ```bash
 npm run dev
 ```
-- **Vite Frontend**: [http://localhost:5173](http://localhost:5173) (automatically proxies `/api` calls to the backend)
+- **Vite Frontend**: [http://localhost:5173](http://localhost:5173) (automatically proxies `/api` calls to the backend). If 5173 is taken, Vite picks the next free port, so the URL printed in the terminal is the authoritative one.
 - **Express Backend**: `http://localhost:3001`
+- **Ports**: Both default to backend port 3001 and can be overridden with environment variables:
+  - `server/index.js` listens on `SERVER_PORT`, else `PORT`, else 3001.
+  - `vite.config.js` points the `/api` proxy at `SERVER_PORT`, else `BACKEND_PORT`, else 3001.
+  - Setting `SERVER_PORT` moves both together, for example `SERVER_PORT=4001 npm run dev`.
 - **User Progress**: The local file `progress.json` is generated at the project root to store runtime progress. This file is gitignored.
 
 ### Running Tests
@@ -27,6 +33,7 @@ Execute the Vitest test suite:
 ```bash
 npm test
 ```
+The suite has 22 test files and 186 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the shared React components and screens, the production Desk UI (`src/desk/`), the `useSessionRunner` hook and POC variants (`src/poc/`), and the server seed scenarios (`server/seeds.test.js`).
 
 ## UI
 
@@ -74,17 +81,26 @@ Every screen can show a small badge naming the cognitive-science technique in pl
 
 The project maintains a strict separation between the user interface, backend state persistence, and pure pedagogical rules:
 
-- **Frontend SPA (`src/`)**: A React application built with Vite that renders the interactive session flow screens.
-- **Backend Server (`server/`)**: An Express server that handles loading and persistence of user states to `progress.json`.
+- **Frontend SPA (`src/`)**: A React application built with Vite that renders the interactive session flow screens. `src/main.jsx` mounts the production Desk UI (`src/desk/`, entry `DeskApp.jsx`) by default, or the design comparison shell and its variants (`src/poc/`, `PocShell.jsx` and `src/poc/variants/`) with `?poc=1`. All UIs, including the legacy `src/App.jsx`, drive sessions through the `useSessionRunner` hook (`src/poc/useSessionRunner.js`), a thin React wrapper over the pure `sessionRunner` engine that holds its state and loads and saves progress via `/api/progress`.
+- **Backend Server (`server/`)**: An Express server that handles loading and persistence of user states to `progress.json` (`GET`/`POST /api/progress`), plus reset and seed endpoints (`POST /api/progress/reset`, `POST /api/progress/seed`) used by the POC shell.
 - **Static Content Pool (`content/spanish/`)**: Static JSON data files containing vocabularies, distractors, misconceptions, and worked examples:
   - `vocab.json`
   - `distractors.json`
   - `misconceptions.json`
   - `worked_examples.json`
-- **Pedagogy Engine (`src/engine/`)**: A collection of pure, side-effect-free functions that calculate state transitions based on user attempts. They are decoupled from the DOM, HTTP requests, and the filesystem. The core lifecycle is driven by the state transition function:
-  `applyAttempt(state, attempt, contentPool) -> { progress, next }`
+- **Pedagogy Engine (`src/engine/`)**: A collection of pure, side-effect-free functions that calculate state transitions based on user attempts. They are decoupled from the DOM, HTTP requests, and the filesystem. Each attempt goes through the state transition function in `wordMastery.js`, which dispatches production and role-tagging attempts to their modules:
+  `applyAttempt(progressState, attempt, contentPool, today) -> { progress, next }`
+
+  The whole session loop lives in `sessionRunner.js`, a pure, framework-free state machine (`createRunnerState`, `begin`, `submitAttempt`, `commitProgress`, `retry`, `nextSession`). It has no React, DOM, clock, or HTTP dependencies. React access goes through the thin `useSessionRunner` hook described above.
 
 ### Engine Modules
+- **`sessionRunner.js`**: Pure session state machine: builds the session, picks each stimulus, applies attempts, routes wrong answers to misconception repair, and moves between review, new content, and the summary.
+- **`session.js`**: `buildSession` assembles a session as a review block first, then new content.
+- **`sessionPlan.js`**: `selectChunkForSession` picks the next verb family (blocked in session one, interleaved from session two).
+- **`review.js`**: Spaced-repetition ladder (`LADDER_DAYS`), due-chunk selection, and ladder advance/reset.
+- **`reviewGate.js`**: Cross-session review as a re-run of the advancement gate (streak reset on entry, clear check, alternating drill types).
+- **`advancement.js`**: `checkGate`, the mastery gate (3 correct in a row spanning at least 2 exercise types).
+- **`newContentSchedule.js`**: Recognition-pool scheduling (family verbs first, then other vocabulary).
 - **`wordMastery.js`**: Manages spaced retrieval and progression of vocabulary words through mastery thresholds.
 - **`conjugation.js`**: Drives the scaffolded stages of conjugation production.
 - **`roleTagging.js`**: Orchestrates sentence analysis and grammatical role-tagging exercises.
