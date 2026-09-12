@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react'
 import App from '../App.jsx'
 import variants from './registry.js'
+import { getSubject } from '../subjects/index.js'
 import './PocShell.css'
 
 const STORAGE_KEY = 'poc_active_tab'
+
+// The progress buttons act on the ?subject= subject (default Spanish). The URL alone decides,
+// not the Desk picker's remembered choice, because the variant tabs render Spanish.
+function currentSubject() {
+  const id = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('subject') : null
+  return getSubject(id)
+}
 
 export default function PocShell() {
   const [activeTab, setActiveTab] = useState(() => {
@@ -18,6 +26,8 @@ export default function PocShell() {
     return 'current'
   })
 
+  const [subject] = useState(currentSubject)
+  const subjectQuery = `?subject=${encodeURIComponent(subject.id)}`
   const [progressVersion, setProgressVersion] = useState(0)
   const [statusMessage, setStatusMessage] = useState('')
   const [isPending, setIsPending] = useState(false)
@@ -35,7 +45,7 @@ export default function PocShell() {
     setIsPending(true)
     setStatusMessage('Resetting...')
     try {
-      const res = await fetch('/api/progress/reset', { method: 'POST' })
+      const res = await fetch(`/api/progress/reset${subjectQuery}`, { method: 'POST' })
       if (!res.ok) throw new Error('Reset failed')
       setProgressVersion((v) => v + 1)
       setStatusMessage('Reset to default progress')
@@ -51,7 +61,7 @@ export default function PocShell() {
     setIsPending(true)
     setStatusMessage(`Seeding ${scenario}...`)
     try {
-      const res = await fetch('/api/progress/seed', {
+      const res = await fetch(`/api/progress/seed${subjectQuery}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scenario }),
@@ -93,7 +103,7 @@ export default function PocShell() {
           </nav>
 
           <div className="poc-shell__progress-control">
-            <span className="poc-shell__progress-label">Progress:</span>
+            <span className="poc-shell__progress-label">Progress ({subject.displayName}):</span>
             <button
               type="button"
               className="poc-shell__btn poc-shell__btn--reset"
@@ -103,30 +113,17 @@ export default function PocShell() {
               Reset
             </button>
             <span style={{ color: 'var(--border)' }}>|</span>
-            <button
-              type="button"
-              className="poc-shell__btn"
-              onClick={() => handleSeed('fresh')}
-              disabled={isPending}
-            >
-              Seed: fresh
-            </button>
-            <button
-              type="button"
-              className="poc-shell__btn"
-              onClick={() => handleSeed('mid')}
-              disabled={isPending}
-            >
-              Seed: mid
-            </button>
-            <button
-              type="button"
-              className="poc-shell__btn"
-              onClick={() => handleSeed('review-due')}
-              disabled={isPending}
-            >
-              Seed: review-due
-            </button>
+            {Object.keys(subject.seeds).map((scenario) => (
+              <button
+                key={scenario}
+                type="button"
+                className="poc-shell__btn"
+                onClick={() => handleSeed(scenario)}
+                disabled={isPending}
+              >
+                Seed: {scenario}
+              </button>
+            ))}
             {statusMessage && <span className="poc-shell__status-msg">{statusMessage}</span>}
           </div>
         </div>
