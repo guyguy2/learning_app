@@ -424,5 +424,89 @@
     "item_id": "ref_param_clear",
     "given": "list = []",
     "misconception_id": "param_reassign"
+  },
+  {
+    "id": "d_eq_loose_string_0",
+    "item_id": "eq_loose_string",
+    "given": "false false",
+    "misconception_id": "loose_checks_type"
+  },
+  {
+    "id": "d_eq_loose_string_1",
+    "item_id": "eq_loose_string",
+    "given": "false, false",
+    "misconception_id": "loose_checks_type"
+  },
+  {
+    "id": "d_eq_empty_array_0",
+    "item_id": "eq_empty_array",
+    "given": "empty",
+    "misconception_id": "truthy_empties"
+  },
+  {
+    "id": "d_eq_or_zero_0",
+    "item_id": "eq_or_zero",
+    "given": "0",
+    "misconception_id": "or_default_zero"
+  },
+  {
+    "id": "d_eq_nan_0",
+    "item_id": "eq_nan",
+    "given": "true true",
+    "misconception_id": "nan_equals_itself"
+  },
+  {
+    "id": "d_eq_nan_1",
+    "item_id": "eq_nan",
+    "given": "true, true",
+    "misconception_id": "nan_equals_itself"
+  },
+  {
+    "id": "d_eq_string_zero_0",
+    "item_id": "eq_string_zero",
+    "given": "no",
+    "misconception_id": "truthy_empties"
+  },
+  {
+    "id": "d_eq_null_undefined_0",
+    "item_id": "eq_null_undefined",
+    "given": "false false",
+    "misconception_id": "loose_checks_type"
+  },
+  {
+    "id": "d_eq_null_undefined_1",
+    "item_id": "eq_null_undefined",
+    "given": "false, false",
+    "misconception_id": "loose_checks_type"
+  },
+  {
+    "id": "d_eq_nullish_0",
+    "item_id": "eq_nullish",
+    "given": "50",
+    "misconception_id": "or_default_zero"
+  },
+  {
+    "id": "d_eq_strict_0",
+    "item_id": "eq_strict",
+    "given": "==",
+    "misconception_id": "loose_checks_type"
+  },
+  {
+    "id": "d_eq_default_0",
+    "item_id": "eq_default",
+    "given": "||",
+    "misconception_id": "or_default_zero"
+  },
+  {
+    "id": "d_eq_empty_check_0",
+    "item_id": "eq_empty_check",
+    "given": "!cart",
+    "misconception_id": "truthy_empties"
+  },
+  {
+    "id": "d_eq_nan_check_0",
+    "item_id": "eq_nan_check",
+    "given": "n === NaN",
+    "misconception_id": "nan_equals_itself"
   }
 ]

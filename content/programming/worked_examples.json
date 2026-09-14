@@ -61,5 +61,18 @@
       "{ ...a } creates a second object and copies the property n = 2 into it; c points at the new object.",
       "c.n = 3 changes only the copy, so the line logs 2 2 3."
     ]
+  },
+  {
+    "chunk": "equality",
+    "title": "Truthiness and equality",
+    "notional_machine": "=== compares type and value and never converts. == first converts both sides to a common type, usually numbers, and then compares, so '1' == 1 is true. In an if, a ternary, or with || and &&, a value is converted to a boolean: only false, 0, '', null, undefined, and NaN are falsy, and everything else, including '0', [], and {}, is truthy.",
+    "code": "console.log('1' == 1, '1' === 1);\nconsole.log(Boolean(''), Boolean('0'), Boolean([]));",
+    "output": "true false false true true",
+    "steps": [
+      "'1' == 1 converts the string '1' to the number 1 before comparing, so it is true.",
+      "'1' === 1 compares a string with a number without converting, so it is false.",
+      "'' is one of the few falsy values, so Boolean('') is false.",
+      "'0' is a non-empty string and [] is an object, so both are truthy."
+    ]
   }
 ]

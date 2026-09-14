@@ -88,5 +88,25 @@
     "id": "param_reassign",
     "name": "Thinking reassigning a parameter changes the caller's variable",
     "explanation": "You expected list = [] inside the function to replace the caller's array. Reassigning a parameter only points that local name somewhere new; to affect the caller, change the object itself, for example with push or by setting length."
+  },
+  {
+    "id": "loose_checks_type",
+    "name": "Thinking == compares types",
+    "explanation": "You expected == to say that values of different types are not equal. == converts both sides to a common type before comparing, so '5' == 5 and null == undefined are true; only === compares type and value without converting."
+  },
+  {
+    "id": "truthy_empties",
+    "name": "Thinking empty-looking values are falsy",
+    "explanation": "You treated [], {}, or '0' as false because they look empty or zero. Only false, 0, '', null, undefined, and NaN are falsy; every object and every non-empty string, even '0', is truthy, so check the length to test for an empty array."
+  },
+  {
+    "id": "or_default_zero",
+    "name": "Mixing up || and ?? defaults",
+    "explanation": "You expected || to fall back only when a value is missing. || falls back whenever the left side is falsy, including 0, '' and false, while ?? falls back only for null or undefined; use ?? when 0 or '' is a real value."
+  },
+  {
+    "id": "nan_equals_itself",
+    "name": "Expecting NaN to equal itself",
+    "explanation": "You expected NaN === NaN to be true. NaN is the one value that is not equal to anything, itself included, so test for it with Number.isNaN(x)."
   }
 ]

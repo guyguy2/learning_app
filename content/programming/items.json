@@ -623,5 +623,122 @@
     ],
     "output": "0",
     "hint": "Change the array the caller passed in, not the local name."
+  },
+  {
+    "id": "eq_loose_string",
+    "chunk": "equality",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "console.log('5' == 5, '5' === 5);",
+    "answer": "true false",
+    "accepted": [
+      "true, false"
+    ]
+  },
+  {
+    "id": "eq_empty_array",
+    "chunk": "equality",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const list = [];\nif (list) console.log('has items');\nelse console.log('empty');",
+    "answer": "has items",
+    "accepted": [
+      "has, items"
+    ]
+  },
+  {
+    "id": "eq_or_zero",
+    "chunk": "equality",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const volume = 0;\nconsole.log(volume || 50);",
+    "answer": "50"
+  },
+  {
+    "id": "eq_nan",
+    "chunk": "equality",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const x = NaN;\nconsole.log(x === NaN, Number.isNaN(x));",
+    "answer": "false true",
+    "accepted": [
+      "false, true"
+    ]
+  },
+  {
+    "id": "eq_string_zero",
+    "chunk": "equality",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const input = '0';\nconsole.log(input ? 'yes' : 'no');",
+    "answer": "yes"
+  },
+  {
+    "id": "eq_null_undefined",
+    "chunk": "equality",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "console.log(null == undefined, null === undefined);",
+    "answer": "true false",
+    "accepted": [
+      "true, false"
+    ]
+  },
+  {
+    "id": "eq_nullish",
+    "chunk": "equality",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const volume = 0;\nconsole.log(volume ?? 50);",
+    "answer": "0"
+  },
+  {
+    "id": "eq_strict",
+    "chunk": "equality",
+    "type": "completion",
+    "prompt": "Fill in the operator so the program logs not a number.",
+    "code": "const input = '0';\nif (input ____ 0) console.log('number zero');\nelse console.log('not a number');",
+    "answer": "===",
+    "output": "not a number",
+    "hint": "Use the comparison that does not convert types."
+  },
+  {
+    "id": "eq_default",
+    "chunk": "equality",
+    "type": "completion",
+    "prompt": "Fill in the operator so the program logs 0 50.",
+    "code": "function setVolume(v) {\n  return v ____ 50;\n}\nconsole.log(setVolume(0), setVolume(undefined));",
+    "answer": "??",
+    "output": "0 50",
+    "hint": "0 is a real volume; fall back only when v is missing."
+  },
+  {
+    "id": "eq_empty_check",
+    "chunk": "equality",
+    "type": "completion",
+    "prompt": "Fill in the condition so the program logs cart is empty.",
+    "code": "const cart = [];\nif (____) console.log('cart is empty');",
+    "answer": "cart.length === 0",
+    "accepted": [
+      "!cart.length",
+      "cart.length == 0",
+      "cart.length < 1"
+    ],
+    "output": "cart is empty",
+    "hint": "An empty array is still truthy, so test its length."
+  },
+  {
+    "id": "eq_nan_check",
+    "chunk": "equality",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs true.",
+    "code": "const n = Number('abc');\nconsole.log(____);",
+    "answer": "Number.isNaN(n)",
+    "accepted": [
+      "isNaN(n)",
+      "n !== n"
+    ],
+    "output": "true",
+    "hint": "NaN is never equal to anything, so use the built-in test."
   }
 ]
