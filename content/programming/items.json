@@ -22,8 +22,12 @@
     "prompt": "Fill in the blank so the program logs 5.",
     "code": "function makeAdder(x) {\n  ____\n}\nconsole.log(makeAdder(2)(3));",
     "answer": "return (y) => x + y;",
-    "accepted": ["return y => x + y", "return function (y) { return x + y; }"],
-    "hint": "makeAdder must return a function that takes y and still sees x."
+    "accepted": [
+      "return y => x + y",
+      "return function (y) { return x + y; }"
+    ],
+    "hint": "makeAdder must return a function that takes y and still sees x.",
+    "output": "5"
   },
   {
     "id": "closure_loop_let",
@@ -32,7 +36,8 @@
     "prompt": "Fill in the blank so the loop logs 0, 1, 2.",
     "code": "for (____ i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i));\n}",
     "answer": "let",
-    "hint": "Pick the declaration that makes a fresh i for every iteration."
+    "hint": "Pick the declaration that makes a fresh i for every iteration.",
+    "output": "0 1 2"
   },
   {
     "id": "iterate_splice",
@@ -57,8 +62,11 @@
     "prompt": "Fill in the blank so the program logs [ 1, 2, 3 ].",
     "code": "const words = ['a', 'bb', 'ccc'];\nconst lengths = ____;\nconsole.log(lengths);",
     "answer": "words.map((w) => w.length)",
-    "accepted": ["words.map(w => w.length)"],
-    "hint": "map calls a function on each element and collects the results in a new array."
+    "accepted": [
+      "words.map(w => w.length)"
+    ],
+    "hint": "map calls a function on each element and collects the results in a new array.",
+    "output": "[ 1, 2, 3 ]"
   },
   {
     "id": "obo_lte_count",
@@ -75,7 +83,8 @@
     "prompt": "Fill in the blank so the program logs 30.",
     "code": "const xs = [10, 20, 30];\nconsole.log(____);",
     "answer": "xs[xs.length - 1]",
-    "hint": "Indexes run from 0 to length - 1."
+    "hint": "Indexes run from 0 to length - 1.",
+    "output": "30"
   },
   {
     "id": "obo_sum_bound",
@@ -84,6 +93,7 @@
     "prompt": "Fill in the blank so the program logs 6.",
     "code": "const xs = [1, 2, 3];\nlet sum = 0;\nfor (let i = 0; ____; i++) sum += xs[i];\nconsole.log(sum);",
     "answer": "i < xs.length",
-    "hint": "The last valid index is xs.length - 1, so stop before i reaches xs.length."
+    "hint": "The last valid index is xs.length - 1, so stop before i reaches xs.length.",
+    "output": "6"
   }
 ]

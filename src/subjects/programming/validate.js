@@ -25,10 +25,30 @@ function normalizeCode(text) {
     .replace(/;+$/, '')
 }
 
+/** Output compared loosely: ignoring whitespace, commas, quotes, brackets, and case. */
+export function looseOutput(text) {
+  return String(text ?? '')
+    .replace(/[\s,'"`[\]]/g, '')
+    .toLowerCase()
+}
+
+/** Sentences in a repair explanation: text ending in . ! or ? followed by a space or the end. */
+function sentenceCount(text) {
+  return (text.match(/[.!?](?=\s|$)/g) ?? []).length
+}
+
 /**
- * Throw on malformed programming content. Beyond shape, every chunk needs at least one
- * item of each exercise type (otherwise the rotation has nothing to serve and the gate's
- * two-type rule can never be met), and a distractor must be a wrong answer.
+ * Throw on malformed programming content. Beyond shape:
+ * - every chunk needs at least one item of each exercise type (otherwise the rotation has
+ *   nothing to serve and the gate's two-type rule can never be met);
+ * - a recognition item states what it logs (`answer`), or the error it throws (`throws`,
+ *   equal to `answer`); a recognition synonym may differ from the answer only in formatting;
+ * - a completion item has exactly one blank, a guided-phase `hint`, and the `output` the
+ *   completed program logs;
+ * - a worked example states its `output` (snippets.test.js runs every snippet to check it);
+ * - a distractor is a wrong answer tied to a catalogued misconception, and every
+ *   misconception is reachable through at least one distractor;
+ * - a misconception explanation is two or three sentences.
  */
 export function validateProgrammingContent(content) {
   for (const key of ['items', 'workedExamples', 'distractors', 'misconceptions']) {
@@ -37,7 +57,7 @@ export function validateProgrammingContent(content) {
 
   content.workedExamples.forEach((we, i) => {
     const where = `workedExamples[${i}]`
-    for (const field of ['chunk', 'title', 'notional_machine', 'code']) requireString(we, field, where)
+    for (const field of ['chunk', 'title', 'notional_machine', 'code', 'output']) requireString(we, field, where)
     if (!Array.isArray(we.steps) || we.steps.length === 0) fail(`${where} needs a non-empty steps list`)
   })
   requireUniqueIds(content.workedExamples, 'chunk', 'workedExamples')
@@ -46,13 +66,26 @@ export function validateProgrammingContent(content) {
   content.items.forEach((item, i) => {
     const where = `items[${i}]`
     for (const field of ['id', 'chunk', 'type', 'prompt', 'code', 'answer']) requireString(item, field, where)
-    if (!chunkIds.has(item.chunk)) fail(`${where} ("${item.id}") has unknown chunk "${item.chunk}"`)
-    if (!ITEM_TYPES.includes(item.type)) fail(`${where} ("${item.id}") has unknown type "${item.type}"`)
-    if (item.type === 'completion' && !item.code.includes(BLANK)) {
-      fail(`${where} ("${item.id}") is a completion item without a ${BLANK} blank`)
-    }
+    const named = `${where} ("${item.id}")`
+    if (!chunkIds.has(item.chunk)) fail(`${named} has unknown chunk "${item.chunk}"`)
+    if (!ITEM_TYPES.includes(item.type)) fail(`${named} has unknown type "${item.type}"`)
     if (item.accepted != null && !(Array.isArray(item.accepted) && item.accepted.every((a) => typeof a === 'string'))) {
-      fail(`${where} ("${item.id}") has a non-string accepted answer`)
+      fail(`${named} has a non-string accepted answer`)
+    }
+    if (item.type === 'recognition') {
+      if (item.throws != null && item.throws !== item.answer) {
+        fail(`${named} throws "${item.throws}" but answers "${item.answer}"`)
+      }
+      for (const a of item.accepted ?? []) {
+        if (looseOutput(a) !== looseOutput(item.answer)) {
+          fail(`${named} accepts "${a}", which is not a formatting variant of "${item.answer}"`)
+        }
+      }
+    }
+    if (item.type === 'completion') {
+      if (item.code.split(BLANK).length !== 2) fail(`${named} is a completion item without exactly one ${BLANK} blank`)
+      requireString(item, 'output', named)
+      requireString(item, 'hint', named)
     }
   })
   requireUniqueIds(content.items, 'id', 'items')
@@ -66,7 +99,12 @@ export function validateProgrammingContent(content) {
   }
 
   content.misconceptions.forEach((m, i) => {
-    for (const field of ['id', 'name', 'explanation']) requireString(m, field, `misconceptions[${i}]`)
+    const where = `misconceptions[${i}]`
+    for (const field of ['id', 'name', 'explanation']) requireString(m, field, where)
+    const sentences = sentenceCount(m.explanation)
+    if (sentences < 2 || sentences > 3) {
+      fail(`${where} ("${m.id}") explanation has ${sentences} sentences; use two or three`)
+    }
   })
   requireUniqueIds(content.misconceptions, 'id', 'misconceptions')
 
@@ -84,4 +122,9 @@ export function validateProgrammingContent(content) {
     if (correct.includes(normalizeCode(d.given))) fail(`${where} ("${d.id}") is a correct answer`)
   })
   requireUniqueIds(content.distractors, 'id', 'distractors')
+
+  const reached = new Set(content.distractors.map((d) => d.misconception_id))
+  for (const m of content.misconceptions) {
+    if (!reached.has(m.id)) fail(`misconception "${m.id}" has no distractor, so repair can never name it`)
+  }
 }

@@ -88,6 +88,36 @@ describe('programming grading', () => {
   })
 })
 
+describe('programming item rotation', () => {
+  it('serves every item of a chunk and type before repeating one, correct or not', () => {
+    for (const chunkId of chunkOrder(programming)) {
+      for (const type of programming.exerciseTypes) {
+        const exercise = programming.exercises[type]
+        const pool = content.items.filter((item) => item.chunk === chunkId && item.type === type)
+        let progress = freshProgress()
+        Object.assign(progress.chunks.find((c) => c.id === chunkId), { production_phase: 'independent' })
+        const served = []
+        for (let i = 0; i < pool.length; i++) {
+          const stimulus = exercise.nextStimulus(progress, chunkId, content)
+          served.push(stimulus.item.id)
+          const attempt = { type, chunkId, itemId: stimulus.item.id, given: 'x', correct: i % 2 === 0 }
+          progress = exercise.apply(progress, attempt, content, TODAY).progress
+        }
+        expect(new Set(served)).toEqual(new Set(pool.map((item) => item.id)))
+      }
+    }
+  })
+
+  it('counts attempts per item in progress.words without touching other items', () => {
+    const progress = freshProgress()
+    const stimulus = recognition.nextStimulus(progress, 'closures', content)
+    const attempt = { type: 'recognition', chunkId: 'closures', itemId: stimulus.item.id, given: 'x', correct: false }
+    const after = recognition.apply(progress, attempt, content, TODAY).progress
+    expect(after.words).toEqual([{ id: stimulus.item.id, status: 'learning', streak_count: 0, attempts: 1 }])
+    expect(progress.words).toEqual([])
+  })
+})
+
 describe('programming content validation', () => {
   it('accepts the shipped content', () => {
     expect(() => validateProgrammingContent(content)).not.toThrow()
@@ -103,7 +133,42 @@ describe('programming content validation', () => {
     const bad = clone(content)
     const i = bad.items.findIndex((item) => item.type === 'completion')
     bad.items[i].code = 'console.log(1)'
-    expect(() => validateProgrammingContent(bad)).toThrow(/completion item without a ____ blank/)
+    expect(() => validateProgrammingContent(bad)).toThrow(/completion item without exactly one ____ blank/)
+  })
+
+  it('rejects a completion item with no stated output', () => {
+    const bad = clone(content)
+    const i = bad.items.findIndex((item) => item.type === 'completion')
+    delete bad.items[i].output
+    expect(() => validateProgrammingContent(bad)).toThrow(/missing string field "output"/)
+  })
+
+  it('rejects a recognition synonym that is not a formatting variant of the answer', () => {
+    const ok = clone(content)
+    const i = ok.items.findIndex((item) => item.type === 'recognition')
+    ok.items[i].accepted = [` ${ok.items[i].answer} `]
+    expect(() => validateProgrammingContent(ok)).not.toThrow()
+
+    const bad = clone(content)
+    bad.items[i].accepted = ['something else']
+    expect(() => validateProgrammingContent(bad)).toThrow(/is not a formatting variant/)
+  })
+
+  it('rejects a recognition item whose thrown error is not its answer', () => {
+    const bad = clone(content)
+    const i = bad.items.findIndex((item) => item.type === 'recognition')
+    bad.items[i].throws = 'TypeError'
+    expect(() => validateProgrammingContent(bad)).toThrow(/throws "TypeError" but answers/)
+  })
+
+  it('rejects a misconception no distractor reaches, or one explained in one sentence', () => {
+    const orphan = clone(content)
+    orphan.misconceptions.push({ id: 'orphan', name: 'Orphan', explanation: 'One. Two.' })
+    expect(() => validateProgrammingContent(orphan)).toThrow(/misconception "orphan" has no distractor/)
+
+    const terse = clone(content)
+    terse.misconceptions[0].explanation = 'Too short.'
+    expect(() => validateProgrammingContent(terse)).toThrow(/explanation has 1 sentences; use two or three/)
   })
 
   it('rejects an item in an unknown chunk', () => {

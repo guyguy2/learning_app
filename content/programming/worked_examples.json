@@ -8,7 +8,8 @@
       "makeGreeter('Hi') runs and creates a local variable greeting = 'Hi'.",
       "It returns the arrow function, which keeps a reference to greeting after makeGreeter returns.",
       "hi('Ada') runs the arrow function. greeting is still 'Hi', so it returns 'Hi, Ada'."
-    ]
+    ],
+    "output": "Hi, Ada"
   },
   {
     "chunk": "iteration",
@@ -19,7 +20,8 @@
       "map calls the arrow function once per element, in order: 10, 20, 30.",
       "Each return value goes into a new array at the same index.",
       "prices is never modified, so it still has 3 elements."
-    ]
+    ],
+    "output": "3 [ 20, 40, 60 ]"
   },
   {
     "chunk": "off-by-one",
@@ -30,6 +32,7 @@
       "xs.length is 3, so the valid indexes are 0, 1, and 2.",
       "The loop runs while i < 3, so i takes the values 0, 1, 2.",
       "When i becomes 3 the condition is false and the loop stops before reading xs[3]."
-    ]
+    ],
+    "output": "0 a 1 b 2 c"
   }
 ]
