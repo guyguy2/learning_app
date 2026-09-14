@@ -27,14 +27,14 @@
   },
   {
     "chunk": "iteration",
-    "title": "Array iteration",
-    "notional_machine": "for...of walks an array by index. Removing elements during the walk shifts later elements left, so the loop skips whichever element moves into the current index. map builds a new array and leaves the original alone.",
-    "code": "const prices = [10, 20, 30];\nconst doubled = prices.map((p) => p * 2);\nconsole.log(prices.length, doubled); // 3 [ 20, 40, 60 ]",
-    "output": "3 [ 20, 40, 60 ]",
+    "title": "Arrays and iteration",
+    "notional_machine": "map, filter, and forEach call your function once for each element, in index order. map and filter build and return a new array and leave the original alone; forEach returns undefined and is only for side effects. push, splice, reverse, and sort change the array in place, and sort with no compare function compares elements as strings.",
+    "code": "const prices = [10, 20, 30];\nconst doubled = prices.map((p) => p * 2);\nconst big = prices.filter((p) => p > 15);\nconsole.log(prices, doubled, big);",
+    "output": "[ 10, 20, 30 ] [ 20, 40, 60 ] [ 20, 30 ]",
     "steps": [
-      "map calls the arrow function once per element, in order: 10, 20, 30.",
-      "Each return value goes into a new array at the same index.",
-      "prices is never modified, so it still has 3 elements."
+      "map calls the arrow function with 10, 20, and 30 in turn and puts each result into a new array: [ 20, 40, 60 ].",
+      "filter calls its function with each element and keeps the ones where it returns true: [ 20, 30 ].",
+      "Neither method touches prices, so it still holds [ 10, 20, 30 ]."
     ]
   },
   {

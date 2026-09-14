@@ -249,6 +249,36 @@
     "hint": "Without braces, an arrow function returns its expression."
   },
   {
+    "id": "iterate_map_original",
+    "chunk": "iteration",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const nums = [1, 2, 3];\nnums.map((n) => n * 10);\nconsole.log(nums);",
+    "answer": "[1, 2, 3]",
+    "accepted": [
+      "1, 2, 3"
+    ]
+  },
+  {
+    "id": "iterate_foreach_return",
+    "chunk": "iteration",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const result = [1, 2, 3].forEach((n) => n * 2);\nconsole.log(result);",
+    "answer": "undefined"
+  },
+  {
+    "id": "iterate_sort_strings",
+    "chunk": "iteration",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const xs = [10, 9, 1];\nxs.sort();\nconsole.log(xs);",
+    "answer": "[1, 10, 9]",
+    "accepted": [
+      "1, 10, 9"
+    ]
+  },
+  {
     "id": "iterate_splice",
     "chunk": "iteration",
     "type": "recognition",
@@ -257,25 +287,84 @@
     "answer": "2"
   },
   {
-    "id": "iterate_map_join",
+    "id": "iterate_filter_keeps",
     "chunk": "iteration",
     "type": "recognition",
     "prompt": "What does this log?",
-    "code": "const doubled = [1, 2, 3].map((n) => n * 2);\nconsole.log(doubled.join(','));",
-    "answer": "2,4,6"
+    "code": "const ages = [12, 30, 17, 45];\nconst adults = ages.filter((a) => a >= 18);\nconsole.log(ages.length, adults.length);",
+    "answer": "4 2",
+    "accepted": [
+      "4, 2"
+    ]
+  },
+  {
+    "id": "iterate_sort_same",
+    "chunk": "iteration",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const a = [3, 1, 2];\nconst b = a.sort();\nconsole.log(a === b, a);",
+    "answer": "true [ 1, 2, 3 ]",
+    "accepted": [
+      "true, [1, 2, 3]"
+    ]
+  },
+  {
+    "id": "iterate_reverse",
+    "chunk": "iteration",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const letters = ['a', 'b', 'c'];\nconst backwards = letters.reverse();\nconsole.log(letters[0]);",
+    "answer": "c",
+    "accepted": [
+      "'c'"
+    ]
   },
   {
     "id": "iterate_lengths",
     "chunk": "iteration",
     "type": "completion",
-    "prompt": "Fill in the blank so the program logs [ 1, 2, 3 ].",
-    "code": "const words = ['a', 'bb', 'ccc'];\nconst lengths = ____;\nconsole.log(lengths);",
-    "answer": "words.map((w) => w.length)",
-    "accepted": [
-      "words.map(w => w.length)"
-    ],
+    "prompt": "Fill in the method so the program logs [ 1, 2, 3 ].",
+    "code": "const words = ['a', 'bb', 'ccc'];\nconst lengths = words.____((w) => w.length);\nconsole.log(lengths);",
+    "answer": "map",
     "output": "[ 1, 2, 3 ]",
-    "hint": "map calls a function on each element and collects the results in a new array."
+    "hint": "Pick the method that collects each result into a new array."
+  },
+  {
+    "id": "iterate_evens",
+    "chunk": "iteration",
+    "type": "completion",
+    "prompt": "Fill in the method so the program logs [ 2, 4 ] 4.",
+    "code": "const nums = [1, 2, 3, 4];\nconst evens = nums.____((n) => n % 2 === 0);\nconsole.log(evens, nums.length);",
+    "answer": "filter",
+    "output": "[ 2, 4 ] 4",
+    "hint": "Pick the method that keeps only the elements where the function returns true."
+  },
+  {
+    "id": "iterate_sort_numeric",
+    "chunk": "iteration",
+    "type": "completion",
+    "prompt": "Fill in the compare function so the program logs [ 1, 9, 10 ].",
+    "code": "const xs = [10, 9, 1];\nxs.sort(____);\nconsole.log(xs);",
+    "answer": "(a, b) => a - b",
+    "accepted": [
+      "function (a, b) { return a - b; }"
+    ],
+    "output": "[ 1, 9, 10 ]",
+    "hint": "A compare function returns a negative number when a should come first."
+  },
+  {
+    "id": "iterate_copy_sort",
+    "chunk": "iteration",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs [ 30, 10, 20 ] [ 10, 20, 30 ].",
+    "code": "const scores = [30, 10, 20];\nconst sorted = ____.sort((a, b) => a - b);\nconsole.log(scores, sorted);",
+    "answer": "[...scores]",
+    "accepted": [
+      "scores.slice()",
+      "Array.from(scores)"
+    ],
+    "output": "[ 30, 10, 20 ] [ 10, 20, 30 ]",
+    "hint": "sort changes the array it is called on, so call it on a copy."
   },
   {
     "id": "obo_lte_count",

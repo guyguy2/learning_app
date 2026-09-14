@@ -162,10 +162,94 @@
     "misconception_id": "missing_return"
   },
   {
+    "id": "d_iterate_map_original_0",
+    "item_id": "iterate_map_original",
+    "given": "[10, 20, 30]",
+    "misconception_id": "in_place_vs_copy"
+  },
+  {
+    "id": "d_iterate_map_original_1",
+    "item_id": "iterate_map_original",
+    "given": "10, 20, 30",
+    "misconception_id": "in_place_vs_copy"
+  },
+  {
+    "id": "d_iterate_foreach_return_0",
+    "item_id": "iterate_foreach_return",
+    "given": "[2, 4, 6]",
+    "misconception_id": "foreach_returns"
+  },
+  {
+    "id": "d_iterate_foreach_return_1",
+    "item_id": "iterate_foreach_return",
+    "given": "2, 4, 6",
+    "misconception_id": "foreach_returns"
+  },
+  {
+    "id": "d_iterate_sort_strings_0",
+    "item_id": "iterate_sort_strings",
+    "given": "[1, 9, 10]",
+    "misconception_id": "sort_as_strings"
+  },
+  {
+    "id": "d_iterate_sort_strings_1",
+    "item_id": "iterate_sort_strings",
+    "given": "1, 9, 10",
+    "misconception_id": "sort_as_strings"
+  },
+  {
     "id": "d_iterate_splice_0",
     "item_id": "iterate_splice",
     "given": "1",
     "misconception_id": "mutate_while_iterating"
+  },
+  {
+    "id": "d_iterate_filter_keeps_0",
+    "item_id": "iterate_filter_keeps",
+    "given": "2 2",
+    "misconception_id": "in_place_vs_copy"
+  },
+  {
+    "id": "d_iterate_filter_keeps_1",
+    "item_id": "iterate_filter_keeps",
+    "given": "2, 2",
+    "misconception_id": "in_place_vs_copy"
+  },
+  {
+    "id": "d_iterate_sort_same_0",
+    "item_id": "iterate_sort_same",
+    "given": "false [3, 1, 2]",
+    "misconception_id": "in_place_vs_copy"
+  },
+  {
+    "id": "d_iterate_sort_same_1",
+    "item_id": "iterate_sort_same",
+    "given": "false, [3, 1, 2]",
+    "misconception_id": "in_place_vs_copy"
+  },
+  {
+    "id": "d_iterate_reverse_0",
+    "item_id": "iterate_reverse",
+    "given": "a",
+    "misconception_id": "in_place_vs_copy"
+  },
+  {
+    "id": "d_iterate_lengths_0",
+    "item_id": "iterate_lengths",
+    "given": "forEach",
+    "misconception_id": "foreach_returns"
+  },
+  {
+    "id": "d_iterate_evens_0",
+    "item_id": "iterate_evens",
+    "given": "forEach",
+    "misconception_id": "foreach_returns"
+  },
+  {
+    "id": "d_iterate_copy_sort_0",
+    "item_id": "iterate_copy_sort",
+    "given": "scores",
+    "misconception_id": "in_place_vs_copy"
   },
   {
     "id": "d_obo_lte_count_0",

@@ -35,9 +35,24 @@
     "explanation": "You expected the value of the last line to come back automatically. A function body in { } returns undefined unless a return statement runs; only an arrow function without braces, like (n) => n * 2, returns its expression."
   },
   {
+    "id": "in_place_vs_copy",
+    "name": "Mixing up in-place and copying array methods",
+    "explanation": "You assumed a method returned a new array when it changes the original, or the other way round. map, filter, slice, and spread build new arrays and leave the original alone, while push, splice, sort, and reverse change the array in place, and sort and reverse return that same array."
+  },
+  {
+    "id": "foreach_returns",
+    "name": "Expecting forEach to return a new array",
+    "explanation": "You treated forEach like map. forEach calls your function for each element but always returns undefined, so use map to collect results or filter to keep some elements."
+  },
+  {
+    "id": "sort_as_strings",
+    "name": "Expecting sort() to order numbers numerically",
+    "explanation": "You assumed sort() compares numbers by size. With no compare function, sort converts the elements to strings and orders them character by character, so 10 comes before 9; pass (a, b) => a - b to sort numbers."
+  },
+  {
     "id": "mutate_while_iterating",
-    "name": "Mutating an array while iterating over it",
-    "explanation": "for...of walks the array by index. splice shifts every later element one place left, so the element that moves into the current index is skipped. Build a new array instead, for example nums.filter((n) => n % 2 !== 0)."
+    "name": "Removing elements while iterating over the array",
+    "explanation": "You expected the loop to visit every original element even while splice removed some. for...of walks the array by index, and splice shifts later elements left, so the element that moves into the current index is skipped. Build a new array instead, for example with filter."
   },
   {
     "id": "off_by_one_bounds",
