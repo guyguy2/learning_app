@@ -33,7 +33,7 @@ Execute the Vitest test suite:
 ```bash
 npm test
 ```
-The suite has 24 test files and 388 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the production Desk UI, its subject picker, and the `useSessionRunner` hook (`src/desk/`), and the server seed scenarios, per-subject progress files, and reset and seed endpoints (`server/`), and the content validation script (`scripts/`).
+The suite has 24 test files and 390 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the production Desk UI, its subject picker, and the `useSessionRunner` hook (`src/desk/`), and the server seed scenarios, per-subject progress files, and reset and seed endpoints (`server/`), and the content validation script (`scripts/`).
 
 Check every registered subject's content with its `validate` function:
 ```bash
