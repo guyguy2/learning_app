@@ -156,9 +156,13 @@ function CodeContrastDetail({ repair, lastAttempt }) {
 }
 
 const CHUNK_COLORS = {
+  scope: 'var(--role-stem)',
   closures: 'var(--family-ar)',
   iteration: 'var(--family-er)',
   'off-by-one': 'var(--family-ir)',
+  references: 'var(--role-ending)',
+  equality: 'var(--role-subject)',
+  async: 'var(--role-object)',
 }
 
 /** @type {import('../contract.js').SubjectUi} */

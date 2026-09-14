@@ -1,5 +1,135 @@
 [
   {
+    "id": "scope_var_escapes",
+    "chunk": "scope",
+    "type": "recognition",
+    "prompt": "What does this log? If it throws, type the error name.",
+    "code": "if (true) {\n  var n = 1;\n  let m = 2;\n}\nconsole.log(typeof n, typeof m);",
+    "answer": "number undefined",
+    "accepted": [
+      "number, undefined"
+    ]
+  },
+  {
+    "id": "scope_shadow",
+    "chunk": "scope",
+    "type": "recognition",
+    "prompt": "What does this log? If it throws, type the error name.",
+    "code": "let level = 1;\nfunction bump() {\n  let level = 2;\n  return level;\n}\nbump();\nconsole.log(level);",
+    "answer": "1"
+  },
+  {
+    "id": "scope_tdz",
+    "chunk": "scope",
+    "type": "recognition",
+    "prompt": "What does this log? If it throws, type the error name.",
+    "code": "console.log(total);\nlet total = 10;",
+    "answer": "ReferenceError",
+    "accepted": [
+      "referenceerror"
+    ],
+    "throws": "ReferenceError"
+  },
+  {
+    "id": "scope_const_push",
+    "chunk": "scope",
+    "type": "recognition",
+    "prompt": "What does this log? If it throws, type the error name.",
+    "code": "const items = [1, 2];\nitems.push(3);\nconsole.log(items.length);",
+    "answer": "3"
+  },
+  {
+    "id": "scope_loop_var_after",
+    "chunk": "scope",
+    "type": "recognition",
+    "prompt": "What does this log? If it throws, type the error name.",
+    "code": "for (var i = 0; i < 3; i++) {}\nconsole.log(i);",
+    "answer": "3"
+  },
+  {
+    "id": "scope_tdz_shadow",
+    "chunk": "scope",
+    "type": "recognition",
+    "prompt": "What does this log? If it throws, type the error name.",
+    "code": "let x = 1;\n{\n  console.log(x);\n  let x = 2;\n}",
+    "answer": "ReferenceError",
+    "accepted": [
+      "referenceerror"
+    ],
+    "throws": "ReferenceError"
+  },
+  {
+    "id": "scope_const_reassign",
+    "chunk": "scope",
+    "type": "recognition",
+    "prompt": "What does this log? If it throws, type the error name.",
+    "code": "const limit = 5;\nlimit = 6;\nconsole.log(limit);",
+    "answer": "TypeError",
+    "accepted": [
+      "typeerror"
+    ],
+    "throws": "TypeError"
+  },
+  {
+    "id": "scope_var_hoist",
+    "chunk": "scope",
+    "type": "recognition",
+    "prompt": "What does this log? If it throws, type the error name.",
+    "code": "console.log(count);\nvar count = 5;",
+    "answer": "undefined"
+  },
+  {
+    "id": "scope_block_let",
+    "chunk": "scope",
+    "type": "completion",
+    "prompt": "Fill in the blank so the block gets its own result and the program logs none.",
+    "code": "let result = 'none';\nif (true) {\n  ____ result = 'set';\n}\nconsole.log(result);",
+    "answer": "let",
+    "accepted": [
+      "const"
+    ],
+    "output": "none",
+    "hint": "Declare a new binding that belongs to the block only."
+  },
+  {
+    "id": "scope_const_grow",
+    "chunk": "scope",
+    "type": "completion",
+    "prompt": "Fill in one statement so the program logs [ 4, 7, 9 ].",
+    "code": "const scores = [4, 7];\n____;\nconsole.log(scores);",
+    "answer": "scores.push(9)",
+    "accepted": [
+      "scores[2] = 9",
+      "scores[scores.length] = 9"
+    ],
+    "output": "[ 4, 7, 9 ]",
+    "hint": "scores is const, but the array it points to can still grow."
+  },
+  {
+    "id": "scope_assign_outer",
+    "chunk": "scope",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 5.",
+    "code": "let total = 0;\nfunction add(n) {\n  ____;\n}\nadd(5);\nconsole.log(total);",
+    "answer": "total += n",
+    "accepted": [
+      "total = total + n",
+      "total = n + total"
+    ],
+    "output": "5",
+    "hint": "Update the outer total; do not declare a new one."
+  },
+  {
+    "id": "scope_loop_let",
+    "chunk": "scope",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs undefined.",
+    "code": "for (____ i = 0; i < 3; i++) {}\nconsole.log(typeof i);",
+    "answer": "let",
+    "output": "undefined",
+    "hint": "Pick the declaration that keeps i inside the loop."
+  },
+  {
     "id": "closure_loop_var",
     "chunk": "closures",
     "type": "recognition",
@@ -26,8 +156,8 @@
       "return y => x + y",
       "return function (y) { return x + y; }"
     ],
-    "hint": "makeAdder must return a function that takes y and still sees x.",
-    "output": "5"
+    "output": "5",
+    "hint": "makeAdder must return a function that takes y and still sees x."
   },
   {
     "id": "closure_loop_let",
@@ -36,8 +166,8 @@
     "prompt": "Fill in the blank so the loop logs 0, 1, 2.",
     "code": "for (____ i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i));\n}",
     "answer": "let",
-    "hint": "Pick the declaration that makes a fresh i for every iteration.",
-    "output": "0 1 2"
+    "output": "0 1 2",
+    "hint": "Pick the declaration that makes a fresh i for every iteration."
   },
   {
     "id": "iterate_splice",
@@ -65,8 +195,8 @@
     "accepted": [
       "words.map(w => w.length)"
     ],
-    "hint": "map calls a function on each element and collects the results in a new array.",
-    "output": "[ 1, 2, 3 ]"
+    "output": "[ 1, 2, 3 ]",
+    "hint": "map calls a function on each element and collects the results in a new array."
   },
   {
     "id": "obo_lte_count",
@@ -83,8 +213,8 @@
     "prompt": "Fill in the blank so the program logs 30.",
     "code": "const xs = [10, 20, 30];\nconsole.log(____);",
     "answer": "xs[xs.length - 1]",
-    "hint": "Indexes run from 0 to length - 1.",
-    "output": "30"
+    "output": "30",
+    "hint": "Indexes run from 0 to length - 1."
   },
   {
     "id": "obo_sum_bound",
@@ -93,7 +223,7 @@
     "prompt": "Fill in the blank so the program logs 6.",
     "code": "const xs = [1, 2, 3];\nlet sum = 0;\nfor (let i = 0; ____; i++) sum += xs[i];\nconsole.log(sum);",
     "answer": "i < xs.length",
-    "hint": "The last valid index is xs.length - 1, so stop before i reaches xs.length.",
-    "output": "6"
+    "output": "6",
+    "hint": "The last valid index is xs.length - 1, so stop before i reaches xs.length."
   }
 ]

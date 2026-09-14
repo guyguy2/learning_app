@@ -2,7 +2,22 @@
   {
     "id": "var_block_scoped",
     "name": "Expecting var to be block scoped",
-    "explanation": "var is scoped to the whole function, not to the loop body. Every closure created in a var loop shares the same i, which already holds its final value when the closures run. let creates a new binding for each iteration."
+    "explanation": "You treated var as if it belonged to the nearest block, the way let does. var belongs to the whole enclosing function (or the module), so it is still visible after the block or loop ends, and a var loop has one shared binding. Use let or const for a binding that lives only inside its block."
+  },
+  {
+    "id": "tdz_ignored",
+    "name": "Reading a let or const before its declaration",
+    "explanation": "You expected the name to be undefined, or to fall through to an outer variable, until its let or const line runs. The binding exists from the start of its block but sits in the temporal dead zone until the declaration runs, so reading it earlier throws a ReferenceError."
+  },
+  {
+    "id": "const_frozen",
+    "name": "Confusing a const binding with a frozen value",
+    "explanation": "You treated const as a rule about the value rather than the name. const fixes the binding, so the name cannot be reassigned, but the array or object it points to can still be changed with push or property assignment."
+  },
+  {
+    "id": "shadow_assigns_outer",
+    "name": "Thinking an inner declaration changes the outer variable",
+    "explanation": "You treated a let inside a function or block as updating the variable of the same name outside. A new declaration creates a separate binding that shadows the outer one only in that scope; to change the outer variable, assign to it without let, const, or var."
   },
   {
     "id": "closure_copies_value",

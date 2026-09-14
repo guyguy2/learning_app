@@ -132,25 +132,26 @@ describe('server/seeds per subject', () => {
     expect(seedScenarios()).toEqual(['fresh', 'mid', 'review-due'])
   })
 
-  it('seeds programming review-due: closures mastered and due yesterday, iteration guided, off-by-one untouched', () => {
+  it('seeds programming review-due: scope mastered and due yesterday, closures guided, the rest untouched', () => {
     const refDate = new Date('2026-09-11T12:00:00Z')
     const seed = buildSeed('review-due', { subject: 'programming', referenceDate: refDate })
 
     expect(seed.session_number).toBe(3)
     expect(seed.words).toEqual([])
-    expect(seed.chunks.map((c) => c.id)).toEqual(['closures', 'iteration', 'off-by-one'])
+    expect(seed.chunks.map((c) => c.id).slice(0, 2)).toEqual(['scope', 'closures'])
+
+    const scope = seed.chunks.find((c) => c.id === 'scope')
+    expect(scope.mastered).toBe(true)
+    expect(scope.ladder_step).toBe(0)
+    expect(scope.next_due_date).toBe(getYesterdayIso(refDate))
 
     const closures = seed.chunks.find((c) => c.id === 'closures')
-    expect(closures.mastered).toBe(true)
-    expect(closures.ladder_step).toBe(0)
-    expect(closures.next_due_date).toBe(getYesterdayIso(refDate))
+    expect(closures.mastered).toBe(false)
+    expect(closures.production_phase).toBe('guided')
 
-    const iteration = seed.chunks.find((c) => c.id === 'iteration')
-    expect(iteration.mastered).toBe(false)
-    expect(iteration.production_phase).toBe('guided')
-
-    const offByOne = seed.chunks.find((c) => c.id === 'off-by-one')
-    expect(offByOne.mastered).toBe(false)
-    expect(offByOne.production_phase).toBe('worked_example')
+    for (const rest of seed.chunks.slice(2)) {
+      expect(rest.mastered).toBe(false)
+      expect(rest.production_phase).toBe('worked_example')
+    }
   })
 })

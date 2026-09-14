@@ -1,42 +1,126 @@
 [
   {
+    "id": "d_scope_var_escapes_0",
+    "item_id": "scope_var_escapes",
+    "given": "undefined undefined",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_scope_var_escapes_1",
+    "item_id": "scope_var_escapes",
+    "given": "undefined, undefined",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_scope_shadow_0",
+    "item_id": "scope_shadow",
+    "given": "2",
+    "misconception_id": "shadow_assigns_outer"
+  },
+  {
+    "id": "d_scope_tdz_0",
+    "item_id": "scope_tdz",
+    "given": "undefined",
+    "misconception_id": "tdz_ignored"
+  },
+  {
+    "id": "d_scope_const_push_0",
+    "item_id": "scope_const_push",
+    "given": "TypeError",
+    "misconception_id": "const_frozen"
+  },
+  {
+    "id": "d_scope_const_push_1",
+    "item_id": "scope_const_push",
+    "given": "2",
+    "misconception_id": "const_frozen"
+  },
+  {
+    "id": "d_scope_loop_var_after_0",
+    "item_id": "scope_loop_var_after",
+    "given": "ReferenceError",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_scope_loop_var_after_1",
+    "item_id": "scope_loop_var_after",
+    "given": "undefined",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_scope_tdz_shadow_0",
+    "item_id": "scope_tdz_shadow",
+    "given": "1",
+    "misconception_id": "tdz_ignored"
+  },
+  {
+    "id": "d_scope_const_reassign_0",
+    "item_id": "scope_const_reassign",
+    "given": "6",
+    "misconception_id": "const_frozen"
+  },
+  {
+    "id": "d_scope_block_let_0",
+    "item_id": "scope_block_let",
+    "given": "var",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_scope_const_grow_0",
+    "item_id": "scope_const_grow",
+    "given": "scores = [4, 7, 9]",
+    "misconception_id": "const_frozen"
+  },
+  {
+    "id": "d_scope_assign_outer_0",
+    "item_id": "scope_assign_outer",
+    "given": "let total = n",
+    "misconception_id": "shadow_assigns_outer"
+  },
+  {
+    "id": "d_scope_loop_let_0",
+    "item_id": "scope_loop_let",
+    "given": "var",
+    "misconception_id": "var_block_scoped"
+  },
+  {
     "id": "d_closure_loop_var_0",
     "item_id": "closure_loop_var",
     "given": "0",
     "misconception_id": "var_block_scoped"
   },
   {
-    "id": "d_closure_loop_let_var",
-    "item_id": "closure_loop_let",
-    "given": "var",
-    "misconception_id": "var_block_scoped"
-  },
-  {
-    "id": "d_closure_counter_1",
+    "id": "d_closure_counter_0",
     "item_id": "closure_counter",
     "given": "1",
     "misconception_id": "closure_copies_value"
   },
   {
-    "id": "d_iterate_splice_1",
+    "id": "d_closure_loop_let_0",
+    "item_id": "closure_loop_let",
+    "given": "var",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_iterate_splice_0",
     "item_id": "iterate_splice",
     "given": "1",
     "misconception_id": "mutate_while_iterating"
   },
   {
-    "id": "d_obo_lte_count_3",
+    "id": "d_obo_lte_count_0",
     "item_id": "obo_lte_count",
     "given": "3",
     "misconception_id": "off_by_one_bounds"
   },
   {
-    "id": "d_obo_last_element_length",
+    "id": "d_obo_last_element_0",
     "item_id": "obo_last_element",
     "given": "xs[xs.length]",
     "misconception_id": "off_by_one_bounds"
   },
   {
-    "id": "d_obo_sum_bound_lte",
+    "id": "d_obo_sum_bound_0",
     "item_id": "obo_sum_bound",
     "given": "i <= xs.length",
     "misconception_id": "off_by_one_bounds"

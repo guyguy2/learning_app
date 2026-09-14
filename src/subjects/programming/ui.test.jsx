@@ -8,21 +8,23 @@ import { deskCopy } from '../../desk/copy.js'
 
 const subject = getSubject('programming')
 const { cards, repairDetails } = subject.ui
-const item = (id) => subject.content.items.find((i) => i.id === id)
+const firstOfType = (type) => subject.content.items.find((i) => i.type === type)
+const [firstChunk, secondChunk] = subject.chunks(subject.content)
 
 describe('programming Desk cards', () => {
   it('renders a recognition card with the snippet and its badge', () => {
     const Card = cards.recognition
+    const item = firstOfType('recognition')
     const html = renderToStaticMarkup(
       <Card
-        stimulus={{ type: 'recognition', chunkId: 'closures', item: item('closure_loop_var') }}
+        stimulus={{ type: 'recognition', chunkId: item.chunk, item }}
         onSubmit={() => {}}
         technique={subject.techniques.recognition}
       />,
     )
     expect(html).toContain('Trace the Code')
     expect(html).toContain('desk-code')
-    expect(html).toContain('fns.push')
+    expect(html).toContain('console.log')
     expect(html).toContain('Retrieval practice')
   })
 
@@ -31,16 +33,18 @@ describe('programming Desk cards', () => {
     const workedExample = subject.content.workedExamples[0]
     const weHtml = renderToStaticMarkup(
       <Card
-        stimulus={{ type: 'completion', phase: 'worked_example', chunkId: 'closures', workedExample }}
+        stimulus={{ type: 'completion', phase: 'worked_example', chunkId: workedExample.chunk, workedExample }}
         onSubmit={() => {}}
         technique={subject.techniques.completion}
       />,
     )
     expect(weHtml).toContain('Worked Example (I-Do)')
-    expect(weHtml).toContain('makeGreeter')
+    expect(weHtml).toContain(workedExample.title)
+    expect(weHtml).toContain('desk-worked-steps')
     expect(weHtml).toContain('Faded worked example')
 
-    const stimulus = { type: 'completion', chunkId: 'closures', item: item('closure_adder') }
+    const item = firstOfType('completion')
+    const stimulus = { type: 'completion', chunkId: item.chunk, item }
     const guided = renderToStaticMarkup(
       <Card stimulus={{ ...stimulus, phase: 'guided', hint: 'Remember x.' }} onSubmit={() => {}} />,
     )
@@ -82,19 +86,22 @@ describe('programming Desk cards', () => {
   it('uses subject labels and wording on the start card', () => {
     const html = renderToStaticMarkup(
       <SessionStartCard
-        plan={{ reviewChunkIds: ['iteration'], newChunkId: 'closures', phase: 'review' }}
+        plan={{ reviewChunkIds: [secondChunk.id], newChunkId: firstChunk.id, phase: 'review' }}
         begin={() => {}}
         chunkLabel={(id) => subject.chunks(subject.content).find((c) => c.id === id).label}
         copy={deskCopy(subject)}
       />,
     )
-    expect(html).toContain('Due today: Array iteration (1 concept)')
-    expect(html).toContain('Working concept: Closures')
-    expect(html).not.toContain('-closures')
+    expect(html).toContain(`Due today: ${secondChunk.label} (1 concept)`)
+    expect(html).toContain(`Working concept: ${firstChunk.label}`)
+    expect(html).not.toContain(`-${firstChunk.id}`)
   })
 
   it('formats the correct-answer strip through the subject', () => {
-    const stimulus = { type: 'recognition', item: item('obo_lte_count') }
-    expect(correctMessage({ type: 'recognition', given: '4' }, stimulus, subject)).toBe('Correct: it logs 4')
+    const item = firstOfType('recognition')
+    const stimulus = { type: 'recognition', item }
+    expect(correctMessage({ type: 'recognition', given: item.answer }, stimulus, subject)).toBe(
+      `Correct: it logs ${item.answer}`,
+    )
   })
 })

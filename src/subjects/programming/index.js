@@ -86,7 +86,8 @@ function retestStimulus(progress, attempt, content, stimulusFor) {
       content.distractors.filter((d) => d.misconception_id === match.misconception_id).map((d) => d.item_id),
     )
     const siblings = content.items.filter(
-      (item) => item.id !== missed.id && item.type === missed.type && probes.has(item.id),
+      (item) =>
+        item.id !== missed.id && item.chunk === missed.chunk && item.type === missed.type && probes.has(item.id),
     )
     if (siblings.length > 0) {
       const sibling = siblings.reduce((best, item) =>

@@ -83,8 +83,10 @@ describe('POST /api/progress/seed', () => {
     const res = await post('/api/progress/seed?subject=programming', { scenario })
     expect(res.status).toBe(200)
     const seeded = await res.json()
-    expect(seeded.chunks.map((c) => c.id)).toEqual(['closures', 'iteration', 'off-by-one'])
-    expect(seeded.session_number).toBe(buildSeed(scenario, { subject: 'programming' }).session_number)
+    const expected = buildSeed(scenario, { subject: 'programming' })
+    expect(seeded.chunks.map((c) => c.id)).toEqual(expected.chunks.map((c) => c.id))
+    expect(seeded.chunks[0].id).toBe('scope')
+    expect(seeded.session_number).toBe(expected.session_number)
     expect(writtenFile()).toBe(progressPathFor('programming'))
   })
 
