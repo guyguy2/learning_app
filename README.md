@@ -33,7 +33,7 @@ Execute the Vitest test suite:
 ```bash
 npm test
 ```
-The suite has 23 test files and 219 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the production Desk UI, its subject picker, and the `useSessionRunner` hook (`src/desk/`), and the server seed scenarios, per-subject progress files, and reset and seed endpoints (`server/`), and the content validation script (`scripts/`).
+The suite has 24 test files and 388 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the production Desk UI, its subject picker, and the `useSessionRunner` hook (`src/desk/`), and the server seed scenarios, per-subject progress files, and reset and seed endpoints (`server/`), and the content validation script (`scripts/`).
 
 Check every registered subject's content with its `validate` function:
 ```bash
@@ -94,7 +94,7 @@ The project maintains a strict separation between the user interface, backend st
 
 - **Frontend SPA (`src/`)**: A React application built with Vite that renders the interactive session flow screens. `src/main.jsx` mounts the Desk UI (`src/desk/`, entry `DeskRoot.jsx`, which renders `DeskApp.jsx` for the chosen subject). The subject comes from `?subject=<id>` (for example `http://localhost:5173/?subject=programming`), then the last picked subject, then Spanish; see [Choosing a subject](#choosing-a-subject). The Desk drives sessions through the `useSessionRunner` hook (`src/desk/useSessionRunner.js`), a thin React wrapper over the pure `sessionRunner` engine that holds its state and loads and saves progress via `/api/progress`.
 - **Backend Server (`server/`)**: An Express server that handles loading and persistence of user states to `progress.json` (`GET`/`POST /api/progress`), plus reset and seed endpoints (`POST /api/progress/reset`, `POST /api/progress/seed` with body `{ "scenario": "<name>" }`). No UI calls reset or seed since the POC shell was removed; they are kept for scripts and manual testing, for example `curl -X POST 'localhost:3001/api/progress/seed?subject=spanish' -H 'Content-Type: application/json' -d '{"scenario":"review-due"}'`. All four accept `?subject=<id>`, which stores any subject other than Spanish in its own `progress.<id>.json`. Reset writes the subject's fresh progress; seed builds a scenario the subject defines (its `seeds`), and an unknown subject or scenario returns 400.
-- **Subjects (`src/subjects/`)**: Each subject is a plugin behind one contract: its exercise types and their rotation, its chunks, and per exercise type `nextStimulus`, `apply`, `grade`, `feedback`, `expectedAnswer`, and optional `repairFor` for named misconceptions, plus its content with a `validate` function, its technique badges, and its Desk cards (`ui`). Spanish (`src/subjects/spanish/`) is the default; a tiny JavaScript subject (`src/subjects/programming/`) proves the seam. See [src/subjects/README.md](src/subjects/README.md).
+- **Subjects (`src/subjects/`)**: Each subject is a plugin behind one contract: its exercise types and their rotation, its chunks, and per exercise type `nextStimulus`, `apply`, `grade`, `feedback`, `expectedAnswer`, and optional `repairFor` for named misconceptions, plus its content with a `validate` function, its technique badges, and its Desk cards (`ui`). Spanish (`src/subjects/spanish/`) is the default; a beginner JavaScript subject (`src/subjects/programming/`) is the second (see [Content Scope](#content-scope)). See [src/subjects/README.md](src/subjects/README.md).
 - **Static Content Pools (`content/<subject>/`)**: Static JSON data files per subject:
   - `content/spanish/`: `vocab.json`, `distractors.json`, `misconceptions.json`, `worked_examples.json`
   - `content/programming/`: `items.json`, `distractors.json`, `misconceptions.json`, `worked_examples.json`
@@ -126,4 +126,26 @@ The application implements three primary exercise patterns based on cognitive sc
 
 ## Content Scope
 
-The curriculum is focused entirely on **regular present-tense conjugation** of verbs ending in `-ar`, `-er`, and `-ir` along with fundamental vocabulary.
+The Spanish curriculum is focused entirely on **regular present-tense conjugation** of verbs ending in `-ar`, `-er`, and `-ir` along with fundamental vocabulary.
+
+### JavaScript
+
+The JavaScript curriculum (`content/programming/`) teaches beginner mental models rather than syntax. Its seven chunks are introduced one at a time, in this order. Each opens with a worked example that states its notional machine, then alternates **recognition** items (predict what a snippet logs, or name the error it throws) with **completion** items (fill in one blank so the program logs a stated output), which fade from guided, with a hint, to independent. A wrong answer matching a seeded distractor names the misconception and retests on another item that probes it.
+
+| Chunk | Items (recognition + completion) | Misconceptions probed |
+|---|---|---|
+| Variables and scope | 12 (8 + 4) | 4 |
+| Functions and closures | 12 (7 + 5) | 6 (3 of its own, 3 from scope) |
+| Arrays and iteration | 11 (7 + 4) | 4 |
+| Loop bounds | 12 (7 + 5) | 3 |
+| Objects and references | 12 (7 + 5) | 5 (4 of its own, 1 from iteration) |
+| Truthiness and equality | 11 (7 + 4) | 4 |
+| Async basics | 12 (7 + 5) | 5 |
+
+That is 82 items, 99 seeded distractors, and 27 named misconceptions. Answers are graded ignoring whitespace; output of several lines is written as the lines separated by spaces, and a comma-separated form is also accepted.
+
+Every snippet is executed with node (as an ES module) by `src/subjects/programming/snippets.test.js`, which is part of `npm test`: worked examples and recognition items must log their stated answer or throw the named error, each completion item must log its stated output with its answer and with every accepted variant, and every seeded completion distractor must produce something else. Run it on its own with:
+```bash
+npx vitest run src/subjects/programming/snippets.test.js
+```
+The shape these checks rely on (stated outputs, one blank per completion item, at least two misconceptions probed per chunk, two- or three-sentence repair explanations) is enforced by `src/subjects/programming/validate.js`, which runs in `npm test` and `npm run validate-content`.
