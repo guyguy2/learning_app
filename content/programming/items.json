@@ -493,5 +493,135 @@
     ],
     "output": "cba",
     "hint": "Start at the last valid index."
+  },
+  {
+    "id": "ref_alias_array",
+    "chunk": "references",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const a = [1, 2];\nconst b = a;\nb.push(3);\nconsole.log(a.length);",
+    "answer": "3"
+  },
+  {
+    "id": "ref_obj_equal",
+    "chunk": "references",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const p = { x: 1 };\nconst q = { x: 1 };\nconsole.log(p === q);",
+    "answer": "false"
+  },
+  {
+    "id": "ref_spread_nested",
+    "chunk": "references",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const user = { name: 'Ada', tags: ['admin'] };\nconst copy = { ...user };\ncopy.tags.push('dev');\nconsole.log(user.tags.length);",
+    "answer": "2"
+  },
+  {
+    "id": "ref_param_reassign",
+    "chunk": "references",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "function reset(list) {\n  list = [];\n}\nconst cart = ['a', 'b'];\nreset(cart);\nconsole.log(cart.length);",
+    "answer": "2"
+  },
+  {
+    "id": "ref_same_object",
+    "chunk": "references",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const p = { x: 1 };\nconst q = p;\nq.x = 2;\nconsole.log(p === q, p.x);",
+    "answer": "true 2",
+    "accepted": [
+      "true, 2"
+    ]
+  },
+  {
+    "id": "ref_param_mutate",
+    "chunk": "references",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "function addItem(list) {\n  list.push('x');\n}\nconst cart = [];\naddItem(cart);\nconsole.log(cart.length);",
+    "answer": "1"
+  },
+  {
+    "id": "ref_includes_obj",
+    "chunk": "references",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const seen = [{ id: 1 }];\nconsole.log(seen.includes({ id: 1 }));",
+    "answer": "false"
+  },
+  {
+    "id": "ref_copy_array",
+    "chunk": "references",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 3.",
+    "code": "const original = [1, 2, 3];\nconst copy = ____;\ncopy.push(4);\nconsole.log(original.length);",
+    "answer": "[...original]",
+    "accepted": [
+      "original.slice()",
+      "Array.from(original)"
+    ],
+    "output": "3",
+    "hint": "Make a new array holding the same elements."
+  },
+  {
+    "id": "ref_copy_nested",
+    "chunk": "references",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 1.",
+    "code": "const user = { name: 'Ada', tags: ['admin'] };\nconst copy = { ...user, tags: ____ };\ncopy.tags.push('dev');\nconsole.log(user.tags.length);",
+    "answer": "[...user.tags]",
+    "accepted": [
+      "user.tags.slice()",
+      "Array.from(user.tags)"
+    ],
+    "output": "1",
+    "hint": "Spread copied the reference to tags; give the copy its own array."
+  },
+  {
+    "id": "ref_compare_ids",
+    "chunk": "references",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs true.",
+    "code": "const a = { id: 7 };\nconst b = { id: 7 };\nconsole.log(____);",
+    "answer": "a.id === b.id",
+    "accepted": [
+      "a.id == b.id",
+      "b.id === a.id",
+      "b.id == a.id"
+    ],
+    "output": "true",
+    "hint": "Compare the values stored in the objects, not the objects themselves."
+  },
+  {
+    "id": "ref_add_new",
+    "chunk": "references",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 1 2.",
+    "code": "function withItem(list, item) {\n  return ____;\n}\nconst a = ['x'];\nconst b = withItem(a, 'y');\nconsole.log(a.length, b.length);",
+    "answer": "[...list, item]",
+    "accepted": [
+      "list.concat(item)",
+      "list.concat([item])"
+    ],
+    "output": "1 2",
+    "hint": "Return a new array instead of changing list."
+  },
+  {
+    "id": "ref_param_clear",
+    "chunk": "references",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 0.",
+    "code": "function clear(list) {\n  ____;\n}\nconst cart = ['a', 'b'];\nclear(cart);\nconsole.log(cart.length);",
+    "answer": "list.length = 0",
+    "accepted": [
+      "list.splice(0)",
+      "list.splice(0, list.length)"
+    ],
+    "output": "0",
+    "hint": "Change the array the caller passed in, not the local name."
   }
 ]

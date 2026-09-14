@@ -334,5 +334,95 @@
     "item_id": "obo_reverse_loop",
     "given": "xs.length",
     "misconception_id": "off_by_one_bounds"
+  },
+  {
+    "id": "d_ref_alias_array_0",
+    "item_id": "ref_alias_array",
+    "given": "2",
+    "misconception_id": "assignment_copies"
+  },
+  {
+    "id": "d_ref_obj_equal_0",
+    "item_id": "ref_obj_equal",
+    "given": "true",
+    "misconception_id": "equality_by_content"
+  },
+  {
+    "id": "d_ref_spread_nested_0",
+    "item_id": "ref_spread_nested",
+    "given": "1",
+    "misconception_id": "spread_deep_copy"
+  },
+  {
+    "id": "d_ref_param_reassign_0",
+    "item_id": "ref_param_reassign",
+    "given": "0",
+    "misconception_id": "param_reassign"
+  },
+  {
+    "id": "d_ref_same_object_0",
+    "item_id": "ref_same_object",
+    "given": "false 1",
+    "misconception_id": "assignment_copies"
+  },
+  {
+    "id": "d_ref_same_object_1",
+    "item_id": "ref_same_object",
+    "given": "false, 1",
+    "misconception_id": "assignment_copies"
+  },
+  {
+    "id": "d_ref_same_object_2",
+    "item_id": "ref_same_object",
+    "given": "true 1",
+    "misconception_id": "assignment_copies"
+  },
+  {
+    "id": "d_ref_same_object_3",
+    "item_id": "ref_same_object",
+    "given": "true, 1",
+    "misconception_id": "assignment_copies"
+  },
+  {
+    "id": "d_ref_param_mutate_0",
+    "item_id": "ref_param_mutate",
+    "given": "0",
+    "misconception_id": "assignment_copies"
+  },
+  {
+    "id": "d_ref_includes_obj_0",
+    "item_id": "ref_includes_obj",
+    "given": "true",
+    "misconception_id": "equality_by_content"
+  },
+  {
+    "id": "d_ref_copy_array_0",
+    "item_id": "ref_copy_array",
+    "given": "original",
+    "misconception_id": "assignment_copies"
+  },
+  {
+    "id": "d_ref_copy_nested_0",
+    "item_id": "ref_copy_nested",
+    "given": "user.tags",
+    "misconception_id": "spread_deep_copy"
+  },
+  {
+    "id": "d_ref_compare_ids_0",
+    "item_id": "ref_compare_ids",
+    "given": "a === b",
+    "misconception_id": "equality_by_content"
+  },
+  {
+    "id": "d_ref_add_new_0",
+    "item_id": "ref_add_new",
+    "given": "list.push(item)",
+    "misconception_id": "in_place_vs_copy"
+  },
+  {
+    "id": "d_ref_param_clear_0",
+    "item_id": "ref_param_clear",
+    "given": "list = []",
+    "misconception_id": "param_reassign"
   }
 ]

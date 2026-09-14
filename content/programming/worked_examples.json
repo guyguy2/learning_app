@@ -48,5 +48,18 @@
       "The loop runs while i < 3, so i takes the values 0, 1, and 2: three runs, which is 3 - 0.",
       "When i becomes 3 the condition is false, so the loop stops before reading xs[3], which does not exist."
     ]
+  },
+  {
+    "chunk": "references",
+    "title": "Objects and references",
+    "notional_machine": "An object or array lives in one place in memory, and a variable holds a reference to it, like an arrow pointing at it. Assigning or passing the variable copies the arrow, so both names reach the same object, and === on objects compares arrows, not contents. Spread ({ ...obj } or [...arr]) makes a new outer object but copies the references inside it, so nested objects are still shared.",
+    "code": "const a = { n: 1 };\nconst b = a;\nb.n = 2;\nconst c = { ...a };\nc.n = 3;\nconsole.log(a.n, b.n, c.n);",
+    "output": "2 2 3",
+    "steps": [
+      "{ n: 1 } is created once in memory, and a holds a reference to it.",
+      "const b = a copies the reference, so b.n = 2 changes the one object both names point to.",
+      "{ ...a } creates a second object and copies the property n = 2 into it; c points at the new object.",
+      "c.n = 3 changes only the copy, so the line logs 2 2 3."
+    ]
   }
 ]

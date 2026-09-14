@@ -68,5 +68,25 @@
     "id": "fencepost_count",
     "name": "Counting a loop's runs from its bounds instead of its values",
     "explanation": "You counted the runs as the number in the condition, or forgot that <= adds a run. A loop from i = a while i < b runs b - a times, and while i <= b it runs b - a + 1 times; list the values i takes if unsure."
+  },
+  {
+    "id": "assignment_copies",
+    "name": "Thinking assignment or passing copies an object",
+    "explanation": "You treated b = a, or passing a to a function, as making a copy. Both names hold a reference to the same object or array, so a change made through either one is visible through the other."
+  },
+  {
+    "id": "spread_deep_copy",
+    "name": "Thinking spread makes a deep copy",
+    "explanation": "You expected { ...obj } or [...arr] to copy everything inside. Spread makes a new outer object but copies the references it holds, so nested arrays and objects are still shared with the original."
+  },
+  {
+    "id": "equality_by_content",
+    "name": "Thinking === compares objects by their contents",
+    "explanation": "You expected two objects with the same properties to be equal. === on objects and arrays checks whether both sides are the same reference, so two separately created objects are never equal; compare their properties instead."
+  },
+  {
+    "id": "param_reassign",
+    "name": "Thinking reassigning a parameter changes the caller's variable",
+    "explanation": "You expected list = [] inside the function to replace the caller's array. Reassigning a parameter only points that local name somewhere new; to affect the caller, change the object itself, for example with push or by setting length."
   }
 ]
