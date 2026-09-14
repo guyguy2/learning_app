@@ -1,5 +1,5 @@
 /**
- * Map of screen/phase keys to technique-transparency metadata for TechniqueBadge.
+ * Map of screen/phase keys to technique-transparency metadata for the technique badges.
  * Keys cover exercise types (recognition, production, role-tagging) and session phases
  * (review, repair).
  */
@@ -28,13 +28,4 @@ export const screenTechniques = {
     explanation:
       'Naming and correcting a specific wrong mental model, not just marking it wrong.',
   },
-}
-
-/**
- * Look up technique metadata for a screen/phase key.
- * @param {string} key
- * @returns {{ techniqueName: string, explanation: string } | null}
- */
-export function techniqueFor(key) {
-  return screenTechniques[key] ?? null
 }
