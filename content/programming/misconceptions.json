@@ -56,7 +56,17 @@
   },
   {
     "id": "off_by_one_bounds",
-    "name": "Off-by-one on array bounds",
-    "explanation": "An array of length n has indexes 0 to n - 1. xs[xs.length] is undefined, and a loop condition of i <= xs.length runs one step too far. Use i < xs.length, and xs[xs.length - 1] for the last element."
+    "name": "Treating the length as the last index",
+    "explanation": "You treated xs.length as a valid index, or let the loop run while i <= xs.length. An array of length n has indexes 0 to n - 1, so xs[xs.length] is undefined and i <= xs.length runs one step too far; use i < xs.length and xs[xs.length - 1]."
+  },
+  {
+    "id": "slice_end_inclusive",
+    "name": "Thinking slice includes its end index",
+    "explanation": "You expected slice(start, end) to include the element at end. slice copies from start up to but not including end, so slice(1, 3) returns two elements, the ones at indexes 1 and 2."
+  },
+  {
+    "id": "fencepost_count",
+    "name": "Counting a loop's runs from its bounds instead of its values",
+    "explanation": "You counted the runs as the number in the condition, or forgot that <= adds a run. A loop from i = a while i < b runs b - a times, and while i <= b it runs b - a + 1 times; list the values i takes if unsure."
   }
 ]

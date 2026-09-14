@@ -39,14 +39,14 @@
   },
   {
     "chunk": "off-by-one",
-    "title": "Off-by-one bounds",
-    "notional_machine": "An array of length n has indexes 0 to n - 1. A loop starting at 0 should continue while i < n; i <= n runs one extra time and reads xs[n], which is undefined.",
-    "code": "const xs = ['a', 'b', 'c'];\nfor (let i = 0; i < xs.length; i++) {\n  console.log(i, xs[i]);\n}\n// 0 a, 1 b, 2 c",
+    "title": "Loop bounds",
+    "notional_machine": "An array of length n has indexes 0 to n - 1, so the last element is at n - 1 and nothing is at n. A loop for (let i = a; i < b; i++) runs b - a times, with i going from a up to b - 1, and changing < to <= adds one more run. slice(start, end) follows the same rule: it includes start and stops before end.",
+    "code": "const xs = ['a', 'b', 'c'];\nfor (let i = 0; i < xs.length; i++) {\n  console.log(i, xs[i]);\n}",
     "output": "0 a 1 b 2 c",
     "steps": [
       "xs.length is 3, so the valid indexes are 0, 1, and 2.",
-      "The loop runs while i < 3, so i takes the values 0, 1, 2.",
-      "When i becomes 3 the condition is false and the loop stops before reading xs[3]."
+      "The loop runs while i < 3, so i takes the values 0, 1, and 2: three runs, which is 3 - 0.",
+      "When i becomes 3 the condition is false, so the loop stops before reading xs[3], which does not exist."
     ]
   }
 ]

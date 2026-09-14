@@ -258,6 +258,54 @@
     "misconception_id": "off_by_one_bounds"
   },
   {
+    "id": "d_obo_slice_0",
+    "item_id": "obo_slice",
+    "given": "[20, 30, 40]",
+    "misconception_id": "slice_end_inclusive"
+  },
+  {
+    "id": "d_obo_slice_1",
+    "item_id": "obo_slice",
+    "given": "20, 30, 40",
+    "misconception_id": "slice_end_inclusive"
+  },
+  {
+    "id": "d_obo_count_from_one_0",
+    "item_id": "obo_count_from_one",
+    "given": "5",
+    "misconception_id": "fencepost_count"
+  },
+  {
+    "id": "d_obo_read_past_0",
+    "item_id": "obo_read_past",
+    "given": "7",
+    "misconception_id": "off_by_one_bounds"
+  },
+  {
+    "id": "d_obo_substring_0",
+    "item_id": "obo_substring",
+    "given": "ello",
+    "misconception_id": "slice_end_inclusive"
+  },
+  {
+    "id": "d_obo_countdown_0",
+    "item_id": "obo_countdown",
+    "given": "[3, 2, 1, 0]",
+    "misconception_id": "fencepost_count"
+  },
+  {
+    "id": "d_obo_countdown_1",
+    "item_id": "obo_countdown",
+    "given": "3, 2, 1, 0",
+    "misconception_id": "fencepost_count"
+  },
+  {
+    "id": "d_obo_while_0",
+    "item_id": "obo_while",
+    "given": "3",
+    "misconception_id": "fencepost_count"
+  },
+  {
     "id": "d_obo_last_element_0",
     "item_id": "obo_last_element",
     "given": "xs[xs.length]",
@@ -267,6 +315,24 @@
     "id": "d_obo_sum_bound_0",
     "item_id": "obo_sum_bound",
     "given": "i <= xs.length",
+    "misconception_id": "off_by_one_bounds"
+  },
+  {
+    "id": "d_obo_slice_first_two_0",
+    "item_id": "obo_slice_first_two",
+    "given": "1",
+    "misconception_id": "slice_end_inclusive"
+  },
+  {
+    "id": "d_obo_repeat_0",
+    "item_id": "obo_repeat",
+    "given": "i <= 3",
+    "misconception_id": "fencepost_count"
+  },
+  {
+    "id": "d_obo_reverse_loop_0",
+    "item_id": "obo_reverse_loop",
+    "given": "xs.length",
     "misconception_id": "off_by_one_bounds"
   }
 ]

@@ -375,12 +375,72 @@
     "answer": "4"
   },
   {
+    "id": "obo_slice",
+    "chunk": "off-by-one",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const nums = [10, 20, 30, 40, 50];\nconsole.log(nums.slice(1, 3));",
+    "answer": "[20, 30]",
+    "accepted": [
+      "20, 30"
+    ]
+  },
+  {
+    "id": "obo_count_from_one",
+    "chunk": "off-by-one",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "let runs = 0;\nfor (let i = 1; i < 5; i++) runs++;\nconsole.log(runs);",
+    "answer": "4"
+  },
+  {
+    "id": "obo_read_past",
+    "chunk": "off-by-one",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const xs = [5, 6, 7];\nconsole.log(xs[xs.length]);",
+    "answer": "undefined"
+  },
+  {
+    "id": "obo_substring",
+    "chunk": "off-by-one",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "console.log('hello'.slice(1, 4));",
+    "answer": "ell",
+    "accepted": [
+      "'ell'"
+    ]
+  },
+  {
+    "id": "obo_countdown",
+    "chunk": "off-by-one",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const out = [];\nfor (let i = 3; i > 0; i--) out.push(i);\nconsole.log(out);",
+    "answer": "[3, 2, 1]",
+    "accepted": [
+      "3, 2, 1"
+    ]
+  },
+  {
+    "id": "obo_while",
+    "chunk": "off-by-one",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "let i = 0;\nwhile (i <= 3) i++;\nconsole.log(i);",
+    "answer": "4"
+  },
+  {
     "id": "obo_last_element",
     "chunk": "off-by-one",
     "type": "completion",
     "prompt": "Fill in the blank so the program logs 30.",
     "code": "const xs = [10, 20, 30];\nconsole.log(____);",
     "answer": "xs[xs.length - 1]",
+    "accepted": [
+      "xs.at(-1)"
+    ],
     "output": "30",
     "hint": "Indexes run from 0 to length - 1."
   },
@@ -388,10 +448,50 @@
     "id": "obo_sum_bound",
     "chunk": "off-by-one",
     "type": "completion",
-    "prompt": "Fill in the blank so the program logs 6.",
+    "prompt": "Fill in the loop condition so the program logs 6.",
     "code": "const xs = [1, 2, 3];\nlet sum = 0;\nfor (let i = 0; ____; i++) sum += xs[i];\nconsole.log(sum);",
     "answer": "i < xs.length",
+    "accepted": [
+      "i <= xs.length - 1"
+    ],
     "output": "6",
     "hint": "The last valid index is xs.length - 1, so stop before i reaches xs.length."
+  },
+  {
+    "id": "obo_slice_first_two",
+    "chunk": "off-by-one",
+    "type": "completion",
+    "prompt": "Fill in the end index so the program logs [ 4, 8 ].",
+    "code": "const xs = [4, 8, 15, 16];\nconsole.log(xs.slice(0, ____));",
+    "answer": "2",
+    "output": "[ 4, 8 ]",
+    "hint": "slice stops before its end index."
+  },
+  {
+    "id": "obo_repeat",
+    "chunk": "off-by-one",
+    "type": "completion",
+    "prompt": "Fill in the loop condition so the program logs ***.",
+    "code": "let line = '';\nfor (let i = 0; ____; i++) line += '*';\nconsole.log(line);",
+    "answer": "i < 3",
+    "accepted": [
+      "i <= 2",
+      "3 > i"
+    ],
+    "output": "***",
+    "hint": "Starting at 0, the loop must run exactly three times."
+  },
+  {
+    "id": "obo_reverse_loop",
+    "chunk": "off-by-one",
+    "type": "completion",
+    "prompt": "Fill in the starting index so the program logs cba.",
+    "code": "const xs = ['a', 'b', 'c'];\nlet out = '';\nfor (let i = ____; i >= 0; i--) out += xs[i];\nconsole.log(out);",
+    "answer": "xs.length - 1",
+    "accepted": [
+      "2"
+    ],
+    "output": "cba",
+    "hint": "Start at the last valid index."
   }
 ]
