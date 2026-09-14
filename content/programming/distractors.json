@@ -508,5 +508,89 @@
     "item_id": "eq_nan_check",
     "given": "n === NaN",
     "misconception_id": "nan_equals_itself"
+  },
+  {
+    "id": "d_async_timeout_zero_0",
+    "item_id": "async_timeout_zero",
+    "given": "timer sync",
+    "misconception_id": "timeout_zero_immediate"
+  },
+  {
+    "id": "d_async_timeout_zero_1",
+    "item_id": "async_timeout_zero",
+    "given": "timer, sync",
+    "misconception_id": "timeout_zero_immediate"
+  },
+  {
+    "id": "d_async_then_order_0",
+    "item_id": "async_then_order",
+    "given": "then after",
+    "misconception_id": "then_runs_sync"
+  },
+  {
+    "id": "d_async_then_order_1",
+    "item_id": "async_then_order",
+    "given": "then, after",
+    "misconception_id": "then_runs_sync"
+  },
+  {
+    "id": "d_async_micro_macro_0",
+    "item_id": "async_micro_macro",
+    "given": "S T P",
+    "misconception_id": "timers_before_promises"
+  },
+  {
+    "id": "d_async_micro_macro_1",
+    "item_id": "async_micro_macro",
+    "given": "S, T, P",
+    "misconception_id": "timers_before_promises"
+  },
+  {
+    "id": "d_async_await_caller_0",
+    "item_id": "async_await_caller",
+    "given": "start end next",
+    "misconception_id": "await_blocks_all"
+  },
+  {
+    "id": "d_async_await_caller_1",
+    "item_id": "async_await_caller",
+    "given": "start, end, next",
+    "misconception_id": "await_blocks_all"
+  },
+  {
+    "id": "d_async_returns_promise_0",
+    "item_id": "async_returns_promise",
+    "given": "5",
+    "misconception_id": "async_returns_value"
+  },
+  {
+    "id": "d_async_two_tasks_0",
+    "item_id": "async_two_tasks",
+    "given": "a b c",
+    "misconception_id": "await_blocks_all"
+  },
+  {
+    "id": "d_async_two_tasks_1",
+    "item_id": "async_two_tasks",
+    "given": "a, b, c",
+    "misconception_id": "await_blocks_all"
+  },
+  {
+    "id": "d_async_await_value_0",
+    "item_id": "async_await_value",
+    "given": "getScore()",
+    "misconception_id": "async_returns_value"
+  },
+  {
+    "id": "d_async_await_sum_0",
+    "item_id": "async_await_sum",
+    "given": "delay(2)",
+    "misconception_id": "async_returns_value"
+  },
+  {
+    "id": "d_async_wait_save_0",
+    "item_id": "async_wait_save",
+    "given": "save()",
+    "misconception_id": "await_blocks_all"
   }
 ]

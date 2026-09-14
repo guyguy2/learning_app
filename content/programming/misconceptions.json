@@ -108,5 +108,30 @@
     "id": "nan_equals_itself",
     "name": "Expecting NaN to equal itself",
     "explanation": "You expected NaN === NaN to be true. NaN is the one value that is not equal to anything, itself included, so test for it with Number.isNaN(x)."
+  },
+  {
+    "id": "timeout_zero_immediate",
+    "name": "Thinking setTimeout(fn, 0) runs right away",
+    "explanation": "You expected a zero-delay timer to run before the next line. setTimeout always queues its callback, which runs only after the current synchronous code has finished."
+  },
+  {
+    "id": "then_runs_sync",
+    "name": "Thinking a then callback runs immediately",
+    "explanation": "You expected the then callback to run as soon as the line was reached. Even for a promise that is already resolved, then queues the callback, which runs after the current synchronous code finishes."
+  },
+  {
+    "id": "timers_before_promises",
+    "name": "Thinking timers run before promise callbacks",
+    "explanation": "You expected a zero-delay timer to beat a promise callback because it was queued first. When the synchronous code ends, every queued promise callback runs before any timer callback, so the promise output comes first."
+  },
+  {
+    "id": "await_blocks_all",
+    "name": "Thinking await blocks the whole program",
+    "explanation": "You expected await, or calling an async function, to pause everything until the promise settles. await pauses only the async function it is in and returns control to its caller, so code after the call keeps running; await the call itself if you need to wait."
+  },
+  {
+    "id": "async_returns_value",
+    "name": "Thinking an async function returns its value directly",
+    "explanation": "You expected calling an async function to give back its return value. An async function always returns a promise, so use await, or then, to get the value out."
   }
 ]

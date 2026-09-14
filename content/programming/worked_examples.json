@@ -74,5 +74,19 @@
       "'' is one of the few falsy values, so Boolean('') is false.",
       "'0' is a non-empty string and [] is an object, so both are truthy."
     ]
+  },
+  {
+    "chunk": "async",
+    "title": "Async basics",
+    "notional_machine": "JavaScript runs one piece of code at a time. The current synchronous code always runs to the end first; then queued promise callbacks run (then callbacks and the code after an await), and only after those do timer callbacks run, even setTimeout(fn, 0). await pauses only the async function it is in and hands control back to its caller until the promise settles.",
+    "code": "console.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
+    "output": "A D C B",
+    "steps": [
+      "console.log('A') runs immediately.",
+      "setTimeout queues its callback as a timer task; nothing runs yet.",
+      "then queues its callback as a promise job; nothing runs yet.",
+      "console.log('D') runs, and the synchronous code is finished.",
+      "Promise jobs run before timer tasks, so C logs, then B."
+    ]
   }
 ]

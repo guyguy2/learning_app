@@ -740,5 +740,132 @@
     ],
     "output": "true",
     "hint": "NaN is never equal to anything, so use the built-in test."
+  },
+  {
+    "id": "async_timeout_zero",
+    "chunk": "async",
+    "type": "recognition",
+    "prompt": "What does this log? Separate lines with spaces.",
+    "code": "setTimeout(() => console.log('timer'), 0);\nconsole.log('sync');",
+    "answer": "sync timer",
+    "accepted": [
+      "sync, timer"
+    ]
+  },
+  {
+    "id": "async_then_order",
+    "chunk": "async",
+    "type": "recognition",
+    "prompt": "What does this log? Separate lines with spaces.",
+    "code": "Promise.resolve().then(() => console.log('then'));\nconsole.log('after');",
+    "answer": "after then",
+    "accepted": [
+      "after, then"
+    ]
+  },
+  {
+    "id": "async_micro_macro",
+    "chunk": "async",
+    "type": "recognition",
+    "prompt": "What does this log? Separate lines with spaces.",
+    "code": "setTimeout(() => console.log('T'), 0);\nPromise.resolve().then(() => console.log('P'));\nconsole.log('S');",
+    "answer": "S P T",
+    "accepted": [
+      "S, P, T"
+    ]
+  },
+  {
+    "id": "async_await_caller",
+    "chunk": "async",
+    "type": "recognition",
+    "prompt": "What does this log? Separate lines with spaces.",
+    "code": "async function load() {\n  console.log('start');\n  await null;\n  console.log('end');\n}\nload();\nconsole.log('next');",
+    "answer": "start next end",
+    "accepted": [
+      "start, next, end"
+    ]
+  },
+  {
+    "id": "async_returns_promise",
+    "chunk": "async",
+    "type": "recognition",
+    "prompt": "What does this log? Separate lines with spaces.",
+    "code": "async function five() {\n  return 5;\n}\nconsole.log(five());",
+    "answer": "Promise { 5 }"
+  },
+  {
+    "id": "async_two_tasks",
+    "chunk": "async",
+    "type": "recognition",
+    "prompt": "What does this log? Separate lines with spaces.",
+    "code": "async function task(name) {\n  await null;\n  console.log(name);\n}\ntask('a');\ntask('b');\nconsole.log('c');",
+    "answer": "c a b",
+    "accepted": [
+      "c, a, b"
+    ]
+  },
+  {
+    "id": "async_executor_sync",
+    "chunk": "async",
+    "type": "recognition",
+    "prompt": "What does this log? Separate lines with spaces.",
+    "code": "new Promise((resolve) => {\n  console.log('inside');\n  resolve();\n}).then(() => console.log('then'));\nconsole.log('outside');",
+    "answer": "inside outside then",
+    "accepted": [
+      "inside, outside, then"
+    ]
+  },
+  {
+    "id": "async_await_value",
+    "chunk": "async",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 42.",
+    "code": "async function getScore() {\n  return 42;\n}\nasync function main() {\n  const score = ____;\n  console.log(score);\n}\nmain();",
+    "answer": "await getScore()",
+    "output": "42",
+    "hint": "getScore returns a promise; wait for the value inside it."
+  },
+  {
+    "id": "async_microtask_first",
+    "chunk": "async",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs A, then B.",
+    "code": "setTimeout(() => console.log('B'), 0);\n____(() => console.log('A'));",
+    "answer": "Promise.resolve().then",
+    "accepted": [
+      "queueMicrotask"
+    ],
+    "output": "A B",
+    "hint": "Promise callbacks run before timer callbacks."
+  },
+  {
+    "id": "async_then_user",
+    "chunk": "async",
+    "type": "completion",
+    "prompt": "Fill in the method so the program logs Ada.",
+    "code": "async function getUser() {\n  return { name: 'Ada' };\n}\ngetUser().____((user) => console.log(user.name));",
+    "answer": "then",
+    "output": "Ada",
+    "hint": "getUser returns a promise; register a callback for its value."
+  },
+  {
+    "id": "async_await_sum",
+    "chunk": "async",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 3.",
+    "code": "const delay = (v) => new Promise((r) => setTimeout(() => r(v), 10));\nasync function main() {\n  const a = await delay(1);\n  const b = ____;\n  console.log(a + b);\n}\nmain();",
+    "answer": "await delay(2)",
+    "output": "3",
+    "hint": "delay returns a promise; b needs the number inside it."
+  },
+  {
+    "id": "async_wait_save",
+    "chunk": "async",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs saved, then done.",
+    "code": "async function save() {\n  await null;\n  console.log('saved');\n}\nasync function main() {\n  ____;\n  console.log('done');\n}\nmain();",
+    "answer": "await save()",
+    "output": "saved done",
+    "hint": "Calling save() starts it; wait for it to finish before logging done."
   }
 ]
