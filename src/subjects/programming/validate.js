@@ -1,5 +1,6 @@
 const ITEM_TYPES = ['recognition', 'completion']
 const BLANK = '____'
+const MIN_MISCONCEPTIONS_PER_CHUNK = 2
 
 function fail(message) {
   throw new Error(`programming content: ${message}`)
@@ -50,8 +51,9 @@ export function sentenceCount(text) {
  * - a completion item has exactly one blank, a guided-phase `hint`, and the `output` the
  *   completed program logs;
  * - a worked example states its `output` (snippets.test.js runs every snippet to check it);
- * - a distractor is a wrong answer tied to a catalogued misconception, and every
- *   misconception is reachable through at least one distractor;
+ * - a distractor is a wrong answer tied to a catalogued misconception, every chunk's
+ *   distractors probe at least two misconceptions, and every misconception is reachable
+ *   through at least one distractor;
  * - a misconception explanation is two or three sentences.
  */
 export function validateProgrammingContent(content) {
@@ -126,6 +128,14 @@ export function validateProgrammingContent(content) {
     if (correct.includes(normalizeCode(d.given))) fail(`${where} ("${d.id}") is a correct answer`)
   })
   requireUniqueIds(content.distractors, 'id', 'distractors')
+
+  for (const chunk of chunkIds) {
+    const itemIds = new Set(content.items.filter((item) => item.chunk === chunk).map((item) => item.id))
+    const probed = new Set(content.distractors.filter((d) => itemIds.has(d.item_id)).map((d) => d.misconception_id))
+    if (probed.size < MIN_MISCONCEPTIONS_PER_CHUNK) {
+      fail(`chunk "${chunk}" probes ${probed.size} misconception(s) through its distractors; seed at least ${MIN_MISCONCEPTIONS_PER_CHUNK}`)
+    }
+  }
 
   const reached = new Set(content.distractors.map((d) => d.misconception_id))
   for (const m of content.misconceptions) {

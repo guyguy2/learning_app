@@ -235,6 +235,13 @@ describe('programming content validation', () => {
     expect(() => validateProgrammingContent(terse)).toThrow(/explanation has 1 sentences; use two or three/)
   })
 
+  it('rejects a chunk whose distractors probe fewer than two misconceptions', () => {
+    const bad = clone(content)
+    const scopeItems = new Set(bad.items.filter((item) => item.chunk === 'scope').map((item) => item.id))
+    bad.distractors = bad.distractors.filter((d) => !scopeItems.has(d.item_id) || d.misconception_id === 'var_block_scoped')
+    expect(() => validateProgrammingContent(bad)).toThrow(/chunk "scope" probes 1 misconception\(s\)/)
+  })
+
   it('does not count code operators such as ??, ... and === as sentence ends', () => {
     expect(sentenceCount('Use ?? here. Then stop.')).toBe(2)
     expect(sentenceCount('for...of walks by index. x === y is strict! Done?')).toBe(3)
