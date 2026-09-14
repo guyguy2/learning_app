@@ -174,6 +174,23 @@ describe('programming item rotation', () => {
     expect(checked).toBeGreaterThan(0)
   })
 
+  it('keeps rotating from progress saved before attempts were counted', () => {
+    const pool = content.items.filter((item) => item.chunk === 'scope' && item.type === 'recognition')
+    let progress = freshProgress()
+    progress.words = pool.slice(0, 2).map((item) => ({ id: item.id, status: 'learning', streak_count: 1 }))
+    Object.assign(chunkIn(progress, 'scope'), { production_phase: 'independent' })
+
+    const served = []
+    for (let i = 0; i < pool.length; i++) {
+      const stimulus = recognition.nextStimulus(progress, 'scope', content)
+      served.push(stimulus.item.id)
+      const attempt = { type: 'recognition', chunkId: 'scope', itemId: stimulus.item.id, given: stimulus.item.answer, correct: true }
+      progress = recognition.apply(progress, attempt, content, TODAY).progress
+    }
+    expect(new Set(served)).toEqual(new Set(pool.map((item) => item.id)))
+    expect(progress.words.find((w) => w.id === pool[0].id)).toMatchObject({ status: 'mastered', attempts: 1 })
+  })
+
   it('retries the missed item itself after a generic miss', () => {
     const item = itemById('scope_shadow')
     const attempt = { type: 'recognition', chunkId: 'scope', itemId: item.id, given: 'banana', correct: false }
@@ -287,6 +304,24 @@ describe('programming seeds open the intended sessions', () => {
     while (state.mode === 'review') state = submit(state, attemptFor(state))
     expect(state.reviewedCount).toBe(2)
     expect(state.stimulus.chunkId).toBe(order[4])
+  })
+
+  it('opens the next chunk through its worked example when every earlier chunk is mastered and nothing is due', () => {
+    const progress = freshProgress()
+    progress.session_number = 3
+    for (const id of order.slice(0, 2)) {
+      Object.assign(chunkIn(progress, id), {
+        mastered: true,
+        mastered_date: YESTERDAY,
+        ladder_step: 1,
+        last_reviewed_date: TODAY,
+        next_due_date: '2026-09-15',
+        production_phase: 'independent',
+      })
+    }
+    const state = start(progress)
+    expect(state.plan).toEqual({ reviewChunkIds: [], newChunkId: order[2], phase: 'new' })
+    expect(state.stimulus).toMatchObject({ type: 'completion', phase: 'worked_example', chunkId: order[2] })
   })
 
   it('late opens the last chunk through its worked example', () => {
