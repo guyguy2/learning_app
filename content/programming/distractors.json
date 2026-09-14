@@ -84,22 +84,82 @@
     "misconception_id": "var_block_scoped"
   },
   {
-    "id": "d_closure_loop_var_0",
-    "item_id": "closure_loop_var",
-    "given": "0",
-    "misconception_id": "var_block_scoped"
-  },
-  {
     "id": "d_closure_counter_0",
     "item_id": "closure_counter",
     "given": "1",
     "misconception_id": "closure_copies_value"
   },
   {
+    "id": "d_closure_live_value_0",
+    "item_id": "closure_live_value",
+    "given": "Hi Ada",
+    "misconception_id": "closure_copies_value"
+  },
+  {
+    "id": "d_closure_live_value_1",
+    "item_id": "closure_live_value",
+    "given": "Hi, Ada",
+    "misconception_id": "closure_copies_value"
+  },
+  {
+    "id": "d_closure_two_banks_0",
+    "item_id": "closure_two_banks",
+    "given": "15",
+    "misconception_id": "calls_share_state"
+  },
+  {
+    "id": "d_closure_loop_var_0",
+    "item_id": "closure_loop_var",
+    "given": "0",
+    "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_closure_arrow_braces_0",
+    "item_id": "closure_arrow_braces",
+    "given": "8",
+    "misconception_id": "missing_return"
+  },
+  {
+    "id": "d_closure_callback_count_0",
+    "item_id": "closure_callback_count",
+    "given": "0",
+    "misconception_id": "closure_copies_value"
+  },
+  {
+    "id": "d_closure_no_return_0",
+    "item_id": "closure_no_return",
+    "given": "9",
+    "misconception_id": "missing_return"
+  },
+  {
+    "id": "d_closure_adder_0",
+    "item_id": "closure_adder",
+    "given": "return (y) => { x + y }",
+    "misconception_id": "missing_return"
+  },
+  {
     "id": "d_closure_loop_let_0",
     "item_id": "closure_loop_let",
     "given": "var",
     "misconception_id": "var_block_scoped"
+  },
+  {
+    "id": "d_closure_counter_state_0",
+    "item_id": "closure_counter_state",
+    "given": "const count = 0;",
+    "misconception_id": "const_frozen"
+  },
+  {
+    "id": "d_closure_once_0",
+    "item_id": "closure_once",
+    "given": "let done = true",
+    "misconception_id": "shadow_assigns_outer"
+  },
+  {
+    "id": "d_closure_arrow_return_0",
+    "item_id": "closure_arrow_return",
+    "given": "{ n * 3 }",
+    "misconception_id": "missing_return"
   },
   {
     "id": "d_iterate_splice_0",

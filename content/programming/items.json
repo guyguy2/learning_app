@@ -130,20 +130,63 @@
     "hint": "Pick the declaration that keeps i inside the loop."
   },
   {
-    "id": "closure_loop_var",
-    "chunk": "closures",
-    "type": "recognition",
-    "prompt": "What does this log?",
-    "code": "var fns = [];\nfor (var i = 0; i < 3; i++) {\n  fns.push(() => i);\n}\nconsole.log(fns[0]());",
-    "answer": "3"
-  },
-  {
     "id": "closure_counter",
     "chunk": "closures",
     "type": "recognition",
     "prompt": "What does this log?",
     "code": "function makeCounter() {\n  let count = 0;\n  return () => ++count;\n}\nconst next = makeCounter();\nnext();\nconsole.log(next());",
     "answer": "2"
+  },
+  {
+    "id": "closure_live_value",
+    "chunk": "closures",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "let name = 'Ada';\nconst greet = () => 'Hi ' + name;\nname = 'Grace';\nconsole.log(greet());",
+    "answer": "Hi Grace",
+    "accepted": [
+      "Hi, Grace"
+    ]
+  },
+  {
+    "id": "closure_two_banks",
+    "chunk": "closures",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "function makeBank() {\n  let balance = 0;\n  return (amount) => (balance += amount);\n}\nconst mine = makeBank();\nconst yours = makeBank();\nmine(10);\nconsole.log(yours(5));",
+    "answer": "5"
+  },
+  {
+    "id": "closure_loop_var",
+    "chunk": "closures",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const fns = [];\nfor (var i = 0; i < 3; i++) {\n  fns.push(() => i);\n}\nconsole.log(fns[0]());",
+    "answer": "3"
+  },
+  {
+    "id": "closure_arrow_braces",
+    "chunk": "closures",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "const double = (n) => { n * 2 };\nconsole.log(double(4));",
+    "answer": "undefined"
+  },
+  {
+    "id": "closure_callback_count",
+    "chunk": "closures",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "let calls = 0;\nconst track = () => { calls++; };\n[1, 2, 3].forEach(track);\nconsole.log(calls);",
+    "answer": "3"
+  },
+  {
+    "id": "closure_no_return",
+    "chunk": "closures",
+    "type": "recognition",
+    "prompt": "What does this log?",
+    "code": "function square(n) {\n  n * n;\n}\nconsole.log(square(3));",
+    "answer": "undefined"
   },
   {
     "id": "closure_adder",
@@ -168,6 +211,42 @@
     "answer": "let",
     "output": "0 1 2",
     "hint": "Pick the declaration that makes a fresh i for every iteration."
+  },
+  {
+    "id": "closure_counter_state",
+    "chunk": "closures",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 2.",
+    "code": "function makeCounter() {\n  ____\n  return () => ++count;\n}\nconst next = makeCounter();\nnext();\nconsole.log(next());",
+    "answer": "let count = 0;",
+    "accepted": [
+      "var count = 0"
+    ],
+    "output": "2",
+    "hint": "The returned function needs a variable it can keep changing."
+  },
+  {
+    "id": "closure_once",
+    "chunk": "closures",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs ran skipped.",
+    "code": "function once(fn) {\n  let done = false;\n  return () => {\n    if (done) return 'skipped';\n    ____;\n    return fn();\n  };\n}\nconst init = once(() => 'ran');\nconsole.log(init(), init());",
+    "answer": "done = true",
+    "output": "ran skipped",
+    "hint": "Record, in the variable the closure shares, that fn has run."
+  },
+  {
+    "id": "closure_arrow_return",
+    "chunk": "closures",
+    "type": "completion",
+    "prompt": "Fill in the blank so the program logs 12.",
+    "code": "const triple = (n) => ____;\nconsole.log(triple(4));",
+    "answer": "n * 3",
+    "accepted": [
+      "3 * n"
+    ],
+    "output": "12",
+    "hint": "Without braces, an arrow function returns its expression."
   },
   {
     "id": "iterate_splice",

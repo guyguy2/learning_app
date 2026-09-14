@@ -14,14 +14,15 @@
   },
   {
     "chunk": "closures",
-    "title": "Closures",
-    "notional_machine": "A function keeps a live reference to the variables in scope where it was created, not a copy of their values. var is scoped to the whole function, so every closure made in a var loop shares one i; let makes a fresh i for each iteration.",
-    "code": "function makeGreeter(greeting) {\n  return (name) => greeting + ', ' + name;\n}\nconst hi = makeGreeter('Hi');\nconsole.log(hi('Ada')); // Hi, Ada",
-    "output": "Hi, Ada",
+    "title": "Functions and closures",
+    "notional_machine": "Calling a function creates a fresh environment holding its parameters and local variables. A function created inside that call keeps a live link to that environment, not a copy of the values, so it reads and updates the variables as they are when it runs. Each call makes a new environment, and a function whose body is in { } returns undefined unless it reaches a return.",
+    "code": "function makeCounter() {\n  let count = 0;\n  return () => ++count;\n}\nconst a = makeCounter();\nconst b = makeCounter();\na();\nconsole.log(a(), b());",
+    "output": "2 1",
     "steps": [
-      "makeGreeter('Hi') runs and creates a local variable greeting = 'Hi'.",
-      "It returns the arrow function, which keeps a reference to greeting after makeGreeter returns.",
-      "hi('Ada') runs the arrow function. greeting is still 'Hi', so it returns 'Hi, Ada'."
+      "makeCounter() runs and creates an environment holding count = 0. The arrow function it returns, a, keeps a link to that environment.",
+      "The second call creates a separate environment with its own count = 0, linked to b.",
+      "a() runs twice, raising a's count to 1 and then 2, so the second call returns 2.",
+      "b() raises only b's count, from 0 to 1, so the line logs 2 1."
     ]
   },
   {

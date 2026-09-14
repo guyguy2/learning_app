@@ -22,7 +22,17 @@
   {
     "id": "closure_copies_value",
     "name": "Thinking a closure copies values",
-    "explanation": "A closure keeps a reference to the variable itself, not a snapshot of its value. Each call to next() updates the same count, so the second call returns 2."
+    "explanation": "You treated the inner function as if it saved a snapshot of the variable when it was created. A closure keeps a live link to the variable itself, so it sees every later change and its own updates persist between calls."
+  },
+  {
+    "id": "calls_share_state",
+    "name": "Thinking every call shares one set of local variables",
+    "explanation": "You treated a function's local variables as if every call shared them. Each call creates a fresh environment, so closures returned by two different calls each have their own variables."
+  },
+  {
+    "id": "missing_return",
+    "name": "Expecting a function to return its last expression",
+    "explanation": "You expected the value of the last line to come back automatically. A function body in { } returns undefined unless a return statement runs; only an arrow function without braces, like (n) => n * 2, returns its expression."
   },
   {
     "id": "mutate_while_iterating",
