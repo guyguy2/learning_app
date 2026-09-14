@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import programming from './index.js'
-import { validateProgrammingContent } from './validate.js'
+import { sentenceCount, validateProgrammingContent } from './validate.js'
 import { chunkOrder } from '../contract.js'
 import { findChunk, initialProgress } from '../../engine/chunkProgress.js'
 import { begin, createRunnerState, nextSession, retry, submitAttempt } from '../../engine/sessionRunner.js'
@@ -233,6 +233,11 @@ describe('programming content validation', () => {
     const terse = clone(content)
     terse.misconceptions[0].explanation = 'Too short.'
     expect(() => validateProgrammingContent(terse)).toThrow(/explanation has 1 sentences; use two or three/)
+  })
+
+  it('does not count code operators such as ??, ... and === as sentence ends', () => {
+    expect(sentenceCount('Use ?? here. Then stop.')).toBe(2)
+    expect(sentenceCount('for...of walks by index. x === y is strict! Done?')).toBe(3)
   })
 
   it('rejects an item in an unknown chunk', () => {

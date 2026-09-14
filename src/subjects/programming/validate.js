@@ -32,9 +32,13 @@ export function looseOutput(text) {
     .toLowerCase()
 }
 
-/** Sentences in a repair explanation: text ending in . ! or ? followed by a space or the end. */
-function sentenceCount(text) {
-  return (text.match(/[.!?](?=\s|$)/g) ?? []).length
+/**
+ * Sentences in a repair explanation: text ending in . ! or ? followed by a space or the end.
+ * Runs of operator characters (??, ..., ===, ||) are code, not sentence ends, so they are
+ * dropped first.
+ */
+export function sentenceCount(text) {
+  return (text.replace(/[.!?|=&]{2,}/g, ' ').match(/[.!?](?=\s|$)/g) ?? []).length
 }
 
 /**
