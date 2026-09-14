@@ -33,7 +33,13 @@ Execute the Vitest test suite:
 ```bash
 npm test
 ```
-The suite has 22 test files and 216 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the production Desk UI, its subject picker, and the `useSessionRunner` hook (`src/desk/`), and the server seed scenarios, per-subject progress files, and reset and seed endpoints (`server/`).
+The suite has 23 test files and 219 tests covering the pedagogy engine (`src/engine/`, including the `sessionRunner` state machine), the subject plugins and a contract conformance suite every subject must pass (`src/subjects/`), the production Desk UI, its subject picker, and the `useSessionRunner` hook (`src/desk/`), and the server seed scenarios, per-subject progress files, and reset and seed endpoints (`server/`), and the content validation script (`scripts/`).
+
+Check every registered subject's content with its `validate` function:
+```bash
+npm run validate-content
+```
+It prints the subjects it checked, or exits non-zero naming the first subject and entry that failed. CI (`.github/workflows/test.yml`) runs `npm test` and `npm run validate-content` on Node 22 for every push and pull request to `main`.
 
 ## UI
 
