@@ -193,6 +193,13 @@ const programming = {
   // I-do first: a chunk still on its worked example opens with it.
   firstExerciseType: (progress, chunkId) =>
     scaffoldPhase(findChunk(progress.chunks, chunkId)) === 'worked_example' ? 'completion' : 'recognition',
+  // One new notional machine at a time: from session two, a chunk's worked example waits
+  // until every earlier chunk is mastered. Without this the runner would show every
+  // remaining worked example back to back.
+  scaffoldReady: (progress, chunkId, content) => {
+    const order = content.workedExamples.map((we) => we.chunk)
+    return order.slice(0, order.indexOf(chunkId)).every((id) => findChunk(progress.chunks, id)?.mastered)
+  },
   exercises: { recognition, completion },
   content: { items, workedExamples, distractors, misconceptions },
   validate: validateProgrammingContent,

@@ -79,7 +79,7 @@ describe('POST /api/progress/seed', () => {
     expect(writtenFile()).toBe(PROGRESS_PATH)
   })
 
-  it.each(['fresh', 'review-due'])('seeds programming %s into progress.programming.json', async (scenario) => {
+  it.each(['fresh', 'mid', 'review-due', 'late'])('seeds programming %s into progress.programming.json', async (scenario) => {
     const res = await post('/api/progress/seed?subject=programming', { scenario })
     expect(res.status).toBe(200)
     const seeded = await res.json()
@@ -91,9 +91,9 @@ describe('POST /api/progress/seed', () => {
   })
 
   it('rejects a scenario the subject does not define without writing', async () => {
-    const res = await post('/api/progress/seed?subject=programming', { scenario: 'mid' })
+    const res = await post('/api/progress/seed?subject=programming', { scenario: 'nope' })
     expect(res.status).toBe(400)
-    expect((await res.json()).error).toMatch(/Unknown seed scenario: mid/)
+    expect((await res.json()).error).toMatch(/Unknown seed scenario: nope/)
     expect(writeProgress).not.toHaveBeenCalled()
   })
 

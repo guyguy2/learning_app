@@ -271,6 +271,31 @@ describe('programming content validation', () => {
   })
 })
 
+describe('programming seeds open the intended sessions', () => {
+  const order = chunkOrder(programming)
+  const seed = (name) => programming.seeds[name](content, { referenceDate: new Date(`${TODAY}T12:00:00Z`) })
+
+  it('mid resumes the fourth chunk in guided practice with nothing due', () => {
+    const state = start(seed('mid'))
+    expect(state.plan).toEqual({ reviewChunkIds: [], newChunkId: order[3], phase: 'new' })
+    expect(state.stimulus).toMatchObject({ type: 'recognition', chunkId: order[3] })
+  })
+
+  it('review-due reviews the first two chunks, then resumes the fifth', () => {
+    let state = start(seed('review-due'))
+    expect(state.plan).toEqual({ reviewChunkIds: order.slice(0, 2), newChunkId: order[4], phase: 'review' })
+    while (state.mode === 'review') state = submit(state, attemptFor(state))
+    expect(state.reviewedCount).toBe(2)
+    expect(state.stimulus.chunkId).toBe(order[4])
+  })
+
+  it('late opens the last chunk through its worked example', () => {
+    const state = start(seed('late'))
+    expect(state.plan.reviewChunkIds).toEqual([])
+    expect(state.stimulus).toMatchObject({ phase: 'worked_example', chunkId: order.at(-1) })
+  })
+})
+
 describe('programming session loop (end to end through the engine)', () => {
   it('runs worked example, named repair, similar-item retest, and gate to summary on a fresh session', () => {
     const [first, second] = chunkOrder(programming)
@@ -356,6 +381,28 @@ describe('programming session loop (end to end through the engine)', () => {
     expect(chunkIn(state.progress, first)).toMatchObject({ ladder_step: 1, next_due_date: '2026-09-15' })
     expect(state.mode).toBe('new')
     expect(state.stimulus).toMatchObject({ phase: 'worked_example', chunkId: second })
+  })
+
+  it('introduces one new chunk at a time from session two, not every waiting worked example', () => {
+    const [first, second, third] = chunkOrder(programming)
+    const progress = freshProgress()
+    progress.session_number = 2
+    Object.assign(chunkIn(progress, first), {
+      mastered: true,
+      mastered_date: TODAY,
+      ladder_step: 0,
+      last_reviewed_date: TODAY,
+      next_due_date: '2026-09-13',
+      production_phase: 'independent',
+    })
+
+    let state = start(progress)
+    expect(state.stimulus).toMatchObject({ phase: 'worked_example', chunkId: second })
+
+    state = submit(state, attemptFor(state))
+    expect(state.stimulus).toMatchObject({ type: 'recognition', chunkId: second })
+    expect(chunkIn(state.progress, second).production_phase).toBe('guided')
+    expect(chunkIn(state.progress, third).production_phase).toBe('worked_example')
   })
 
   it('routes a review miss through named repair and resets the ladder', () => {

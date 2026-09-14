@@ -255,8 +255,8 @@ describe('useSessionRunner', () => {
     expect(urls).toEqual(['/api/progress', '/api/progress?subject=programming'])
     const state = programmingHook.current
     expect(state.status).toBe('ready')
-    expect(state.plan.reviewChunkIds).toEqual(['scope'])
-    expect(state.plan.newChunkId).toBe('closures')
+    expect(state.plan.reviewChunkIds).toEqual(['scope', 'closures'])
+    expect(state.plan.newChunkId).toBe('references')
   })
 
   it('handles error state when progress fetch fails', async () => {
