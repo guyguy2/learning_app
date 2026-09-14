@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-// Minimal useState harness (as in src/poc/useSessionRunner.test.js): state survives re-renders.
+// Minimal useState harness (as in src/desk/useSessionRunner.test.js): state survives re-renders.
 let hooksState = []
 let hookIndex = 0
 

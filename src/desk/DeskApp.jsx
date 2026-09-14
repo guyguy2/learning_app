@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSessionRunner } from '../poc/useSessionRunner.js'
+import { useSessionRunner } from './useSessionRunner.js'
 import { getSubject } from '../subjects/index.js'
 import { deskCopy } from './copy.js'
 import SessionStartCard from './SessionStartCard.jsx'
